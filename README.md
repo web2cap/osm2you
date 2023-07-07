@@ -7,36 +7,16 @@ The project is based on Open Stream Map and Leaflet. The data is stored in Postg
 ## Technology:
 
 - Python 3.9
-- JS
 - Django 4.0.2
 - Postgresql 13
 - Postgis
 - GDAL
 - libgeoip
-- Bootstrap
 
-
-# :TODO
-
- - debug
-
- - [x] Template
- - [x] Marker list
- - [x] Marker detail
- - [x] Registration
- - [x] Stories
- - [] Photos
- - [] Comments
-
- - [] Social auth
- - [] About
- - [] Search
- - [] Categories
-
- - [] Hosting
-
- - [] OSM mainer
- - [] Photo mainer
+- React
+- Redux
+- Material-UI
+- Axios
 
 
 
@@ -61,7 +41,3 @@ alter role mymap with login ;
 ```
 python3 manage.py migrate
 ```
-
-### Author:
-
-Pavel Koshelev

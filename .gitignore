@@ -133,3 +133,4 @@ staticfiles/
 media
 .DS_Store
 bootstrap_template/
+static/
