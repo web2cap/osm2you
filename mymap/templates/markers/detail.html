@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Wellcome to the area{% endblock %}
+
+{% block map %}
+    {{ markers|json_script:"markers-data" }}
+    <div id="map"></div>
+    <script src="{% static 'js/map_detail.js' %}"></script>
+{% endblock %}
+    
+{% block content %}
+    <h1 class="mt-5">{{ title }}</h1>
+    <small>
+      <p>{{ marker.location }}</p>
+      {% if marker.author %}
+        <p>Added by: 
+            <a href="{% url 'markers:profile' marker.author.username %}">{{ marker.author.first_name }} {{ marker.author.last_name }}[{{ marker.author.username }}]</a>
+        <p/>
+       {% endif %}
+      <p>
+          <a href="https://maps.google.com/?q=loc:{{ marker.location.y }},{{ marker.location.x }}"
+          target="_blank"
+          >See {{ marker.name }} on Google maps</a>
+      </p>
+    </small>
+ 
+
+
+<div class="px-4 py-5 my-5 text-center">
+    <h1 class="display-5 fw-bold">Stories</h1>
+    <div class="col-lg-6 mx-auto">
+      
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <a href ="{% url 'stories:create' marker.pk %}"><button type="button" class="btn btn-primary btn-lg px-4 gap-3">Primary button</button></a>
+      </div>
+
+        {% for story in page_obj %}
+            {% include 'markers/includes/stories_list.html' %}
+            {% if not forloop.last %}<hr>{% endif %}
+        {% endfor %}
+        {% include 'markers/includes/paginator.html' %}
+    </div>
+</div>
+{% endblock %}

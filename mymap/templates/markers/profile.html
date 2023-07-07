@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if user == profile %}Your markers.{else}Markers added by user: {{ profile.username }}{% endif %}{% endblock %}
+
+{% block map %}
+    {{ markers|json_script:"markers-data" }}
+    <div id="map"></div>
+    <script src="{% static 'js/map_detail.js' %}"></script>
+{% endblock %}
+    
+{% block content %}
+    <h2 class="mt-5">User: {{ profile.username }}</h2>
+      <p>Name: {{ profile.first_name }} {{ profile.last_name }}
+      {% if user == profile %}<a href="{% url 'users:editprofile' %}">Edit profile</a>{% endif %}
+      </p>
+      <p>With us from : {{ profile.date_joined }}</p>
+      <p>Last login: {{ profile.last_login }}</p>
+      <p><a href ="#">TODO: Follow</a></p>
+    
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <tbody id="markers_list">
+            {% for marker in markers.features %}
+            {% if forloop.first %}<tr><td><h2 class="mt-5">{{ profile.first_name }} {{ profile.last_name }}[{{ profile.username }}] places:</h2></td></tr>{% endif %}
+              <tr>
+                <td><a href="{% url 'markers:detail' marker.properties.pk %}">{{ marker.properties.name }}</a></td>
+              <tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      {% for story in page_obj %}
+        {% if forloop.first %}<h2>Stories</h2>{% endif %}
+        {% include 'markers/includes/stories_list.html' %}
+        {% if not forloop.last %}<hr>{% endif %}
+      {% endfor %}
+      {% include 'markers/includes/paginator.html' %}
+{% endblock %}
