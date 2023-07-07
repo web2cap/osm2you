@@ -1,11 +1,21 @@
 import os
+import dotenv
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-SECRET_KEY = (
-    "django-insecure-^@73i6@$e3#4c2flmn%j%x+udoa6oqb-vpc^2-j$s_=q3ayakp"
+dotenv.load_dotenv(
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 )
+
+SECRET_KEY = os.getenv(
+    "ST_SECRET_KEY",
+)
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "https://osm.w2c.net.eu.org",
+]
+
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -13,6 +23,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "food.w2c.net.eu.org",
 ]
 
 INTERNAL_IPS = [
@@ -34,7 +45,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_gis",
     "markers",
-    "core",
     "stories",
 ]
 
@@ -62,7 +72,6 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "core.context_processors.year.year",
             ],
         },
     },
@@ -73,13 +82,16 @@ WSGI_APPLICATION = "mymap.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
         "NAME": "leaflet",
         "USER": "mymap",
         "TEST": {
-            "NAME": "test_leaflet",
+            "NAME": os.getenv("DB_TEST_NAME"),
         },
-        # 'PASSWORD': '<password>',
-        # 'PORT': '<db_port>',
     },
 }
 
@@ -127,9 +139,3 @@ LOGOUT_REDIRECT_URL = "markers:index"
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
-
-# Stories
-STORY_MIN_LEN = 1
-STORY_PER_PAGE = 10
-# Comments
-COMMENT_MIN_LEN = 1
