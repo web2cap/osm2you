@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 # Dependency directories
-/node_modules
+node_modules/
 /.pnp
 .pnp.js
 
@@ -164,7 +164,7 @@ debug.log
 
 .vscode/
 staticfiles/
-media
+media/
 .DS_Store
 bootstrap_template/
 static/
