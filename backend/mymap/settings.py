@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "rest_framework_gis",
     "djoser",
     "rest_framework_simplejwt",
+    "rest_framework.authtoken",
     "users",
     "markers",
     "stories",
