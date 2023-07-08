@@ -48,10 +48,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
-    "users",
     "django.contrib.gis",
     "rest_framework",
     "rest_framework_gis",
+    "djoser",
+    "rest_framework_simplejwt",
+    "users",
     "markers",
     "stories",
     "api",
@@ -120,6 +122,22 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+}
+
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+DJOSER = {
+    "SERIALIZERS": {
+        "user_create": "api.serializers.CustomUserCreateSerializer",
+        "user": "api.serializers.CustomUserSerializer",
+    }
+}
 
 LANGUAGE_CODE = "en-us"
 
