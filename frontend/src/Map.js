@@ -5,7 +5,7 @@ function Map() {
     const [markers, setMarkers] = useState([]);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/api/markers/')
+        fetch('http://127.0.0.1:8000/api/v1/markers/')
             .then(response => response.json())
             .then(data => {
                 setMarkers(data.features);
