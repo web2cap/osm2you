@@ -3,6 +3,7 @@ Django==4.0.10
 django-filter==23.2
 djangorestframework==3.14.0
 djangorestframework-gis==1.0
+drf-yasg==1.21.6
 psycopg2==2.9.6
 pytz==2023.3
 sqlparse==0.4.4

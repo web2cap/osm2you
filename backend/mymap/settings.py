@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.gis",
     "rest_framework",
     "rest_framework_gis",
+    "drf_yasg",
     "markers",
     "stories",
     "api",
@@ -120,6 +121,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+SWAGGER_SETTINGS = {
+    "DEFAULT_INFO": "mymap.urls.api_info",
+}
 
 LANGUAGE_CODE = "en-us"
 
