@@ -164,7 +164,7 @@ debug.log
 
 .vscode/
 staticfiles/
-media
+media/
 .DS_Store
 bootstrap_template/
 static/
