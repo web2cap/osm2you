@@ -110,6 +110,7 @@ DATABASES = {
     },
 }
 
+AUTH_USER_MODEL = "users.User"
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -132,6 +133,20 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
+}
+
+DJOSER = {
+    # "ACTIVATION_URL": "#/activate/{uid}/{token}",
+    # "SEND_ACTIVATION_EMAIL": True,
+    # 'SERIALIZERS': {},
+    "PERMISSIONS": {
+        "user_create": ["rest_framework.permissions.AllowAny"],
+        "user_delete": ["core.permissions.DenyAll"],
+        "user": ["core.permissions.CreateOrCurrentUser"],
+        "user_list": ["core.permissions.DenyAll"],
+        "token_create": ["rest_framework.permissions.AllowAny"],
+        "token_destroy": ["rest_framework.permissions.IsAuthenticated"],
+    },
 }
 
 
@@ -167,8 +182,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
-AUTH_USER_MODEL = "users.User"
 
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
