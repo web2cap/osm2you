@@ -1,7 +1,5 @@
 from django.urls import include, path
-from djoser.views import TokenCreateView
 from rest_framework import routers
-from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.permissions import AllowAny
 from drf_yasg.views import get_schema_view
 
@@ -22,10 +20,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path("", include(router.urls)),
     path("auth/", include("djoser.urls")),
-    path("auth/token/", TokenCreateView.as_view(), name="token_create"),
-    path(
-        "auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
-    ),
+    path("auth/", include("djoser.urls.jwt")),
     path(
         "docs/",
         schema_view.with_ui("swagger", cache_timeout=0),
