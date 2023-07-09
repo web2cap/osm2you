@@ -1,5 +1,6 @@
 import os
 import dotenv
+from datetime import timedelta
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +21,7 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
 ]
-
+# CORS_URLS_REGEX = r"^/api/.*$"
 
 # SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
@@ -48,14 +49,17 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
-    "users",
     "django.contrib.gis",
     "rest_framework",
     "rest_framework_gis",
-    "drf_yasg",
+    "djoser",
+    "rest_framework_simplejwt",
+    "rest_framework.authtoken",
+    "users",
     "markers",
     "stories",
     "api",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -106,6 +110,7 @@ DATABASES = {
     },
 }
 
+AUTH_USER_MODEL = "users.User"
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -121,9 +126,41 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-SWAGGER_SETTINGS = {
-    "DEFAULT_INFO": "mymap.urls.api_info",
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
 }
+
+DJOSER = {
+    # "ACTIVATION_URL": "#/activate/{uid}/{token}",
+    # "SEND_ACTIVATION_EMAIL": True,
+    # 'SERIALIZERS': {},
+    "PERMISSIONS": {
+        "user_create": ["rest_framework.permissions.AllowAny"],
+        "user_delete": ["core.permissions.DenyAll"],
+        "user": ["core.permissions.CreateOrCurrentUser"],
+        "user_list": ["core.permissions.DenyAll"],
+        "token_create": ["rest_framework.permissions.AllowAny"],
+        "token_destroy": ["rest_framework.permissions.IsAuthenticated"],
+    },
+}
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}
+    }
+}
+
 
 LANGUAGE_CODE = "en-us"
 
@@ -145,8 +182,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
-AUTH_USER_MODEL = "users.User"
 
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
