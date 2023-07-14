@@ -4,6 +4,7 @@ import { Modal, Button, Form, Alert } from 'react-bootstrap';
 function LoginForm({ show, handleClose, handleLoginSubmit, error }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [formError, setFormError] = useState('');
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -17,7 +18,7 @@ function LoginForm({ show, handleClose, handleLoginSubmit, error }) {
         e.preventDefault();
 
         if (!email || !password) {
-            console.error('Please enter both email and password.');
+            setFormError('Please enter both email and password.'); // Set the formError state for empty fields
             return;
         }
 
@@ -31,6 +32,7 @@ function LoginForm({ show, handleClose, handleLoginSubmit, error }) {
             </Modal.Header>
             <Modal.Body>
                 {error && <Alert variant="danger">{error}</Alert>}
+                {formError && <Alert variant="danger">{formError}</Alert>} {/* Display the formError */}
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="formEmail">
                         <Form.Label className="mr-0">Email</Form.Label>
