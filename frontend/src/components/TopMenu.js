@@ -8,8 +8,6 @@ function TopMenu() {
     const [showRegistration, setShowRegistration] = useState(false);
     const [accessToken, setAccessToken] = useState('');
     const [user, setUser] = useState(null);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState(''); // Add the setPassword state setter function
 
     useEffect(() => {
         // Check if access token is stored in localStorage
@@ -162,7 +160,7 @@ function TopMenu() {
                 </Navbar.Collapse>
             </Navbar>
 
-            <LoginForm show={showLogin} handleClose={handleCloseLogin} handleLoginSubmit={handleLoginSubmit} setEmail={setEmail} setPassword={setPassword} /> {/* Pass setEmail and setPassword as props */}
+            <LoginForm show={showLogin} handleClose={handleCloseLogin} handleLoginSubmit={handleLoginSubmit} />
             <RegistrationForm
                 show={showRegistration}
                 handleClose={handleCloseRegistration}

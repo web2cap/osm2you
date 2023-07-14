@@ -11,6 +11,7 @@ function RegistrationForm({ show, handleClose, handleRegistrationSubmit, error }
     const [instagram, setInstagram] = useState('');
     const [telegram, setTelegram] = useState('');
     const [facebook, setFacebook] = useState('');
+    const [formErrors, setFormErrors] = useState({});
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -52,11 +53,16 @@ function RegistrationForm({ show, handleClose, handleRegistrationSubmit, error }
         e.preventDefault();
 
         if (!email || !password || !firstName) {
-            console.error('Please enter the required fields.');
+            const errors = {
+                email: !email ? 'Email is required.' : '',
+                password: !password ? 'Password is required.' : '',
+                firstName: !firstName ? 'First Name is required.' : '',
+            };
+            setFormErrors(errors);
             return;
         }
 
-        handleRegistrationSubmit({
+        const userData = {
             email,
             password,
             username,
@@ -66,7 +72,9 @@ function RegistrationForm({ show, handleClose, handleRegistrationSubmit, error }
             instagram,
             telegram,
             facebook,
-        });
+        };
+
+        handleRegistrationSubmit(userData);
     };
 
     return (
@@ -78,18 +86,45 @@ function RegistrationForm({ show, handleClose, handleRegistrationSubmit, error }
                 {error && <Alert variant="danger">{error}</Alert>}
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="formEmail">
-                        <Form.Label className="mr-0">Email</Form.Label>
-                        <Form.Control type="email" placeholder="Enter email" value={email} onChange={handleEmailChange} />
+                        <Form.Label className="mr-0">
+                            Email<span className="required-field">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            type="email"
+                            placeholder="Enter email"
+                            value={email}
+                            onChange={handleEmailChange}
+                            isInvalid={formErrors.email !== ''}
+                        />
+                        <Form.Control.Feedback type="invalid">{formErrors.email}</Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group controlId="formPassword">
-                        <Form.Label className="mt-3 mr-0">Password</Form.Label>
-                        <Form.Control type="password" placeholder="Enter password" value={password} onChange={handlePasswordChange} />
+                        <Form.Label className="mt-3 mr-0">
+                            Password<span className="required-field">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            type="password"
+                            placeholder="Enter password"
+                            value={password}
+                            onChange={handlePasswordChange}
+                            isInvalid={formErrors.password !== ''}
+                        />
+                        <Form.Control.Feedback type="invalid">{formErrors.password}</Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group controlId="formFirstName">
-                        <Form.Label className="mt-3 mr-0">First Name</Form.Label>
-                        <Form.Control type="text" placeholder="Enter first name" value={firstName} onChange={handleFirstNameChange} />
+                        <Form.Label className="mt-3 mr-0">
+                            First Name<span className="required-field">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter first name"
+                            value={firstName}
+                            onChange={handleFirstNameChange}
+                            isInvalid={formErrors.firstName !== ''}
+                        />
+                        <Form.Control.Feedback type="invalid">{formErrors.firstName}</Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group controlId="formLastName">
