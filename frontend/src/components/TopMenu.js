@@ -85,18 +85,17 @@ function TopMenu() {
                     // Registration success, now perform login
                     handleLoginSubmit(userData.email, userData.password);
                 } else {
-                    return response.json();
+                    return response.json().then((data) => {
+                        console.log('Registration failed:', data); // Log the error response from the registration request
+                    });
                 }
-            })
-            .then((data) => {
-                // Handle the error response from the registration request
-                console.error(data);
             })
             .catch((error) => {
                 // Handle the error from the registration request
                 console.error(error);
             });
     };
+
 
     const handleLogout = () => {
         setAccessToken(''); // Clear the access token from state
