@@ -36,9 +36,11 @@ function UserEditForm({ show, handleClose, handleEditSubmit, user, formErrors, e
                             defaultValue={user.username}
                             isInvalid={formErrors.username && formErrors.username.length > 0}
                         />
-                        {formErrors.username && formErrors.username.length > 0 && (
-                            <Form.Control.Feedback type="invalid">{formErrors.username[0]}</Form.Control.Feedback>
-                        )}
+                        {formErrors.username && formErrors.username.map((error, index) => (
+                            <Form.Control.Feedback key={index} type="invalid">
+                                {error}
+                            </Form.Control.Feedback>
+                        ))}
                     </Form.Group>
                     <Form.Group controlId="formFirstName">
                         <Form.Label>First Name</Form.Label>
@@ -48,9 +50,11 @@ function UserEditForm({ show, handleClose, handleEditSubmit, user, formErrors, e
                             defaultValue={user.first_name}
                             isInvalid={formErrors.first_name && formErrors.first_name.length > 0}
                         />
-                        {formErrors.first_name && formErrors.first_name.length > 0 && (
-                            <Form.Control.Feedback type="invalid">{formErrors.first_name[0]}</Form.Control.Feedback>
-                        )}
+                        {formErrors.first_name && formErrors.first_name.map((error, index) => (
+                            <Form.Control.Feedback key={index} type="invalid">
+                                {error}
+                            </Form.Control.Feedback>
+                        ))}
                     </Form.Group>
                     <Form.Group controlId="formLastName">
                         <Form.Label>Last Name</Form.Label>

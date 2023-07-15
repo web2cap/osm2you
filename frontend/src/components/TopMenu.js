@@ -128,8 +128,8 @@ function TopMenu() {
                     return response.json();
                 } else {
                     return response.json().then((data) => {
-                        setErrorMessage(data.detail);
-                        throw new Error(data.detail);
+                        setFormErrors(data);
+                        throw new Error('Update user failed');
                     });
                 }
             })
@@ -140,7 +140,7 @@ function TopMenu() {
             })
             .catch((error) => {
                 console.error(error);
-                setErrorMessage('Update user failed');
+                setErrorMessage(error.message);
             });
     };
 
