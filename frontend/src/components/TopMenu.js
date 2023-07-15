@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav } from 'react-bootstrap';
+import { Navbar, Nav, Modal, Button } from 'react-bootstrap';
 import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
 
 function TopMenu() {
     const [showLogin, setShowLogin] = useState(false);
     const [showRegistration, setShowRegistration] = useState(false);
+    const [showUserInfo, setShowUserInfo] = useState(false); // Add state for user info modal
     const [accessToken, setAccessToken] = useState('');
     const [user, setUser] = useState(null);
     const [formErrors, setFormErrors] = useState({});
@@ -76,7 +77,7 @@ function TopMenu() {
             .then((response) => {
                 if (response.status === 201) {
                     handleLoginSubmit(userData.email, userData.password);
-                    setRegistrationSuccess(true); // Set registration success state
+                    setRegistrationSuccess(true);
                 } else {
                     return response.json().then((data) => {
                         setFormErrors(data);
@@ -91,6 +92,14 @@ function TopMenu() {
     const handleLogout = () => {
         setAccessToken('');
         localStorage.removeItem('accessToken');
+    };
+
+    const handleUserInfoClick = () => {
+        setShowUserInfo(true);
+    };
+
+    const handleCloseUserInfo = () => {
+        setShowUserInfo(false);
     };
 
     useEffect(() => {
@@ -121,7 +130,7 @@ function TopMenu() {
 
     useEffect(() => {
         if (registrationSuccess) {
-            handleCloseRegistration(); // Close the registration form after successful registration
+            handleCloseRegistration();
         }
     }, [registrationSuccess]);
 
@@ -140,7 +149,7 @@ function TopMenu() {
                     <Nav className="ml-auto">
                         {accessToken ? (
                             <>
-                                <Nav.Link>{user?.username}</Nav.Link>
+                                <Nav.Link onClick={handleUserInfoClick}>{user?.username}</Nav.Link>
                                 <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
                             </>
                         ) : (
@@ -160,6 +169,26 @@ function TopMenu() {
                 handleRegistrationSubmit={handleRegistrationSubmit}
                 formErrors={formErrors}
             />
+
+            <Modal show={showUserInfo} onHide={handleCloseUserInfo} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>User Information</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Username: {user?.username}</p>
+                    <p>First Name: {user?.first_name}</p>
+                    <p>Last Name: {user?.last_name}</p>
+                    <p>Bio: {user?.bio || 'N/A'}</p>
+                    <p>Instagram: {user?.instagram || 'N/A'}</p>
+                    <p>Telegram: {user?.telegram || 'N/A'}</p>
+                    <p>Facebook: {user?.facebook || 'N/A'}</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseUserInfo}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 }
