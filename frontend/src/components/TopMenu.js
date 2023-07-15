@@ -13,6 +13,7 @@ function TopMenu() {
     const [user, setUser] = useState(null);
     const [formErrors, setFormErrors] = useState({});
     const [registrationSuccess, setRegistrationSuccess] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         const storedAccessToken = localStorage.getItem('accessToken');
@@ -126,7 +127,10 @@ function TopMenu() {
                 if (response.ok) {
                     return response.json();
                 } else {
-                    throw new Error('Update user failed');
+                    return response.json().then((data) => {
+                        setErrorMessage(data.detail);
+                        throw new Error(data.detail);
+                    });
                 }
             })
             .then((data) => {
@@ -136,6 +140,7 @@ function TopMenu() {
             })
             .catch((error) => {
                 console.error(error);
+                setErrorMessage('Update user failed');
             });
     };
 
@@ -240,6 +245,7 @@ function TopMenu() {
                 handleEditSubmit={handleEditSubmit}
                 user={user}
                 formErrors={formErrors}
+                errorMessage={errorMessage} // Pass the errorMessage prop
             />
         </>
     );

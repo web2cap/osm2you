@@ -1,7 +1,7 @@
 import React from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Alert } from 'react-bootstrap';
 
-function UserEditForm({ show, handleClose, handleEditSubmit, user, formErrors }) {
+function UserEditForm({ show, handleClose, handleEditSubmit, user, formErrors, errorMessage }) {
     if (!show || !user) {
         return null;
     }
@@ -26,6 +26,7 @@ function UserEditForm({ show, handleClose, handleEditSubmit, user, formErrors })
                 <Modal.Title>Edit User Information</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="formUsername">
                         <Form.Label>Username</Form.Label>
