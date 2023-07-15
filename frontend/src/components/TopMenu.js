@@ -6,7 +6,7 @@ import RegistrationForm from './RegistrationForm';
 function TopMenu() {
     const [showLogin, setShowLogin] = useState(false);
     const [showRegistration, setShowRegistration] = useState(false);
-    const [showUserInfo, setShowUserInfo] = useState(false); // Add state for user info modal
+    const [showUserInfo, setShowUserInfo] = useState(false);
     const [accessToken, setAccessToken] = useState('');
     const [user, setUser] = useState(null);
     const [formErrors, setFormErrors] = useState({});
@@ -56,7 +56,7 @@ function TopMenu() {
                 }
             })
             .then((data) => {
-                //console.log(data);
+                console.log(data);
                 setShowLogin(false);
                 setAccessToken(data.access);
                 localStorage.setItem('accessToken', data.access);
@@ -92,6 +92,7 @@ function TopMenu() {
     const handleLogout = () => {
         setAccessToken('');
         localStorage.removeItem('accessToken');
+        setShowUserInfo(false); // Close the user information modal after logging out
     };
 
     const handleUserInfoClick = () => {
@@ -118,7 +119,7 @@ function TopMenu() {
                     }
                 })
                 .then((data) => {
-                    //console.log(data);
+                    console.log(data);
                     setUser(data);
                 })
                 .catch((error) => {
@@ -148,10 +149,7 @@ function TopMenu() {
                 <Navbar.Collapse id="top-menu">
                     <Nav className="ml-auto">
                         {accessToken ? (
-                            <>
-                                <Nav.Link onClick={handleUserInfoClick}>{user?.username}</Nav.Link>
-                                <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
-                            </>
+                            <Nav.Link onClick={handleUserInfoClick}>{user?.username}</Nav.Link>
                         ) : (
                             <>
                                 <Nav.Link onClick={handleLoginClick}>Login</Nav.Link>
@@ -184,7 +182,10 @@ function TopMenu() {
                     <p>Facebook: {user?.facebook || 'N/A'}</p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseUserInfo}>
+                    <Button variant="secondary" onClick={handleLogout}>
+                        Logout
+                    </Button>
+                    <Button variant="primary" onClick={handleCloseUserInfo}>
                         Close
                     </Button>
                 </Modal.Footer>
