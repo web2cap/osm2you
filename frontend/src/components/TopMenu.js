@@ -8,10 +8,10 @@ function TopMenu() {
     const [showRegistration, setShowRegistration] = useState(false);
     const [accessToken, setAccessToken] = useState('');
     const [user, setUser] = useState(null);
-    const [formErrors, setFormErrors] = useState({}); // Add formErrors state
+    const [formErrors, setFormErrors] = useState({});
+    const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
     useEffect(() => {
-        // Check if access token is stored in localStorage
         const storedAccessToken = localStorage.getItem('accessToken');
         if (storedAccessToken) {
             setAccessToken(storedAccessToken);
@@ -40,8 +40,6 @@ function TopMenu() {
             password,
         };
 
-        // Make the API call to `/api/v1/auth/jwt/create` with the requestBody
-        // Replace `YOUR_API_ENDPOINT` with the actual endpoint URL
         fetch('http://localhost:8000/api/v1/auth/jwt/create/', {
             method: 'POST',
             headers: {
@@ -53,27 +51,21 @@ function TopMenu() {
                 if (response.ok) {
                     return response.json();
                 } else {
-                    throw new Error('Login failed'); // Throw an error if the login request fails
+                    throw new Error('Login failed');
                 }
             })
             .then((data) => {
-                // Handle the successful response from the API
-                console.log(data); // Display or process the response data as needed
-                setShowLogin(false); // Close the login modal
-                setAccessToken(data.access); // Store the access token in state
-                localStorage.setItem('accessToken', data.access); // Store the access token in localStorage
-                setEmail(''); // Reset the email field
-                setPassword(''); // Reset the password field
+                //console.log(data);
+                setShowLogin(false);
+                setAccessToken(data.access);
+                localStorage.setItem('accessToken', data.access);
             })
             .catch((error) => {
-                // Handle the error from the login request
                 console.error(error);
             });
     };
 
     const handleRegistrationSubmit = (userData) => {
-        // Make the API call to `/api/v1/auth/users/` with the userData
-        // Replace `YOUR_API_ENDPOINT` with the actual endpoint URL
         fetch('http://localhost:8000/api/v1/auth/users/', {
             method: 'POST',
             headers: {
@@ -83,31 +75,26 @@ function TopMenu() {
         })
             .then((response) => {
                 if (response.status === 201) {
-                    // Registration success, now perform login
                     handleLoginSubmit(userData.email, userData.password);
+                    setRegistrationSuccess(true); // Set registration success state
                 } else {
                     return response.json().then((data) => {
                         setFormErrors(data);
-                        // console.log('Registration failed:', response.status, data); // Log the error response from the registration request
                     });
                 }
             })
             .catch((error) => {
-                // Handle the error from the registration request
                 console.error(error);
             });
     };
 
     const handleLogout = () => {
-        setAccessToken(''); // Clear the access token from state
-        localStorage.removeItem('accessToken'); // Remove the access token from localStorage
+        setAccessToken('');
+        localStorage.removeItem('accessToken');
     };
 
     useEffect(() => {
-        // Fetch user details from `/api/v1/auth/users/me` if access token is available
         if (accessToken) {
-            // Make the API call to `/api/v1/auth/users/me`
-            // Replace `YOUR_API_ENDPOINT` with the actual endpoint URL
             fetch('http://localhost:8000/api/v1/auth/users/me', {
                 method: 'GET',
                 headers: {
@@ -118,21 +105,25 @@ function TopMenu() {
                     if (response.ok) {
                         return response.json();
                     } else {
-                        throw new Error('User details fetch failed'); // Throw an error if the user details fetch request fails
+                        throw new Error('User details fetch failed');
                     }
                 })
                 .then((data) => {
-                    // Handle the successful response from the API
-                    console.log(data); // Display or process the response data as needed
-                    setUser(data); // Set the user details in state
+                    //console.log(data);
+                    setUser(data);
                 })
                 .catch((error) => {
-                    // Handle the error from the user details fetch request
                     console.error(error);
-                    setUser(null); // Clear the user details in state
+                    setUser(null);
                 });
         }
     }, [accessToken]);
+
+    useEffect(() => {
+        if (registrationSuccess) {
+            handleCloseRegistration(); // Close the registration form after successful registration
+        }
+    }, [registrationSuccess]);
 
     return (
         <>
@@ -167,7 +158,7 @@ function TopMenu() {
                 show={showRegistration}
                 handleClose={handleCloseRegistration}
                 handleRegistrationSubmit={handleRegistrationSubmit}
-                formErrors={formErrors} // Pass formErrors state to the RegistrationForm component
+                formErrors={formErrors}
             />
         </>
     );
