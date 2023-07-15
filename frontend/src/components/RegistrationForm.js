@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 
-function RegistrationForm({ show, handleClose, handleRegistrationSubmit, error }) {
+function RegistrationForm({ show, handleClose, handleRegistrationSubmit, formErrors }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -11,7 +11,6 @@ function RegistrationForm({ show, handleClose, handleRegistrationSubmit, error }
     const [instagram, setInstagram] = useState('');
     const [telegram, setTelegram] = useState('');
     const [facebook, setFacebook] = useState('');
-    const [formErrors, setFormErrors] = useState({});
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -53,13 +52,7 @@ function RegistrationForm({ show, handleClose, handleRegistrationSubmit, error }
         e.preventDefault();
 
         if (!email || !password || !firstName) {
-            const errors = {
-                email: !email ? 'Email is required.' : '',
-                password: !password ? 'Password is required.' : '',
-                firstName: !firstName ? 'First Name is required.' : '',
-            };
-            setFormErrors(errors);
-            return;
+            return; // Don't proceed if required fields are empty
         }
 
         const userData = {
@@ -83,7 +76,20 @@ function RegistrationForm({ show, handleClose, handleRegistrationSubmit, error }
                 <Modal.Title>Join</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {error && <Alert variant="danger">{error}</Alert>}
+                {Object.keys(formErrors).length > 0 && (
+                    <div className="mt-3">
+                        <h4>Registration Errors:</h4>
+                        <ul>
+                            {Object.entries(formErrors).map(([field, errors]) =>
+                                errors.map((error) => (
+                                    <li key={`${field}-${error}`}>
+                                        <strong>{field}:</strong> {error}
+                                    </li>
+                                ))
+                            )}
+                        </ul>
+                    </div>
+                )}
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="formEmail">
                         <Form.Label className="mr-0">
@@ -94,7 +100,7 @@ function RegistrationForm({ show, handleClose, handleRegistrationSubmit, error }
                             placeholder="Enter email"
                             value={email}
                             onChange={handleEmailChange}
-                            isInvalid={formErrors.email !== ''}
+                            isInvalid={formErrors.email !== undefined}
                         />
                         <Form.Control.Feedback type="invalid">{formErrors.email}</Form.Control.Feedback>
                     </Form.Group>

@@ -8,6 +8,7 @@ function TopMenu() {
     const [showRegistration, setShowRegistration] = useState(false);
     const [accessToken, setAccessToken] = useState('');
     const [user, setUser] = useState(null);
+    const [formErrors, setFormErrors] = useState({}); // Add formErrors state
 
     useEffect(() => {
         // Check if access token is stored in localStorage
@@ -86,7 +87,8 @@ function TopMenu() {
                     handleLoginSubmit(userData.email, userData.password);
                 } else {
                     return response.json().then((data) => {
-                        console.log('Registration failed:', data); // Log the error response from the registration request
+                        setFormErrors(data);
+                        // console.log('Registration failed:', response.status, data); // Log the error response from the registration request
                     });
                 }
             })
@@ -165,6 +167,7 @@ function TopMenu() {
                 show={showRegistration}
                 handleClose={handleCloseRegistration}
                 handleRegistrationSubmit={handleRegistrationSubmit}
+                formErrors={formErrors} // Pass formErrors state to the RegistrationForm component
             />
         </>
     );
