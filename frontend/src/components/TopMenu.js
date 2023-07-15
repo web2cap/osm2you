@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav, Modal, Button } from 'react-bootstrap';
+import { Navbar, Nav, Modal, Button, Form, Alert } from 'react-bootstrap';
 import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
+import UserEditForm from './UserEditForm';
 
 function TopMenu() {
     const [showLogin, setShowLogin] = useState(false);
     const [showRegistration, setShowRegistration] = useState(false);
     const [showUserInfo, setShowUserInfo] = useState(false);
+    const [showEditForm, setShowEditForm] = useState(false);
     const [accessToken, setAccessToken] = useState('');
     const [user, setUser] = useState(null);
     const [formErrors, setFormErrors] = useState({});
@@ -92,7 +94,7 @@ function TopMenu() {
     const handleLogout = () => {
         setAccessToken('');
         localStorage.removeItem('accessToken');
-        setShowUserInfo(false); // Close the user information modal after logging out
+        setShowUserInfo(false);
     };
 
     const handleUserInfoClick = () => {
@@ -101,6 +103,40 @@ function TopMenu() {
 
     const handleCloseUserInfo = () => {
         setShowUserInfo(false);
+    };
+
+    const handleEditClick = () => {
+        setShowEditForm(true);
+    };
+
+    const handleCloseEditForm = () => {
+        setShowEditForm(false);
+    };
+
+    const handleEditSubmit = (updatedUserData) => {
+        fetch('http://127.0.0.1:8000/api/v1/auth/users/me/', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify(updatedUserData),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Update user failed');
+                }
+            })
+            .then((data) => {
+                console.log(data);
+                setUser(data);
+                setShowEditForm(false);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
 
     useEffect(() => {
@@ -182,14 +218,29 @@ function TopMenu() {
                     <p>Facebook: {user?.facebook || 'N/A'}</p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleLogout}>
-                        Logout
-                    </Button>
+                    {accessToken && (
+                        <>
+                            <Button variant="secondary" onClick={handleEditClick}>
+                                Edit
+                            </Button>
+                            <Button variant="danger" onClick={handleLogout}>
+                                Logout
+                            </Button>
+                        </>
+                    )}
                     <Button variant="primary" onClick={handleCloseUserInfo}>
                         Close
                     </Button>
                 </Modal.Footer>
             </Modal>
+
+            <UserEditForm
+                show={showEditForm}
+                handleClose={handleCloseEditForm}
+                handleEditSubmit={handleEditSubmit}
+                user={user}
+                formErrors={formErrors}
+            />
         </>
     );
 }
