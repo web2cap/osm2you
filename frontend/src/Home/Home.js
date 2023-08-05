@@ -1,6 +1,10 @@
+import Map from "../Map/Map"
+
 const Home = () => {
     return (
-        <div>Home</div>
+        <main>
+            <Map />
+        </main>
     )
 }
 export default Home

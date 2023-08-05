@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 
-import TopMenu from './Template/TopMenu';
+import TopMenu from './TopMenu';
 
 const Layout = () => {
     return (
