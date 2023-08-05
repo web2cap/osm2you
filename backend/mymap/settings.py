@@ -15,6 +15,7 @@ SECRET_KEY = os.getenv(
 )
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
+    "http://localhost:3000",
     "https://osm.w2c.net.eu.org",
 ]
 

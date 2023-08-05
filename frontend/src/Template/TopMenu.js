@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Navbar, Nav } from 'react-bootstrap';
 
 import './TopMenu.css'
@@ -18,7 +19,7 @@ function TopMenu() {
             <Navbar.Collapse id="top-menu">
                 <Nav className="ml-auto">
                     <Nav.Link href="#">Login</Nav.Link>
-                    <Nav.Link href="#">Join</Nav.Link>
+                    <Link to="/registration" className='nav-link'>Registration</Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
