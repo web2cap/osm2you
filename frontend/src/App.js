@@ -1,16 +1,18 @@
-import React from 'react';
-import Map from './Map';
-import TopMenu from './TopMenu';
+import { Route, Routes } from "react-router-dom";
+
+import Layout from "./Template/Layout";
+import Home from "./Home/Home";
 
 function App() {
-    return (
-        <div>
-            <TopMenu />
-            <h1>Welcome to the area</h1>
-            <Map />
-        </div>
-    );
+  return (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={
+          <Home />
+        } />
+      </Route>
+    </Routes>
+  );
 }
 
 export default App;
-
