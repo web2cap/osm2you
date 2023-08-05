@@ -168,3 +168,6 @@ media/
 .DS_Store
 bootstrap_template/
 static/
+
+old_front/
+
