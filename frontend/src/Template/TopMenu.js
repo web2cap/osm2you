@@ -18,8 +18,8 @@ function TopMenu() {
             <Navbar.Toggle aria-controls="top-menu" />
             <Navbar.Collapse id="top-menu">
                 <Nav className="ml-auto">
-                    <Nav.Link href="#">Login</Nav.Link>
-                    <Link to="/registration" className='nav-link'>Registration</Link>
+                    <Link to="/user/registration" className='nav-link'>Registration</Link>
+                    <Link to="/user/login" className='nav-link'>Login</Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
