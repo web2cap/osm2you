@@ -6,6 +6,7 @@ import Layout from "./Template/Layout";
 import Home from "./Home/Home";
 import Registration from "./User/Registration";
 import Login from "./User/Login";
+import Logout from "./User/Logout";
 import userGetMe from "./User/hooks/userGetMe";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path="user">
           <Route path="registration" element={<Registration />} />
           <Route path="login" element={<Login />} />
+          <Route path="logout" element={<Logout setAccessToken={setAccessToken} />} />
         </Route>
       </Route>
     </Routes>
