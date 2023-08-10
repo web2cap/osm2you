@@ -1,21 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-
+import { useStoreActions, useStoreState } from 'easy-peasy'
 
 import Layout from "./Template/Layout";
 import Home from "./Home/Home";
 import Registration from "./User/Registration";
 import Login from "./User/Login";
 import Logout from "./User/Logout";
-import userGetMe from "./User/hooks/userGetMe";
+import userAuth from "./User/hooks/userAuth";
 
 function App() {
-  const [user, setUser] = useState('')
-  const [accessToken, setAccessToken] = useState(
-    localStorage.getItem('accessToken')
-  )
+  const user = useStoreState((state) => state.user)
+  const setUser = useStoreActions((actions) => actions.setUser)
 
-  useEffect(() => { userGetMe(accessToken, setAccessToken, setUser) }, [accessToken])
+  const accessToken = useStoreState((state) => state.accessToken)
+  const setAccessToken = useStoreActions((actions) => actions.setAccessToken)
+
+  const backend = useStoreState((state) => state.backend)
+  const setBackendHeader = useStoreActions((actions) => actions.setBackendHeader)
+  const unsetBackendHeader = useStoreActions((actions) => actions.unsetBackendHeader)
+
+
+  useEffect(() => {
+    userAuth(accessToken, setAccessToken, setUser, backend, setBackendHeader, unsetBackendHeader)
+  }, [accessToken])
+
+
+  useEffect(() => {   // for debug
+    console.log(user)
+  }, [user])
 
   return (
     <Routes>
