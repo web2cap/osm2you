@@ -7,6 +7,7 @@ import Home from "./Home/Home";
 import Registration from "./User/Registration";
 import Login from "./User/Login";
 import Logout from "./User/Logout";
+import Missing from "./Template/Missing";
 import userAuth from "./User/hooks/userAuth";
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="logout" element={<Logout />} />
         </Route>
+        <Route path="*" element={<Missing />} />
       </Route>
     </Routes>
   );
