@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useStoreActions, useStoreState } from 'easy-peasy'
 
-import axios from '../api/axios'
 import userLogin from './hooks/userLogin'
 import './User.css'
 
@@ -24,8 +24,10 @@ const Registration = () => {
     const [matchPwd, setMatchPwd] = useState('')
     const [validMatch, setValidMatch] = useState(false)
 
-
     const [errMsg, setErrMsg] = useState('')
+
+    const setAccessToken = useStoreActions((actions) => actions.setAccessToken)
+    const backend = useStoreState((state) => state.backend)
 
     const navigate = useNavigate()
 
@@ -50,7 +52,7 @@ const Registration = () => {
             return;
         }
         try {
-            const response = await axios.post(REGISTER_URL,
+            const response = await backend.post(REGISTER_URL,
                 JSON.stringify({ email, password: pwd, first_name: firstName }),
                 { headers: { 'Content-Type': 'application/json' } }
             );
@@ -58,7 +60,7 @@ const Registration = () => {
                 throw TypeError("Registration Failed")
             }
 
-            const login = await userLogin(email, pwd)
+            await userLogin(email, pwd, setAccessToken, backend)
 
             setEmail('')
             setPwd('')

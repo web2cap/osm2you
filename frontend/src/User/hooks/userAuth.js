@@ -15,8 +15,6 @@ const userAuth = async (accessToken, setAccessToken, setUser, backend, setBacken
 
         setUser(response.data);
     } catch (err) {
-        console.log(err);
-        console.log('remove access token');
         localStorage.removeItem("accessToken");
         setAccessToken(null);
         unsetBackendHeader();

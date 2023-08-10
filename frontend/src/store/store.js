@@ -1,4 +1,4 @@
-import { createStore, action, thunk, computed } from "easy-peasy";
+import { createStore, action } from "easy-peasy";
 import axios from 'axios';
 
 export default createStore({

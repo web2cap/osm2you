@@ -26,7 +26,8 @@ function App() {
   }, [accessToken])
 
 
-  useEffect(() => {   // for debug
+  useEffect(() => {
+    // print user for debug
     console.log(user)
   }, [user])
 
@@ -39,7 +40,7 @@ function App() {
         <Route path="user">
           <Route path="registration" element={<Registration />} />
           <Route path="login" element={<Login />} />
-          <Route path="logout" element={<Logout setAccessToken={setAccessToken} />} />
+          <Route path="logout" element={<Logout />} />
         </Route>
       </Route>
     </Routes>

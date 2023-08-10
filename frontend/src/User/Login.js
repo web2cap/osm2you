@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
+import { useStoreActions, useStoreState } from 'easy-peasy'
 
 import userLogin from './hooks/userLogin';
 import './User.css'
@@ -18,6 +19,9 @@ const Login = () => {
     const [validPwd, setValidPwd] = useState(false)
 
     const [errMsg, setErrMsg] = useState('')
+
+    const setAccessToken = useStoreActions((actions) => actions.setAccessToken)
+    const backend = useStoreState((state) => state.backend)
 
     const navigate = useNavigate()
 
@@ -40,7 +44,7 @@ const Login = () => {
             setErrMsg("Invalid Entry");
             return;
         }
-        const login = await userLogin(email, pwd)
+        const login = await userLogin(email, pwd, setAccessToken, backend)
         if (login.status == 200) {
             setEmail('')
             setPwd('')

@@ -1,8 +1,8 @@
-import axios from "../../api/axios";
-const userLogin = async (email, password) => {
+const userLogin = async (email, password, setAccessToken, backend) => {
     const LOGIN_URL = '/api/v1/auth/jwt/create'
+
     try {
-        const response = await axios.post(LOGIN_URL,
+        const response = await backend.post(LOGIN_URL,
             JSON.stringify({ email, password }),
             { headers: { 'Content-Type': 'application/json' } }
         );
@@ -10,6 +10,7 @@ const userLogin = async (email, password) => {
             throw TypeError("Failed")
         }
         localStorage.setItem("accessToken", response.data.access)
+        setAccessToken(response.data.access)
         return { status: response.status }
     } catch (err) {
         return {
