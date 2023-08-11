@@ -1,4 +1,10 @@
 .MapContainer {
-    height: 400px;
+    height: calc(100vh - 44px - 72px);
     width: 100%;
+}
+
+.map-container {
+    flex: 1;
+    /* Take up available space */
+    position: relative;
 }
