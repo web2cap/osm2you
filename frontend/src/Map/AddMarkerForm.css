@@ -1,0 +1,50 @@
+.add-marker-form {
+    /* position: absolute; */
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-marker-form form {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    /* Add some spacing between form and buttons */
+}
+
+.add-marker-form input[type="text"] {
+    margin-right: 10px;
+    /* Add some spacing between input and buttons */
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.add-marker-form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.add-marker-form button.cancel {
+    background-color: #dc3545;
+    /* Red color for cancel button */
+    margin-left: 10px;
+    /* Add some spacing between buttons */
+}
+
+.add-marker-form button:hover {
+    background-color: #0056b3;
+}
+
+.add-marker-form button:disabled {
+    background-color: transparent;
+    color: #888;
+    cursor: not-allowed;
+}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useStoreState } from 'easy-peasy';
+import { useStoreState, useStoreActions } from 'easy-peasy';
 
 import { Marker, Popup, useMap } from 'react-leaflet';
 
@@ -8,7 +8,10 @@ const Markers = () => {
     const DEBOUNCE_DELAY = 300
     const backend = useStoreState((state) => state.backend);
 
-    const [markers, setMarkers] = useState([]);
+    const markers = useStoreState((state) => state.markers)
+    const setMarkers = useStoreActions((actions) => actions.setMarkers)
+    const addingMarker = useStoreState((state) => state.addingMarker)
+
     const [bbox, setBbox] = useState(null)
 
     const isFirstCallRef = useRef(true);
@@ -18,20 +21,22 @@ const Markers = () => {
 
     // fetch markers
     useEffect(() => {
-        async function fetchData() {
-            const url = bbox ? `${MARKERS_URL}?in_bbox=${bbox}` : MARKERS_URL
-            try {
-                const response = await backend.get(url);
-                if (response.status !== 200) {
-                    throw TypeError("Failed");
+        if (!addingMarker) {
+            async function fetchData() {
+                const url = bbox ? `${MARKERS_URL}?in_bbox=${bbox}` : MARKERS_URL
+                try {
+                    const response = await backend.get(url);
+                    if (response.status !== 200) {
+                        throw TypeError("Failed");
+                    }
+                    setMarkers(response.data.features);
+                } catch (err) {
+                    console.error('Error fetching markers:', err);
                 }
-                setMarkers(response.data.features);
-            } catch (err) {
-                console.error('Error fetching markers:', err);
             }
+            fetchData();
         }
-        fetchData();
-    }, [bbox, backend]);
+    }, [bbox, backend, addingMarker]);
 
 
     // set bbox
