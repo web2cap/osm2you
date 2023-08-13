@@ -109,8 +109,6 @@ DATABASES = {
         "PASSWORD": os.getenv("DB_PASSWORD"),
         "HOST": os.getenv("DB_HOST"),
         "PORT": os.getenv("DB_PORT"),
-        "NAME": "leaflet",
-        "USER": "mymap",
         "TEST": {
             "NAME": os.getenv("DB_TEST_NAME"),
         },
