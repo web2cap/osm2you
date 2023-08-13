@@ -1,15 +1,24 @@
-from rest_framework_gis import serializers
+from rest_framework import serializers
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from djoser.serializers import UserCreateSerializer, UserSerializer
 
 from markers.models import Marker
 from users.models import User
 
 
-class MarkerSerializer(serializers.GeoFeatureModelSerializer):
+class MarkerSerializer(GeoFeatureModelSerializer):
     """Marker GeoJSON serializer."""
 
+    is_yours = serializers.SerializerMethodField()
+
+    def get_is_yours(self, obj):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return obj.author_id == request.user.id
+        return False
+
     class Meta:
-        fields = ("id", "name")
+        fields = ("id", "name", "is_yours")
         read_only_fields = ("id",)
         geo_field = "location"
         model = Marker
