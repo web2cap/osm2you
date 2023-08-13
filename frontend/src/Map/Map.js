@@ -1,36 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, } from 'react-leaflet';
+import { useStoreState, useStoreActions } from 'easy-peasy'
 
-import './Map.css'
+import LocationMarker from './LocationMarker';
+import Markers from './Markers';
+import AddMarkerPoint from './AddMarkerPoint';
+import './Map.css';
 
 function Map() {
-    const [markers, setMarkers] = useState([]);
+    const mapCenter = [51.505, -0.09]
 
-    useEffect(() => {
-        fetch('http://127.0.0.1:8000/api/v1/markers/')
-            .then(response => response.json())
-            .then(data => {
-                setMarkers(data.features);
-            })
-            .catch(error => {
-                console.error('Error fetching markers:', error);
-            });
-    }, []);
+    const addingMarker = useStoreState((state) => state.addingMarker)
 
     return (
         <div className="map-container">
-            <MapContainer center={[51.505, -0.09]} zoom={13} className='MapContainer'>
+            <MapContainer center={mapCenter} zoom={7} className='MapContainer'>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {markers.map(marker => (
-                    <Marker
-                        key={marker.id}
-                        position={[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]}
-                    >
-                        <Popup>
-                            <h3>{marker.properties.name}</h3>
-                        </Popup>
-                    </Marker>
-                ))}
+                <Markers />
+                <LocationMarker />
+                {addingMarker && <AddMarkerPoint />}
             </MapContainer>
         </div>
     );

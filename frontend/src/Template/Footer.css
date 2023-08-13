@@ -1,0 +1,50 @@
+.footer {
+    background-color: #f8f9fa;
+    padding: 4px 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer p {
+    margin: 0;
+    color: #333;
+}
+
+.github {
+    width: 16px;
+    height: 16px;
+}
+
+.github-link {
+    display: inline-block;
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    /* Align content to both ends */
+    align-items: center;
+}
+
+.github-content {
+    display: flex;
+    align-items: center;
+}
+
+.github-content .github {
+    margin-right: 8px;
+}
+
+.github-link:hover {
+    color: #000;
+}
+
+/* Additional styles for the designed by text */
+.footer-content span {
+    font-size: 14px;
+    color: #777;
+}

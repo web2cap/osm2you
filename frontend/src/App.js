@@ -26,11 +26,17 @@ function App() {
     userAuth(accessToken, setAccessToken, setUser, backend, setBackendHeader, unsetBackendHeader)
   }, [accessToken])
 
-
+  // DUBUG
   useEffect(() => {
-    // print user for debug
+    // print user
     console.log(user)
   }, [user])
+  const addingMarkerPosition = useStoreState((state) => state.addingMarkerPosition)
+  useEffect(() => {
+    // add click
+    console.log(`Set addingMarkerPosition: ${addingMarkerPosition}`)
+  }, [addingMarkerPosition])
+
 
   return (
     <Routes>
