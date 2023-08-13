@@ -12,15 +12,13 @@ function AddMarkerForm() {
 
     const handleMarkerAdd = (e) => {
         e.preventDefault();
-        console.log("handleMarkerAdd")
-        console.log(addingMarkerPosition)
         if (addingMarkerPosition && name) {
             const newMarker = {
                 position: [addingMarkerPosition.lat, addingMarkerPosition.lng],
                 name: name,
             };
-            console.log(newMarker)
             // TODO: Add the new marker to your state or backend
+            console.log(newMarker)
             setAddingMarkerPosition(null);
             setAddingMarker(false)
             setName('');

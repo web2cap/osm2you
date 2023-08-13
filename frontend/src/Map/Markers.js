@@ -21,21 +21,19 @@ const Markers = () => {
 
     // fetch markers
     useEffect(() => {
-        if (!addingMarker) {
-            async function fetchData() {
-                const url = bbox ? `${MARKERS_URL}?in_bbox=${bbox}` : MARKERS_URL
-                try {
-                    const response = await backend.get(url);
-                    if (response.status !== 200) {
-                        throw TypeError("Failed");
-                    }
-                    setMarkers(response.data.features);
-                } catch (err) {
-                    console.error('Error fetching markers:', err);
+        async function fetchData() {
+            const url = bbox ? `${MARKERS_URL}?in_bbox=${bbox}` : MARKERS_URL
+            try {
+                const response = await backend.get(url);
+                if (response.status !== 200) {
+                    throw TypeError("Failed");
                 }
+                setMarkers(response.data.features);
+            } catch (err) {
+                console.error('Error fetching markers:', err);
             }
-            fetchData();
         }
+        fetchData();
     }, [bbox, backend, addingMarker]);
 
 
@@ -62,7 +60,7 @@ const Markers = () => {
         const bounds = map.getBounds();
         const bbox = bounds.toBBoxString();
         setBbox(bbox)
-        console.log('Map bbox', bbox);
+        console.log('Set bbox:', bbox);
     };
 
     useEffect(() => {

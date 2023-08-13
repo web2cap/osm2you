@@ -8,7 +8,6 @@ function AddMarkerPoint() {
     useMapEvents({
         click: (e) => {
             setAddingMarkerPosition(e.latlng);
-            console.log(`add click: ${e.latlng}`)
         },
     });
 
