@@ -27,6 +27,7 @@ export default createStore({
 
     //MAP
     //markers
+    MARKERS_URL: '/api/v1/markers/',
     markers: [],
     setMarkers: action((state, payload) => {
         state.markers = payload

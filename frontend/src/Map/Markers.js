@@ -4,7 +4,7 @@ import { useStoreState, useStoreActions } from 'easy-peasy';
 import { Marker, Popup, useMap } from 'react-leaflet';
 
 const Markers = () => {
-    const MARKERS_URL = '/api/v1/markers/';
+    const MARKERS_URL = useStoreState((state) => state.MARKERS_URL)
     const DEBOUNCE_DELAY = 300
     const backend = useStoreState((state) => state.backend);
 
