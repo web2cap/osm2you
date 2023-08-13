@@ -1,4 +1,3 @@
-"""Markers API views."""
 from rest_framework import viewsets
 from rest_framework_gis import filters
 
@@ -16,3 +15,6 @@ class MarkerViewSet(viewsets.ModelViewSet):
 
     bbox_filter_field = "location"
     filter_backends = (filters.InBBoxFilter,)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
