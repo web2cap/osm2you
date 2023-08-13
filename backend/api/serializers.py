@@ -10,6 +10,7 @@ class MarkerSerializer(serializers.GeoFeatureModelSerializer):
 
     class Meta:
         fields = ("id", "name")
+        read_only_fields = ("id",)
         geo_field = "location"
         model = Marker
 
