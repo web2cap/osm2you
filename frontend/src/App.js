@@ -10,6 +10,9 @@ import Logout from "./User/Logout";
 import Missing from "./Template/Missing";
 import userAuth from "./User/hooks/userAuth";
 
+import MarkerInstance from "./Map/MarkerInstance";
+import EditMarker from "./Map/EditMarker";
+
 function App() {
   const user = useStoreState((state) => state.user)
   const setUser = useStoreActions((actions) => actions.setUser)
@@ -48,6 +51,10 @@ function App() {
           <Route path="registration" element={<Registration />} />
           <Route path="login" element={<Login />} />
           <Route path="logout" element={<Logout />} />
+        </Route>
+        <Route path="markers">
+          <Route path=":id" element={<MarkerInstance />} />
+          <Route path="edit/:id" element={<EditMarker />} />
         </Route>
         <Route path="*" element={<Missing />} />
       </Route>

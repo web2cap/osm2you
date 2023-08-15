@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 
 import { Marker, Popup, useMap } from 'react-leaflet';
+import { Link } from 'react-router-dom';
 
 const Markers = () => {
     const MARKERS_URL = useStoreState((state) => state.MARKERS_URL)
@@ -84,7 +85,9 @@ const Markers = () => {
                         position={[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]}
                     >
                         <Popup>
-                            <h3>{marker.properties.name}</h3>
+                            <Link to={`/markers/${marker.id}`}>
+                                <h3>{marker.properties.name}</h3>
+                            </Link>
                         </Popup>
                     </Marker>
                 ))
