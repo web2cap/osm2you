@@ -37,7 +37,8 @@ function App() {
   const addingMarkerPosition = useStoreState((state) => state.addingMarkerPosition)
   useEffect(() => {
     // add click
-    console.log(`Set addingMarkerPosition: ${addingMarkerPosition}`)
+    console.log(`Set addingMarkerPosition:`)
+    console.log(addingMarkerPosition)
   }, [addingMarkerPosition])
 
 

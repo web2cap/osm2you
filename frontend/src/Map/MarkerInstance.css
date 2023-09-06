@@ -71,6 +71,11 @@
     margin-left: 10px;
 }
 
+.MarkerInfo button.cancel {
+    background-color: #dc3545;
+    margin-left: 10px;
+}
+
 .MarkerInfo button.add {
     background-color: #40ac2a;
     margin-left: 10px;
@@ -84,4 +89,8 @@
     background-color: transparent;
     color: #888;
     cursor: not-allowed;
+}
+
+.MarkerInfo input {
+    margin: 5px 0;
 }

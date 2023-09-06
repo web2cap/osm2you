@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
-import { Link, useParams, useNavigate } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
 import Missing from "../Template/Missing"
 import './MarkerInstance.css'
+import AddMarkerPoint from './AddMarkerPoint';
 
 const MarkerInstance = () => {
     const { id } = useParams()
@@ -15,29 +16,34 @@ const MarkerInstance = () => {
     const MARKERS_URL = useStoreState((state) => state.MARKERS_URL)
     const backend = useStoreState((state) => state.backend);
 
-    const setShowAddingMarker = useStoreActions((actions) => actions.setShowAddingMarker)
+    const addingMarkerPosition = useStoreState((state) => state.addingMarkerPosition)
+    const setAddingMarkerPosition = useStoreActions((actions) => actions.setAddingMarkerPosition)
 
     const [marker, setMarker] = useState(null)
+
+    const [editMode, setEditMode] = useState(false)
+    const [editName, setEditName] = useState('')
+
 
     const navigate = useNavigate()
 
     // fetch marker
-    useEffect(() => {
-        setShowAddingMarker(false)
-        async function fetchMarker(id) {
-            const url = `${MARKERS_URL}${id}`
-            try {
-                const response = await backend.get(url);
-                if (response.status !== 200) {
-                    throw TypeError("Failed load marker");
-                }
-                setMarker(response.data);
-            } catch (err) {
-                setErrMsg(`Error fetching marker: ${err}`)
-                setErrMissing(true)
-                console.error(`Error fetching marker: ${err}`);
+    async function fetchMarker(id) {
+        const url = `${MARKERS_URL}${id}`
+        try {
+            const response = await backend.get(url);
+            if (response.status !== 200) {
+                throw TypeError("Failed load marker");
             }
+            setMarker(response.data);
+        } catch (err) {
+            setErrMsg(`Error fetching marker: ${err}`)
+            setErrMissing(true)
+            console.error(`Error fetching marker: ${err}`);
         }
+    }
+
+    useEffect(() => {
         fetchMarker(id)
     }, [])
 
@@ -61,6 +67,49 @@ const MarkerInstance = () => {
         }
     }
 
+    //edit
+    const handleEditMode = () => {
+        setErrMsg('');
+        setEditMode(true)
+        setEditName(marker.properties.name)
+        setAddingMarkerPosition({
+            lat: marker.geometry.coordinates[1],
+            lng: marker.geometry.coordinates[0]
+        })
+    }
+
+    const handleEdit = async () => {
+        if (!addingMarkerPosition || !editName) {
+            setErrMsg("Invalid Point");
+            return
+        }
+        setErrMsg('')
+        const newMarker = {
+            name: editName,
+            location: {
+                type: "Point",
+                coordinates: [addingMarkerPosition.lng, addingMarkerPosition.lat],
+            }
+        };
+        try {
+            const response = await backend.patch(`${MARKERS_URL}${id}/`,
+                JSON.stringify(newMarker),
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+            if (response.status !== 200) {
+                throw TypeError("Edit Failed")
+            }
+        } catch (err) {
+            setErrMsg(`${err.message} ${err?.response?.data?.detail ? err.response.data.detail : ''}`)
+            console.log(err)
+        }
+
+        setAddingMarkerPosition(null);
+        setEditName(null)
+        fetchMarker(id)
+        setEditMode(false)
+    }
+
     return (
         <main>
             {errMsg && <div className='errmsg' aria-live="assertive">{errMsg}</div>}
@@ -71,22 +120,50 @@ const MarkerInstance = () => {
                         <MapContainer center={[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]} zoom={12} className='MapInstanceContainer'>
                             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-                            <Marker position={[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]}>
-                                <Popup>
-                                    {marker.properties.name}
-                                </Popup>
-                            </Marker>
+                            {editMode
+                                ? <AddMarkerPoint />
+                                : <Marker position={[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]}>
+                                    <Popup>
+                                        {marker.properties.name}
+                                    </Popup>
+                                </Marker>
+                            }
 
                         </MapContainer>
 
                     </div>
                     <div className="MarkerInfo">
-                        <h1 className="marker-name">{marker.properties.name}</h1>
-                        <div className="button-group">
-                            <button>Edit</button>
-                            <button onClick={handleDelete} className="delete">Delete</button>
-                            <button className="add">Add story</button>
-                        </div>
+
+                        {editMode
+                            ? <>
+                                <input
+                                    type="text"
+                                    value={editName}
+                                    onChange={(e) => setEditName(e.target.value)}
+                                    required
+                                />
+                                <div className="button-group">
+                                    <button onClick={handleEdit}>Save</button>
+                                    <button
+                                        onClick={() => {
+                                            setEditMode(false)
+                                            setEditName(marker.properties.name)
+                                        }}
+                                        className="cancel"
+                                    >Cancel</button>
+                                </div>
+                            </>
+                            : <>
+                                <h1 className="marker-name">{marker.properties.name}</h1>
+                                <div className="button-group">
+                                    <button
+                                        onClick={handleEditMode}
+                                    >Edit</button>
+                                    <button onClick={handleDelete} className="delete">Delete</button>
+                                    <button className="add">Add story</button>
+                                </div>
+                            </>
+                        }
                         <p className="description"></p>
                         <ul className="related-markers">
                             {/* marker.relatedMarkers.map(relatedMarker => (
