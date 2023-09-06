@@ -3,13 +3,14 @@ from rest_framework import routers
 from rest_framework.permissions import AllowAny
 from drf_yasg.views import get_schema_view
 
-from .viewsets import MarkerViewSet
+from .viewsets import MarkerViewSet, StoryViewSet
 from .api_info import api_info
 
 app_name = "api"
 
 router = routers.DefaultRouter()
 router.register("markers", MarkerViewSet, basename="markers")
+router.register("stories", StoryViewSet, basename="stories")
 
 schema_view = get_schema_view(
     api_info,

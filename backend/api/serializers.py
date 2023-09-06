@@ -4,6 +4,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 
 from markers.models import Marker
 from users.models import User
+from stories.models import Story
 
 
 class MarkerSerializer(GeoFeatureModelSerializer):
@@ -42,3 +43,9 @@ class CustomUserSerializer(UserSerializer):
             "telegram",
             "facebook",
         )
+
+
+class StorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Story
+        fields = "__all__"

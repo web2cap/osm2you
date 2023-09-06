@@ -16,7 +16,7 @@ class Story(CreatedModel):
     )
     marker = models.ForeignKey(
         Marker,
-        on_delete=models.SET(0),
+        on_delete=models.CASCADE,
         blank=False,
         null=False,
         related_name="stories",
