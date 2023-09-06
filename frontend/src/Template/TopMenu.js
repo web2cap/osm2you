@@ -9,16 +9,17 @@ import './TopMenu.css'
 function TopMenu() {
     const user = useStoreState((state) => state.user)
 
+    const showAddingMarker = useStoreState((state) => state.showAddingMarker)
     const addingMarker = useStoreState((state) => state.addingMarker)
     const setAddingMarker = useStoreActions((actions) => actions.setAddingMarker)
     return (
         <Navbar bg="light" expand="lg">
             <Navbar.Brand>
                 <Nav className="ml-auto">
-                    <Nav.Link href="#">
+                    <Link to="/" className='nav-link'>
                         <img src="/img/app.svg" alt="App Logo" className='logo' />
                         OSM2YOU
-                    </Nav.Link>
+                    </Link>
                 </Nav>
             </Navbar.Brand>
             {addingMarker && <AddMarkerForm />}
@@ -29,10 +30,11 @@ function TopMenu() {
                         {user ?
                             (
                                 <>
-                                    <Link
+                                    {showAddingMarker && <Link
                                         className='nav-link'
                                         onClick={() => { setAddingMarker(true) }}
                                     >Add place</Link>
+                                    }
                                     <Link to="/user/" className='nav-link'>Hi, {user.first_name}</Link>
                                     <Link to="/user/logout" className='nav-link'>Logout</Link>
                                 </>

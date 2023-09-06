@@ -26,12 +26,18 @@ export default createStore({
     }),
 
     //MAP
+    mapCenter: [51.505, -0.09],
     //markers
+    MARKERS_URL: '/api/v1/markers/',
     markers: [],
     setMarkers: action((state, payload) => {
         state.markers = payload
     }),
     // adding marker
+    showAddingMarker: true,
+    setShowAddingMarker: action((state, payload) => {
+        state.setShowAddingMarker = payload
+    }),
     addingMarker: false,
     setAddingMarker: action((state, payload) => {
         state.addingMarker = payload

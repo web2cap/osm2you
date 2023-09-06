@@ -1,0 +1,96 @@
+.MapInstanceContainer {
+    height: calc(50vh);
+    width: 100%;
+}
+
+.map-container {
+    flex: 1;
+    position: relative;
+}
+
+.MarkerInfo {
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.marker-name {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+
+.edit-link {
+    color: #007bff;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.description {
+    margin-bottom: 15px;
+}
+
+
+.related-markers {
+    list-style: none;
+    padding: 0;
+}
+
+
+.related-marker-link {
+    color: #007bff;
+    text-decoration: none;
+}
+
+
+.related-markers li {
+    margin-bottom: 5px;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+
+.MarkerInfo button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 10px;
+    cursor: pointer;
+    width: 120px;
+}
+
+.MarkerInfo button.delete {
+    background-color: #dc3545;
+    margin-left: 10px;
+}
+
+.MarkerInfo button.cancel {
+    background-color: #dc3545;
+    margin-left: 10px;
+}
+
+.MarkerInfo button.add {
+    background-color: #40ac2a;
+    margin-left: 10px;
+}
+
+.MarkerInfo button:hover {
+    background-color: #0056b3;
+}
+
+.MarkerInfo:disabled {
+    background-color: transparent;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.MarkerInfo input {
+    margin: 5px 0;
+}
