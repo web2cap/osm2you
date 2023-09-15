@@ -204,6 +204,7 @@ if DEBUG == True:
     LOGGING_LOGGERS["django.db.backends"] = {
         "handlers": ["console"],
         "level": "DEBUG",
+        "propagate": False,
     }
 LOGGING = {
     "version": 1,
