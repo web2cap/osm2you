@@ -4,24 +4,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 
 from markers.models import Marker
 from users.models import User
-
-
-class MarkerSerializer(GeoFeatureModelSerializer):
-    """Marker GeoJSON serializer."""
-
-    is_yours = serializers.SerializerMethodField()
-
-    def get_is_yours(self, obj):
-        request = self.context.get("request")
-        if request and request.user.is_authenticated:
-            return obj.author_id == request.user.id
-        return False
-
-    class Meta:
-        fields = ("id", "name", "is_yours")
-        read_only_fields = ("id",)
-        geo_field = "location"
-        model = Marker
+from stories.models import Story
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -42,3 +25,47 @@ class CustomUserSerializer(UserSerializer):
             "telegram",
             "facebook",
         )
+
+
+class CustomUserShortSerializer(UserCreateSerializer):
+    class Meta(UserCreateSerializer.Meta):
+        model = User
+        fields = ("id", "first_name", "username")
+
+
+class StorySerializer(serializers.ModelSerializer):
+    author = CustomUserShortSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Story
+        fields = ("id", "text", "author")
+
+
+class MarkerSerializer(GeoFeatureModelSerializer):
+    """Marker GeoJSON serializer."""
+
+    is_yours = serializers.SerializerMethodField()
+
+    def get_is_yours(self, obj):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return obj.author_id == request.user.id
+        return False
+
+    class Meta:
+        fields = ("id", "name", "is_yours")
+        read_only_fields = ("id",)
+        geo_field = "location"
+        model = Marker
+
+
+class MarkerInstanceSerializer(MarkerSerializer):
+    """Extend MarkerSerializer,  add marker stories list."""
+
+    stories = StorySerializer(many=True, read_only=True)
+
+    class Meta:
+        fields = ("id", "name", "is_yours", "stories")
+        read_only_fields = ("id",)
+        geo_field = "location"
+        model = Marker
