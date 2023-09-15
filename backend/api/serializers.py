@@ -35,10 +35,17 @@ class CustomUserShortSerializer(UserCreateSerializer):
 
 class StorySerializer(serializers.ModelSerializer):
     author = CustomUserShortSerializer(many=False, read_only=True)
+    is_yours = serializers.SerializerMethodField()
+
+    def get_is_yours(self, obj):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return obj.author_id == request.user.id
+        return False
 
     class Meta:
         model = Story
-        fields = ("id", "text", "author")
+        fields = ("id", "text", "author", "is_yours")
 
 
 class MarkerSerializer(GeoFeatureModelSerializer):
