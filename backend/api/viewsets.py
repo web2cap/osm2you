@@ -32,6 +32,6 @@ class MarkerViewSet(viewsets.ModelViewSet):
 class StoryViewSet(viewsets.ModelViewSet):
     """Story view set."""
 
-    queryset = Story.objects.all()
+    queryset = Story.objects.select_related("author").all()
     serializer_class = StorySerializer
     permission_classes = (AuthorAdminOrInstanceOnly,)
