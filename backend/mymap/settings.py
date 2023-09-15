@@ -28,11 +28,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
 ]
-# CORS_URLS_REGEX = r"^/api/.*$"
 
-# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = [
@@ -192,3 +188,44 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+
+LOGGING_FILE_PATH = "log/django.log"
+LOGGING_LOGGERS = {
+    "django": {
+        "handlers": ["console", "file"],
+        "level": "INFO",
+    },
+    "mymap": {
+        "handlers": ["console", "file"],
+        "level": "DEBUG",
+    },
+}
+if DEBUG == True:
+    LOGGING_LOGGERS["django.db.backends"] = {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    }
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": LOGGING_FILE_PATH,
+            "formatter": "verbose",
+        },
+    },
+    "loggers": LOGGING_LOGGERS,
+}
