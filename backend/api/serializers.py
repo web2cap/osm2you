@@ -7,24 +7,6 @@ from users.models import User
 from stories.models import Story
 
 
-class MarkerSerializer(GeoFeatureModelSerializer):
-    """Marker GeoJSON serializer."""
-
-    is_yours = serializers.SerializerMethodField()
-
-    def get_is_yours(self, obj):
-        request = self.context.get("request")
-        if request and request.user.is_authenticated:
-            return obj.author_id == request.user.id
-        return False
-
-    class Meta:
-        fields = ("id", "name", "is_yours")
-        read_only_fields = ("id",)
-        geo_field = "location"
-        model = Marker
-
-
 class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = User
@@ -48,4 +30,34 @@ class CustomUserSerializer(UserSerializer):
 class StorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Story
-        fields = "__all__"
+        fields = ("id", "text", "author")
+
+
+class MarkerSerializer(GeoFeatureModelSerializer):
+    """Marker GeoJSON serializer."""
+
+    is_yours = serializers.SerializerMethodField()
+
+    def get_is_yours(self, obj):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return obj.author_id == request.user.id
+        return False
+
+    class Meta:
+        fields = ("id", "name", "is_yours")
+        read_only_fields = ("id",)
+        geo_field = "location"
+        model = Marker
+
+
+class MarkerInstanceSerializer(MarkerSerializer):
+    """Extend MarkerSerializer,  add marker stories list."""
+
+    stories = StorySerializer(many=True, read_only=True)
+
+    class Meta:
+        fields = ("id", "name", "is_yours", "stories")
+        read_only_fields = ("id",)
+        geo_field = "location"
+        model = Marker
