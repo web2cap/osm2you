@@ -27,7 +27,15 @@ class CustomUserSerializer(UserSerializer):
         )
 
 
+class CustomUserShortSerializer(UserCreateSerializer):
+    class Meta(UserCreateSerializer.Meta):
+        model = User
+        fields = ("id", "first_name", "username")
+
+
 class StorySerializer(serializers.ModelSerializer):
+    author = CustomUserShortSerializer(many=False, read_only=True)
+
     class Meta:
         model = Story
         fields = ("id", "text", "author")
