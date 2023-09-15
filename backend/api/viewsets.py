@@ -7,6 +7,8 @@ from api.serializers import (
     MarkerSerializer,
     MarkerInstanceSerializer,
     StorySerializer,
+    StorySerializerDisplay,
+    StorySerializerEdit,
 )
 from api.permissions import AuthorAdminOrReadOnly, AuthorAdminOrInstanceOnly
 
@@ -33,5 +35,13 @@ class StoryViewSet(viewsets.ModelViewSet):
     """Story view set."""
 
     queryset = Story.objects.all()
-    serializer_class = StorySerializer
     permission_classes = (AuthorAdminOrInstanceOnly,)
+    serializers = {
+        "list": StorySerializerDisplay,
+        "retrieve": StorySerializerDisplay,
+        "partial_update": StorySerializerEdit,
+        "default": StorySerializer,
+    }
+
+    def get_serializer_class(self):
+        return self.serializers.get(self.action, self.serializers["default"])
