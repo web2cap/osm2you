@@ -20,7 +20,6 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 
-CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "access-control-allow-origin",
 ]
@@ -34,15 +33,12 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "food.w2c.net.eu.org",
+    "osm.w2c.net.eu.org",
 ]
 
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
-
-
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
