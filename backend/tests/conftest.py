@@ -37,3 +37,7 @@ if FILENAME not in project_dir_content:
 assert (
     get_version() > "4.2.0"
 ), "Please use the Django version older then 4.2.0"
+
+pytest_plugins = [
+    "tests.fixtures.fixture_user",
+]
