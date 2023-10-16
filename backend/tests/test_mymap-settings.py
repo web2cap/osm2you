@@ -3,7 +3,7 @@ import logging
 from django.conf import settings
 
 
-class TestSettings:
+class TestMymapSettings:
     def test_debug_settings(self):
         """Test that DEBUG is false."""
 
