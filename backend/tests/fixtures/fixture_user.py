@@ -90,3 +90,32 @@ def sample_superuser_data():
         "is_staff": True,
         "is_superuser": True,
     }
+
+
+@pytest.fixture
+def full_create_user_data():
+    return {
+        "email": "testuser@example.com",
+        "username": "testuser",
+        "first_name": "John",
+        "last_name": "Doe",
+        "bio": "Test bio",
+        "instagram": "test_instagram",
+        "telegram": "test_telegram",
+        "facebook": "test_facebook",
+        "password": "TestPassword123",
+    }
+
+
+@pytest.fixture
+def full_create_user_data_without_email():
+    return {
+        "username": "testuser",
+        "first_name": "John",
+        "last_name": "Doe",
+        "bio": "Test bio",
+        "instagram": "test_instagram",
+        "telegram": "test_telegram",
+        "facebook": "test_facebook",
+        "password": "TestPassword123",
+    }
