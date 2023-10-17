@@ -4,8 +4,8 @@ from users.models import User
 
 
 class TestUsersManagers:
-    def test_create_user(self, db, sample_user):
-        user = sample_user
+    def test_create_user(self, db, sample_console_user):
+        user = sample_console_user
         assert isinstance(user, User)
         assert user.email == "user@example.com"
         assert user.check_password("Password123")
@@ -14,8 +14,8 @@ class TestUsersManagers:
         with pytest.raises(ValueError):
             custom_user_manager.create_user("", "Password123")
 
-    def test_create_superuser(self, db, sample_superuser):
-        user = sample_superuser
+    def test_create_superuser(self, db, sample_console_superuser):
+        user = sample_console_superuser
         assert isinstance(user, User)
         assert user.email == "admin@example.com"
         assert user.is_staff
