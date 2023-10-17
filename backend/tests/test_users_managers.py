@@ -4,33 +4,35 @@ from users.models import User
 
 
 class TestUsersManagers:
-    def test_create_user(self, db, sample_console_user):
+    @pytest.mark.django_db
+    def test_create_user(self, sample_console_user, sample_user_data):
         user = sample_console_user
         assert isinstance(user, User)
-        assert user.email == "user@example.com"
-        assert user.check_password("Password123")
+        assert user.email == sample_user_data["email"]
+        assert user.check_password(sample_user_data["password"])
 
-    def test_create_user_invalid_email(self, custom_user_manager):
+    def test_create_user_invalid_email(self, custom_user_manager, sample_user_data):
         with pytest.raises(ValueError):
-            custom_user_manager.create_user("", "Password123")
+            custom_user_manager.create_user("", sample_user_data["password"])
 
-    def test_create_superuser(self, db, sample_console_superuser):
+    @pytest.mark.django_db
+    def test_create_superuser(self, sample_console_superuser, sample_user_data):
         user = sample_console_superuser
         assert isinstance(user, User)
-        assert user.email == "admin@example.com"
+        assert user.email == sample_user_data["email"]
         assert user.is_staff
         assert user.is_superuser
 
-    def test_create_superuser_non_staff(self, custom_user_manager):
+    @pytest.mark.django_db
+    def test_create_superuser_non_staff(self, custom_user_manager, sample_user_data):
         with pytest.raises(ValueError):
-            custom_user_manager.create_superuser(
-                "nonstaff@example.com", "Nonstaffpassword123", is_staff=False
-            )
+            custom_user_manager.create_superuser(**sample_user_data, is_staff=False)
 
-    def test_create_superuser_non_superuser(self, custom_user_manager):
+    def test_create_superuser_non_superuser(
+        self, custom_user_manager, sample_user_data
+    ):
         with pytest.raises(ValueError):
             custom_user_manager.create_superuser(
-                "nonsuperuser@example.com",
-                "Nonsuperpassword123",
+                **sample_user_data,
                 is_superuser=False,
             )

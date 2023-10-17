@@ -9,21 +9,26 @@ def custom_user_manager():
 
 
 @pytest.fixture
-def sample_console_user(custom_user_manager):
-    """Simple user instance for create user by user manager."""
-
-    email = "user@example.com"
-    password = "Password123"
-    return custom_user_manager.create_user(email, password)
+def sample_user_data():
+    """Sample data for creating user."""
+    return {
+        "email": "user@example.com",
+        "password": "Password123",
+    }
 
 
 @pytest.fixture
-def sample_console_superuser(custom_user_manager):
+def sample_console_user(custom_user_manager, sample_user_data):
+    """Simple user instance for create user by user manager."""
+
+    return custom_user_manager.create_user(**sample_user_data)
+
+
+@pytest.fixture
+def sample_console_superuser(custom_user_manager, sample_user_data):
     """Simple superuser instance for create user by user manager."""
 
-    email = "admin@example.com"
-    password = "Superpassword123"
-    return custom_user_manager.create_superuser(email, password)
+    return custom_user_manager.create_superuser(**sample_user_data)
 
 
 @pytest.fixture
@@ -49,15 +54,6 @@ def admin_form_user_data_updated():
         "instagram": "updated_instagram",
         "telegram": "updated_telegram",
         "facebook": "updated_facebook",
-    }
-
-
-@pytest.fixture
-def sample_user_data():
-    """Sample data for creating user."""
-    return {
-        "email": "user@example.com",
-        "password": "Password123",
     }
 
 
