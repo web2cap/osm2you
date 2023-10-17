@@ -50,3 +50,43 @@ def admin_form_user_data_updated():
         "telegram": "updated_telegram",
         "facebook": "updated_facebook",
     }
+
+
+@pytest.fixture
+def sample_user_data():
+    """Sample data for creating user."""
+    return {
+        "email": "user@example.com",
+        "password": "Password123",
+    }
+
+
+@pytest.fixture
+def sample_user_data_with_username():
+    """Sample data with username for creating user."""
+    return {
+        "email": "user2@example.com",
+        "username": "user_name",
+        "password": "Password123",
+    }
+
+
+@pytest.fixture
+def sample_user_data_not_unique_username():
+    """Sample data with not unique username."""
+    return {
+        "email": "user2@example.com",
+        "username": "user_name",
+        "password": "Password123",
+    }
+
+
+@pytest.fixture
+def sample_superuser_data():
+    """Sample data for creating a superuser."""
+    return {
+        "email": "admin@example.com",
+        "password": "Superpassword123",
+        "is_staff": True,
+        "is_superuser": True,
+    }
