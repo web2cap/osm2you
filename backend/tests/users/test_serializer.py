@@ -9,8 +9,9 @@ class TestUsersSerializer:
         """Check serialization with valid user data."""
 
         serializer = UserCreateCustomSerializer(data=full_create_user_data)
-        assert serializer.is_valid(), "Error serialize user with valid data"
-        print(serializer.errors)
+        assert (
+            serializer.is_valid()
+        ), f"Error serialize user with valid data {serializer.errors}"
 
     @pytest.mark.django_db
     def test_user_create_custom_serializer_invalid(

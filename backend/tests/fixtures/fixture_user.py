@@ -115,3 +115,8 @@ def full_create_user_data_without_email():
         "facebook": "test_facebook",
         "password": "TestPassword123",
     }
+
+
+@pytest.fixture
+def user_instance(full_create_user_data):
+    return User.objects.create(**full_create_user_data)
