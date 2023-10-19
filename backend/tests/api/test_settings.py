@@ -70,15 +70,15 @@ class TestAPISettings:
             ),
             (
                 settings.DJOSER["PERMISSIONS"]["user_delete"],
-                "core.permissions.DenyAll",
+                "api.permissions.DenyAll",
             ),
             (
                 settings.DJOSER["PERMISSIONS"]["user"],
-                "core.permissions.CreateOrCurrentUser",
+                "users.permissions.CreateOrCurrentUser",
             ),
             (
                 settings.DJOSER["PERMISSIONS"]["user_list"],
-                "core.permissions.DenyAll",
+                "api.permissions.DenyAll",
             ),
             (
                 settings.DJOSER["PERMISSIONS"]["token_create"],
