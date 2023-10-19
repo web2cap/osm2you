@@ -25,30 +25,34 @@ class TestUsersSerializer:
         assert not serializer.is_valid(), "User serialized withot email."
 
     @pytest.mark.django_db
-    def test_user_custom_serializer(self, full_create_user_data):
-        """Check that data is valid after serialization."""
+    def test_user_custom_serializer_no_email(self, full_create_user_data):
+        """Check that email not present in dataafter serialization."""
 
         serializer = UserCustomSerializer(full_create_user_data)
         data = serializer.data
         assert "email" not in data, "Email must be read-only"
+
+    @pytest.mark.django_db
+    @pytest.mark.parametrize(
+        "must_present",
+        [
+            "username",
+            "last_name",
+            "first_name",
+            "bio",
+            "instagram",
+            "telegram",
+            "facebook",
+        ],
+    )
+    def test_user_custom_serializer_data(self, must_present, full_create_user_data):
+        """Check that data valid after serialization."""
+
+        serializer = UserCustomSerializer(full_create_user_data)
+        data = serializer.data
         assert (
-            data["username"] == full_create_user_data["username"]
-        ), "Wrong username after serialization"
+            must_present in data
+        ), f"Field {must_present} should present in valid data."
         assert (
-            data["first_name"] == full_create_user_data["first_name"]
-        ), "Wrong first_name after serialization"
-        assert (
-            data["last_name"] == full_create_user_data["last_name"]
-        ), "Wrong last_name after serialization"
-        assert (
-            data["bio"] == full_create_user_data["bio"]
-        ), "Wrong bio after serialization"
-        assert (
-            data["instagram"] == full_create_user_data["instagram"]
-        ), "Wrong instagram after serialization"
-        assert (
-            data["telegram"] == full_create_user_data["telegram"]
-        ), "Wrong telegram after serialization"
-        assert (
-            data["facebook"] == full_create_user_data["facebook"]
-        ), "Wrong facebook after serialization"
+            data[must_present] == full_create_user_data[must_present]
+        ), f"Wrong {must_present} after serialization"
