@@ -1,14 +1,12 @@
 import os
-import dotenv
 from datetime import timedelta
 from pathlib import Path
 
+import dotenv
 from corsheaders.defaults import default_headers
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-dotenv.load_dotenv(
-    os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
-)
+dotenv.load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
 SECRET_KEY = os.getenv(
     "ST_SECRET_KEY",
@@ -196,7 +194,7 @@ LOGGING_LOGGERS = {
         "level": "DEBUG",
     },
 }
-if DEBUG == True:
+if DEBUG is True:
     LOGGING_LOGGERS["django.db.backends"] = {
         "handlers": ["console"],
         "level": "DEBUG",

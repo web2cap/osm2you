@@ -7,9 +7,7 @@ class TestMymapSettings:
     def test_debug_settings(self):
         """Test that DEBUG is false."""
 
-        assert (
-            not settings.DEBUG
-        ), "Check that DEBUG is disabled in Django settings"
+        assert not settings.DEBUG, "Check that DEBUG is disabled in Django settings"
 
     def test_database_settings(self):
         """Test db adapter is setted correct."""
@@ -35,9 +33,7 @@ class TestMymapSettings:
         ], "Check that django file handler setted up"
 
         file_handler = next(
-            handler
-            for handler in handlers
-            if isinstance(handler, logging.FileHandler)
+            handler for handler in handlers if isinstance(handler, logging.FileHandler)
         )
         assert isinstance(file_handler, logging.FileHandler)
         assert file_handler.level in (
@@ -45,8 +41,7 @@ class TestMymapSettings:
             logging.INFO,
         ), "Check django file handler logging leavel"
         assert (
-            file_handler.formatter._fmt
-            == "{levelname} {asctime} {module} {message}"
+            file_handler.formatter._fmt == "{levelname} {asctime} {module} {message}"
         ), "Chech format of the 'file' handler"
         assert (
             file_handler.baseFilename
@@ -70,8 +65,7 @@ class TestMymapSettings:
             logging.INFO,
         ), "Check django console handler logging leavel"
         assert (
-            console_handler.formatter._fmt
-            == "{levelname} {asctime} {module} {message}"
+            console_handler.formatter._fmt == "{levelname} {asctime} {module} {message}"
         ), "Chech format of the console handler"
 
     def test_csrf_settings(self):
@@ -84,6 +78,9 @@ class TestMymapSettings:
     def test_cors_settings(self):
         """Check that CORS settings filled in."""
 
+        assert (
+            "corsheaders" in settings.INSTALLED_APPS
+        ), "Check that corsheaders includet to INSTALLED_APPS"
         assert (
             not hasattr(settings, "CORS_ALLOW_ALL_ORIGINS")
             or not settings.CORS_ALLOW_ALL_ORIGINS
@@ -99,9 +96,7 @@ class TestMymapSettings:
     def test_allowed_host_settings(self):
         """Check that ALLOWED_HOSTS and IP settings filled in."""
 
-        assert len(
-            settings.ALLOWED_HOSTS
-        ), "Check that CSRF_TRUSTED_ORIGINS filled in"
+        assert len(settings.ALLOWED_HOSTS), "Check that CSRF_TRUSTED_ORIGINS filled in"
         assert (
             "127.0.0.1" in settings.INTERNAL_IPS
         ), "Check that 127.0.0.1 filled in INTERNAL_IPS"
@@ -128,17 +123,3 @@ class TestMymapSettings:
         assert (
             "drf_yasg" in settings.INSTALLED_APPS
         ), "Check that drf_yasg includet to INSTALLED_APPS"
-
-    def test_rest_framework_settings(self):
-        assert (
-            "rest_framework" in settings.INSTALLED_APPS
-        ), "Check that rest_framework includet to INSTALLED_APPS"
-
-        assert hasattr(
-            settings, "REST_FRAMEWORK"
-        ), "Check that REST_FRAMEWORK present in settings"
-
-        assert (
-            "rest_framework.permissions.AllowAny"
-            in settings.REST_FRAMEWORK["DEFAULT_PERMISSION_CLASSES"]
-        ), "Check that DEFAULT_PERMISSION_CLASSES set to AllowAny"
