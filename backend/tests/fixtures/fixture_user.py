@@ -1,4 +1,8 @@
 import pytest
+from django.contrib.auth.models import AnonymousUser
+from django.http import HttpRequest
+from rest_framework.request import Request
+from rest_framework.viewsets import ViewSet
 
 from users.models import User
 
@@ -120,3 +124,46 @@ def full_create_user_data_without_email():
 @pytest.fixture
 def user_instance(full_create_user_data):
     return User.objects.create(**full_create_user_data)
+
+
+@pytest.fixture
+def superuser_instance(sample_superuser_data):
+    return User.objects.create(**sample_superuser_data)
+
+
+@pytest.fixture
+def user_owner_instance(sample_user_data_with_username):
+    return User.objects.create(**sample_user_data_with_username)
+
+
+@pytest.fixture
+def user_request(user_instance):
+    request = Request(HttpRequest())
+    request.user = user_instance
+    return request
+
+
+@pytest.fixture
+def owner_request(user_owner_instance):
+    request = Request(HttpRequest())
+    request.user = user_owner_instance
+    return request
+
+
+@pytest.fixture
+def superuser_request(superuser_instance):
+    request = Request(HttpRequest())
+    request.user = superuser_instance
+    return request
+
+
+@pytest.fixture
+def anonim_request():
+    request = Request(HttpRequest())
+    request.user = AnonymousUser()
+    return request
+
+
+@pytest.fixture
+def simple_view():
+    return ViewSet()
