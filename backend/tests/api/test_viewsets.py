@@ -22,14 +22,14 @@ def test_marker_viewset_get_serializer_class(
 @pytest.mark.django_db
 def test_marker_viewset_get_queryset_retrieve(
     marker_viewset_instance_retrieve,
-    marker_with_author,
+    marker_with_author_story,
     user_owner_instance,
     simple_story_data,
 ):
     """Test are marker, marker author, stories, stories author present in queryset.
     If action is retrieve."""
     queryset = marker_viewset_instance_retrieve.get_queryset()
-    assert marker_with_author in queryset, "No marker in marker retrieve queryset"
+    assert marker_with_author_story in queryset, "No marker in marker retrieve queryset"
     assert (
         queryset.first().author == user_owner_instance
     ), "No marker author in marker retrieve queryset"
@@ -44,12 +44,12 @@ def test_marker_viewset_get_queryset_retrieve(
 @pytest.mark.django_db
 def test_marker_viewset_get_queryset_list(
     marker_viewset_instance_list,
-    marker_with_author,
+    marker_with_author_story,
     user_owner_instance,
 ):
     """Test are marker, marker author present in list queryset."""
     queryset = marker_viewset_instance_list.get_queryset()
-    assert marker_with_author in queryset, "No marker in marker list queryset"
+    assert marker_with_author_story in queryset, "No marker in marker list queryset"
     assert (
         queryset.first().author == user_owner_instance
     ), "No marker author in marker list queryset"
@@ -59,6 +59,7 @@ def test_marker_viewset_get_queryset_list(
 def test_marker_viewset_perform_create(
     marker_viewset, owner_request, simple_marker_data
 ):
+    """Test marker perform create, that add author from request.user."""
     marker_viewset.request = owner_request
     marker_serializer = MarkerSerializer(data=simple_marker_data)
     if marker_serializer.is_valid():
@@ -69,8 +70,23 @@ def test_marker_viewset_perform_create(
 
 @pytest.mark.django_db
 def test_marker_viewset_perform_create_mock(marker_viewset, simple_marker_data):
+    """Test marker perform create, that raise error if request.user is empty."""
     marker_viewset.request = None
     marker_serializer = MarkerSerializer(data=simple_marker_data)
     with pytest.raises(AttributeError):
         marker_serializer.is_valid()
         marker_viewset.perform_create(marker_serializer)
+
+
+# Story
+@pytest.mark.django_db
+def test_story_viewset_get_queryset(
+    story_viewset, simple_story, user_owner_instance, simple_marker
+):
+    """Test are story, marker, author in story queryset."""
+    queryset = story_viewset.get_queryset()
+    assert simple_story in queryset, "No story in story queryset"
+    assert (
+        queryset.first().author == user_owner_instance
+    ), "No story author in story queryset"
+    assert queryset.first().marker == simple_marker, "No story marker in story queryset"
