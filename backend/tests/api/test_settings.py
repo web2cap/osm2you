@@ -74,7 +74,7 @@ class TestAPISettings:
             ),
             (
                 settings.DJOSER["PERMISSIONS"]["user"],
-                "users.permissions.CreateOrCurrentUser",
+                "api.permissions.CurrentUserGetPut",
             ),
             (
                 settings.DJOSER["PERMISSIONS"]["user_list"],

@@ -141,12 +141,13 @@ DJOSER = {
     },
     "PERMISSIONS": {
         "user_create": ["rest_framework.permissions.AllowAny"],
-        "user_delete": ["core.permissions.DenyAll"],
-        "user": ["core.permissions.CreateOrCurrentUser"],
-        "user_list": ["core.permissions.DenyAll"],
+        "user_delete": ["api.permissions.DenyAll"],
+        "user": ["api.permissions.CurrentUserGetPut"],
+        "user_list": ["api.permissions.DenyAll"],
         "token_create": ["rest_framework.permissions.AllowAny"],
         "token_destroy": ["rest_framework.permissions.IsAuthenticated"],
     },
+    "HIDE_USERS": True,
 }
 
 
