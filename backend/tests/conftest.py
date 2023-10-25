@@ -38,4 +38,5 @@ assert get_version() > "4.2.0", "Please use the Django version older then 4.2.0"
 pytest_plugins = [
     "tests.fixtures.fixture_user",
     "tests.fixtures.fixture_marker",
+    "tests.fixtures.fixture_story",
 ]
