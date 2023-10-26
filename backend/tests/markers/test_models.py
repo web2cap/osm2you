@@ -22,8 +22,8 @@ class TestMarkersModels:
         assert marker.add_date, "Created marker hasn't add_date"
 
     @pytest.mark.django_db
-    def test_create_marker_empty_name(self, simple_marker_data):
-        """Test creating a marker with empty name."""
+    def test_create_marker_no_name(self, simple_marker_data):
+        """Test creating a marker with no name."""
 
         with pytest.raises(IntegrityError):
             marker = Marker.objects.create(
@@ -32,8 +32,8 @@ class TestMarkersModels:
             marker.save()
 
     @pytest.mark.django_db
-    def test_create_marker_empty_location(self, simple_marker_data):
-        """Test creating a marker with empty location."""
+    def test_create_marker_no_location(self, simple_marker_data):
+        """Test creating a marker with no location."""
 
         with pytest.raises(IntegrityError):
             marker = Marker.objects.create(name=simple_marker_data["name"])
