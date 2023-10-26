@@ -11,6 +11,15 @@ def simple_marker_data():
 
 
 @pytest.fixture
+def marker_with_author_data(user_owner_instance):
+    return {
+        "name": "Marker with author",
+        "location": Point(1, 1),
+        "author": user_owner_instance,
+    }
+
+
+@pytest.fixture
 def simple_marker(simple_marker_data):
     return Marker.objects.create(**simple_marker_data)
 
