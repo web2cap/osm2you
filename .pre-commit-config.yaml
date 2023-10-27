@@ -1,0 +1,20 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.3
+    hooks:
+      - id: ruff
+        name: Run Ruff on backend
+        args: [--exit-non-zero-on-fix]
+        files: ^backend/
+      - id: ruff
+        name: Run Ruff on tests
+        args: [--exit-non-zero-on-fix]
+        files: ^tests/
+      - id: ruff-format
+        name: Run Ruff format on backend
+        args: [--check]
+        files: ^backend/
+      - id: ruff-format
+        name: Run Ruff format on tests
+        args: [--check]
+        files: ^tests/
