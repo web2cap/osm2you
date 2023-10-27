@@ -184,7 +184,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
-LOGGING_FILE_PATH = "log/django.log"
+LOGGING_FILE_PATH = os.path.join(BASE_DIR, "log/django.log")
 LOGGING_LOGGERS = {
     "django": {
         "handlers": ["console", "file"],

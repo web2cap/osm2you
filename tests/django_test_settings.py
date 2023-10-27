@@ -1,6 +1,5 @@
 from mymap.settings import *
 
-LOGGING_FILE_PATH = "log/test_django.log"
 LOGGING_LOGGERS = {
     "django": {
         "handlers": ["console", "file"],
