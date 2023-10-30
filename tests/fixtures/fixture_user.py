@@ -5,6 +5,8 @@ from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
 from users.models import User
 
+URL_CREATE_TOKEN = "/api/v1/auth/jwt/create/"
+
 
 @pytest.fixture
 def custom_user_manager():
@@ -166,3 +168,13 @@ def anonim_request():
 @pytest.fixture
 def simple_view():
     return ViewSet()
+
+
+@pytest.fixture
+def user_token(client, full_create_user_data, user_instance):
+    auth_data = {
+        "email": full_create_user_data["email"],
+        "password": full_create_user_data["password"],
+    }
+    response = client.post(URL_CREATE_TOKEN, data=auth_data)
+    return response.data
