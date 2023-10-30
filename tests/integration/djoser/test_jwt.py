@@ -1,5 +1,7 @@
 import pytest
 
+from ..common import check_response
+
 
 class TestJwt:
     """Integration test for token create, refresh."""
@@ -11,54 +13,20 @@ class TestJwt:
     @pytest.mark.django_db()
     def test_token_create_nodata(self, client):
         response = client.post(self.URL_CREATE_TOKEN)
-        assert (
-            response.status_code != 404
-        ), f"Page `{self.URL_CREATE_TOKEN}` not found, check address in *urls.py*"
-        code = 400
-        assert response.status_code == code, (
-            f"Check that request `{self.URL_CREATE_TOKEN}` without parameters"
-            f"user is not created and status is returned {code}"
-        )
-        response_json = response.json()
-        empty_fields = ["email", "password"]
-        for field in empty_fields:
-            assert field in response_json.keys() and isinstance(
-                response_json[field], list
-            ), (
-                f"Check that request `{self.URL_CREATE_TOKEN}` without parameters"
-                f"in the response there is a message about filled {field}"
-            )
+        check_response(response, 400, ["email", "password"])
 
     @pytest.mark.django_db()
     def test_token_create_invalid_data(self, client, sample_user_data, user_instance):
         """Test create token with data, but without creation user with this data."""
 
         response = client.post(self.URL_CREATE_TOKEN, data=sample_user_data)
-
-        assert (
-            response.status_code != 404
-        ), f"Page `{self.URL_CREATE_TOKEN}` not found, check address in *urls.py*"
-        code = 401
-        assert response.status_code == code, (
-            f"Check that request `{self.URL_CREATE_TOKEN}` with invalid data "
-            f"user is not created and status is returned {code}"
-        )
-
-        response_json = response.json()
-        assert "detail" in response_json.keys() and response_json["detail"], (
-            f"Check that request `{self.URL_CREATE_TOKEN}` with invalid parameters, "
-            f"in the response there is a message about field `detail`"
-        )
+        check_response(response, 401, ["detail"])
 
         valid_data_no_password = {
             "email": user_instance.email,
         }
         response = client.post(self.URL_CREATE_TOKEN, data=valid_data_no_password)
-        code = 400
-        assert response.status_code == code, (
-            f"Check that request `{self.URL_CREATE_TOKEN}` without username "
-            f"cannot create user and return status {code}"
-        )
+        check_response(response, 400, ["password"])
 
     @pytest.mark.django_db(transaction=True)
     def test_token_create_valid_data(
@@ -69,84 +37,24 @@ class TestJwt:
             "password": full_create_user_data["password"],
         }
         response = client.post(self.URL_CREATE_TOKEN, data=auth_data)
-
-        assert (
-            response.status_code != 404
-        ), f"Page `{self.URL_CREATE_TOKEN}` not found, check this address in *urls.py*"
-
-        code = 200
-        assert response.status_code == code, (
-            f"Check that request `{self.URL_CREATE_TOKEN}` with valid data"
-            f"user is created and status is returned {code}"
-        )
-
-        response_json = response.json()
-        requaried_fields = ["refresh", "access"]
-        for field in requaried_fields:
-            assert field in response_json.keys() and len(response_json[field]), (
-                f"Check that request `{self.URL_CREATE_TOKEN}` with valid data"
-                f"in the response there is a filled {field}"
-            )
+        check_response(response, 200, ["refresh", "access"])
 
     # REFRESH
     @pytest.mark.django_db()
     def test_token_refresh_nodata(self, client):
         response = client.post(self.URL_REFRESH_TOKEN)
-        assert (
-            response.status_code != 404
-        ), f"Page `{self.URL_REFRESH_TOKEN}` not found, check address in *urls.py*"
-        code = 400
-        assert response.status_code == code, (
-            f"Check that request `{self.URL_REFRESH_TOKEN}` without parameters"
-            f"user is not created and status is returned {code}"
-        )
-        response_json = response.json()
-        assert "refresh" in response_json.keys() and isinstance(
-            response_json["refresh"], list
-        ), (
-            f"Check that request `{self.URL_CREATE_TOKEN}` without parameters"
-            " in the response there is a message about filled `refresh`"
-        )
+        check_response(response, 400, ["refresh"])
 
     @pytest.mark.django_db()
     def test_token_refresh_invalid_data(self, client, user_instance):
         """Test create token with data, but without creation user with this data."""
 
         response = client.post(self.URL_REFRESH_TOKEN, data={"refresh": "Invalid"})
-
-        assert (
-            response.status_code != 404
-        ), f"Page `{self.URL_REFRESH_TOKEN}` not found, check address in *urls.py*"
-        code = 401
-        assert response.status_code == code, (
-            f"Check that request `{self.URL_REFRESH_TOKEN}` with invalid data "
-            f"user is not created and status is returned {code}"
-        )
-
-        response_json = response.json()
-        assert "detail" in response_json.keys() and response_json["detail"], (
-            f"Check that request `{self.URL_REFRESH_TOKEN}` with invalid parameters, "
-            f"in the response there is a message about field `detail`"
-        )
+        check_response(response, 401, ["detail"])
 
     @pytest.mark.django_db(transaction=True)
     def test_token_refresh_valid_data(self, client, user_token):
         response = client.post(
             self.URL_REFRESH_TOKEN, data={"refresh": user_token["refresh"]}
         )
-
-        assert (
-            response.status_code != 404
-        ), f"Page `{self.URL_REFRESH_TOKEN}` not found, check this address in *urls.py*"
-
-        code = 200
-        assert response.status_code == code, (
-            f"Check that request `{self.URL_REFRESH_TOKEN}` with valid data"
-            f"user is created and status is returned {code}"
-        )
-
-        response_json = response.json()
-        assert "access" in response_json.keys() and len(response_json["access"]), (
-            f"Check that request `{self.URL_REFRESH_TOKEN}` with valid data"
-            f"in the response there is a filled `access`"
-        )
+        check_response(response, 200, ["access"])
