@@ -39,7 +39,7 @@ class TestJwt:
             response.status_code != 404
         ), f"Page `{self.URL_CREATE_TOKEN}` not found, check address in *urls.py*"
         code = 401
-        assert response.status_code == 401, (
+        assert response.status_code == code, (
             f"Check that request `{self.URL_CREATE_TOKEN}` with invalid data "
             f"user is not created and status is returned {code}"
         )
@@ -118,7 +118,7 @@ class TestJwt:
             response.status_code != 404
         ), f"Page `{self.URL_REFRESH_TOKEN}` not found, check address in *urls.py*"
         code = 401
-        assert response.status_code == 401, (
+        assert response.status_code == code, (
             f"Check that request `{self.URL_REFRESH_TOKEN}` with invalid data "
             f"user is not created and status is returned {code}"
         )
