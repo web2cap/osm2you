@@ -151,3 +151,23 @@ class TestUser:
             f"Check that after request `{self.URL_USERS}` with valid data"
             f" there is the record with this user in the database"
         )
+
+    # ME GET
+    @pytest.mark.django_db()
+    def test_user_me_unautorized(self, client):
+        response = client.post(self.URL_USERS_ME)
+        assert (
+            response.status_code != 404
+        ), f"Page `{self.URL_USERS_ME}` not found, check address in *urls.py*"
+        code = 401
+        assert response.status_code == code, (
+            f"Check that request `{self.URL_USERS_ME}` without parameters"
+            f"user is not created and status is returned {code}"
+        )
+        response_json = response.json()
+        assert "detail" in response_json.keys() and response_json["detail"], (
+            f"Check that request `{self.URL_CREATE_TOKEN}` with invalid parameters, "
+            f"in the response there is a message about field `detail`"
+        )
+
+        print(response.__dir__())
