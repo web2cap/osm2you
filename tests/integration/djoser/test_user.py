@@ -1,6 +1,8 @@
 import pytest
 from users.models import User
 
+from ..common import check_response
+
 
 class TestUser:
     """Integration test for user create, read.
@@ -13,23 +15,7 @@ class TestUser:
     @pytest.mark.django_db()
     def test_user_create_nodata(self, client):
         response = client.post(self.URL_USERS)
-        assert (
-            response.status_code != 404
-        ), f"Page `{self.URL_USERS}` not found, check address in *urls.py*"
-        code = 400
-        assert response.status_code == code, (
-            f"Check that request `{self.URL_USERS}` without parameters"
-            f"user is not created and status is returned {code}"
-        )
-        response_json = response.json()
-        empty_fields = ["email", "password", "first_name"]
-        for field in empty_fields:
-            assert field in response_json.keys() and isinstance(
-                response_json[field], list
-            ), (
-                f"Check that request `{self.URL_USERS}` without parameters"
-                f"in the response there is a message about filled {field}"
-            )
+        check_response(response, 400, ["email", "password", "first_name"])
 
     @pytest.mark.parametrize(
         "exclude_field",
@@ -44,25 +30,10 @@ class TestUser:
         self, client, full_create_user_data, exclude_field
     ):
         """Test create user with invalid data doesn't created."""
+
         full_create_user_data.pop(exclude_field)
         response = client.post(self.URL_USERS, data=full_create_user_data)
-
-        assert (
-            response.status_code != 404
-        ), f"Page `{self.URL_USERS}` not found, check address in *urls.py*"
-        code = 400
-        assert response.status_code == code, (
-            f"Check that request `{self.URL_USERS}` with invalid data "
-            f" user is not created and status is returned {code}"
-        )
-
-        response_json = response.json()
-        assert exclude_field in response_json.keys() and isinstance(
-            response_json[exclude_field], list
-        ), (
-            f"Check that request `{self.URL_USERS}` with invalid parameters, "
-            f"in the response there is a message about field `{exclude_field}`"
-        )
+        check_response(response, 400, [exclude_field])
 
     @pytest.mark.django_db()
     def test_user_create_invalid_email(self, client, full_create_user_data):
@@ -70,23 +41,7 @@ class TestUser:
 
         full_create_user_data["email"] = "invalid.email"
         response = client.post(self.URL_USERS, data=full_create_user_data)
-
-        assert (
-            response.status_code != 404
-        ), f"Page `{self.URL_USERS}` not found, check address in *urls.py*"
-        code = 400
-        assert response.status_code == code, (
-            f"Check that request `{self.URL_USERS}` with invalid data "
-            f" user is not created and status is returned {code}"
-        )
-
-        response_json = response.json()
-        assert "email" in response_json.keys() and isinstance(
-            response_json["email"], list
-        ), (
-            f"Check that request `{self.URL_USERS}` with invalid parameters, "
-            f"in the response there is a message about field `email`"
-        )
+        check_response(response, 400, ["email"])
 
     @pytest.mark.django_db()
     def test_user_create_not_unic_data(
@@ -97,39 +52,11 @@ class TestUser:
         response = client.post(
             self.URL_USERS, data=sample_user_data_not_unique_username
         )
+        check_response(response, 400, ["email"])
 
-        assert (
-            response.status_code != 404
-        ), f"Page `{self.URL_USERS}` not found, check address in *urls.py*"
-        code = 400
-        assert response.status_code == code, (
-            f"Check that request `{self.URL_USERS}` with invalid data "
-            f" user is not created and status is returned {code}"
-        )
-
-        response_json = response.json()
-        assert "email" in response_json.keys() and isinstance(
-            response_json["email"], list
-        ), (
-            f"Check that request `{self.URL_USERS}` with invalid parameters, "
-            f"in the response there is a message about field `email`"
-        )
-
-    @pytest.mark.django_db(transaction=True)
+    @pytest.mark.django_db()
     def test_user_create_valid_data(self, client, full_create_user_data):
         response = client.post(self.URL_USERS, data=full_create_user_data)
-
-        assert (
-            response.status_code != 404
-        ), f"Page `{self.URL_USERS}` not found, check this address in *urls.py*"
-
-        code = 201
-        assert response.status_code == code, (
-            f"Check that request `{self.URL_USERS}` with valid data"
-            f"user is created and status is returned {code}"
-        )
-
-        response_json = response.json()
         requaried_fields = [
             "email",
             "username",
@@ -140,11 +67,7 @@ class TestUser:
             "telegram",
             "facebook",
         ]
-        for field in requaried_fields:
-            assert field in response_json.keys(), (
-                f"Check that request `{self.URL_USERS}` with valid data"
-                f"in the response there is a filled {field}"
-            )
+        check_response(response, 201, requaried_fields)
 
         new_user = User.objects.filter(email=full_create_user_data["email"])
         assert new_user.exists(), (
@@ -156,18 +79,4 @@ class TestUser:
     @pytest.mark.django_db()
     def test_user_me_unautorized(self, client):
         response = client.post(self.URL_USERS_ME)
-        assert (
-            response.status_code != 404
-        ), f"Page `{self.URL_USERS_ME}` not found, check address in *urls.py*"
-        code = 401
-        assert response.status_code == code, (
-            f"Check that request `{self.URL_USERS_ME}` without parameters"
-            f"user is not created and status is returned {code}"
-        )
-        response_json = response.json()
-        assert "detail" in response_json.keys() and response_json["detail"], (
-            f"Check that request `{self.URL_CREATE_TOKEN}` with invalid parameters, "
-            f"in the response there is a message about field `detail`"
-        )
-
-        print(response.__dir__())
+        check_response(response, 401, ["detail"])
