@@ -3,7 +3,6 @@ from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
-
 from users.models import User
 
 
@@ -123,17 +122,17 @@ def full_create_user_data_without_email():
 
 @pytest.fixture
 def user_instance(full_create_user_data):
-    return User.objects.create(**full_create_user_data)
+    return User.objects.create_user(**full_create_user_data)
 
 
 @pytest.fixture
 def superuser_instance(sample_superuser_data):
-    return User.objects.create(**sample_superuser_data)
+    return User.objects.create_superuser(**sample_superuser_data)
 
 
 @pytest.fixture
 def user_owner_instance(sample_user_data_with_username):
-    return User.objects.create(**sample_user_data_with_username)
+    return User.objects.create_user(**sample_user_data_with_username)
 
 
 @pytest.fixture
