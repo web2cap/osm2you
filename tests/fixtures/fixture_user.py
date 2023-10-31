@@ -1,9 +1,13 @@
 import pytest
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
 from rest_framework.request import Request
+from rest_framework.test import APIClient
 from rest_framework.viewsets import ViewSet
-from users.models import User
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+
+User = get_user_model()
 
 URL_CREATE_TOKEN = "/api/v1/auth/jwt/create/"
 
@@ -109,16 +113,23 @@ def full_create_user_data():
 
 
 @pytest.fixture
-def full_create_user_data_without_email():
+def full_create_user_data_without_email(full_create_user_data):
+    full_create_user_data.pop("email")
+    return full_create_user_data
+
+
+@pytest.fixture
+def full_update_user_data():
     return {
-        "username": "testuser",
-        "first_name": "John",
-        "last_name": "Doe",
-        "bio": "Test bio",
-        "instagram": "test_instagram",
-        "telegram": "test_telegram",
-        "facebook": "test_facebook",
-        "password": "TestPassword123",
+        "email": "updateduser@example.com",
+        "username": "updateduser",
+        "first_name": "Upjon",
+        "last_name": "Updoe",
+        "bio": "Updated bio",
+        "instagram": "updated_instagram",
+        "telegram": "updated_telegram",
+        "facebook": "updated_facebook",
+        "password": "updatedPassword123",
     }
 
 
@@ -178,3 +189,16 @@ def user_token(client, full_create_user_data, user_instance):
     }
     response = client.post(URL_CREATE_TOKEN, data=auth_data)
     return response.data
+
+
+@pytest.fixture
+def token_user(user_instance):
+    token = AccessToken.for_user(user_instance)
+    return {"access": str(token)}
+
+
+@pytest.fixture
+def user_client(token_user):
+    client = APIClient()
+    client.credentials(HTTP_AUTHORIZATION=f'Bearer {token_user["access"]}')
+    return client

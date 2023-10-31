@@ -26,7 +26,7 @@ class TestUser:
         ],
     )
     @pytest.mark.django_db()
-    def test_user_create_no_requaried_data(
+    def test_user_create_no_required_data(
         self, client, full_create_user_data, exclude_field
     ):
         """Test create user with invalid data doesn't created."""
@@ -57,7 +57,7 @@ class TestUser:
     @pytest.mark.django_db()
     def test_user_create_valid_data(self, client, full_create_user_data):
         response = client.post(self.URL_USERS, data=full_create_user_data)
-        requaried_fields = [
+        required_fields = [
             "email",
             "username",
             "last_name",
@@ -67,7 +67,7 @@ class TestUser:
             "telegram",
             "facebook",
         ]
-        check_response(response, 201, requaried_fields)
+        check_response(response, 201, required_fields)
 
         new_user = User.objects.filter(email=full_create_user_data["email"])
         assert new_user.exists(), (
@@ -77,6 +77,110 @@ class TestUser:
 
     # ME GET
     @pytest.mark.django_db()
-    def test_user_me_unautorized(self, client):
+    def test_user_me_get_unauthorized(self, client):
         response = client.post(self.URL_USERS_ME)
         check_response(response, 401, ["detail"])
+
+    @pytest.mark.django_db()
+    def test_user_me_get_authorized(self, user_client, user_instance):
+        response = user_client.get(self.URL_USERS_ME)
+        required_fields = [
+            "username",
+            "last_name",
+            "first_name",
+            "instagram",
+            "telegram",
+            "facebook",
+        ]
+        check_response(response, 200, required_fields)
+        for field in response.data.keys():
+            assert response.data[field] == getattr(
+                user_instance, field
+            ), f"The response data[{field}] doesn't match the client user data `{field}`."
+
+    # ME PUT
+    @pytest.mark.django_db()
+    def test_user_me_put_unauthorized(self, client, full_update_user_data):
+        response = client.put(self.URL_USERS_ME, data=full_update_user_data)
+        check_response(response, 401, ["detail"])
+
+    @pytest.mark.django_db()
+    def test_user_me_put_authorized_empty_data(self, user_client):
+        response = user_client.put(self.URL_USERS_ME, data={})
+        check_response(response, 400, ["first_name"])
+
+    @pytest.mark.django_db()
+    @pytest.mark.parametrize("required_field", ["first_name", "username"])
+    def test_user_me_put_authorized_no_required_field(
+        self, user_client, full_update_user_data, required_field
+    ):
+        full_update_user_data.pop(required_field)
+        response = user_client.put(self.URL_USERS_ME, data=full_update_user_data)
+        check_response(response, 400, [required_field])
+
+    @pytest.mark.django_db()
+    def test_user_me_put_authorized_username_exist(
+        self, user_client, full_update_user_data, user_owner_instance
+    ):
+        full_update_user_data["username"] = user_owner_instance.username
+        response = user_client.put(self.URL_USERS_ME, data=full_update_user_data)
+        check_response(response, 400, ["username"])
+
+    @pytest.mark.django_db()
+    def test_user_me_put_authorized_valid_data(
+        self, user_client, full_update_user_data
+    ):
+        response = user_client.put(self.URL_USERS_ME, data=full_update_user_data)
+
+        required_fields = [
+            "username",
+            "last_name",
+            "first_name",
+            "instagram",
+            "telegram",
+            "facebook",
+            "bio",
+        ]
+        check_response(response, 200, required_fields)
+        for field in response.data.keys():
+            assert (
+                response.data[field] == full_update_user_data[field]
+            ), f"The response data[{field}] doesn't match the client user data `{field}`."
+
+    # Disabled methods
+    @pytest.mark.django_db()
+    @pytest.mark.parametrize(
+        "url, http_verb, expected_code, required_fields",
+        [
+            (URL_USERS, "get", 401, ["detail"]),
+            (URL_USERS_ME, "patch", 401, ["detail"]),
+            (URL_USERS_ME, "delete", 401, ["detail"]),
+            (f"{URL_USERS}reset_email/", "post", 401, ["detail"]),
+            (f"{URL_USERS}set_email/", "post", 401, ["detail"]),
+            (f"{URL_USERS}set_password/", "post", 401, ["detail"]),
+        ],
+    )
+    def test_user_disabled_methods_unauthorized(
+        self, client, url, http_verb, expected_code, required_fields
+    ):
+        action = getattr(client, http_verb)
+        response = action(self.URL_USERS)
+        check_response(response, expected_code, required_fields)
+
+    @pytest.mark.django_db()
+    @pytest.mark.parametrize(
+        "url, http_verb, expected_code, required_fields",
+        [
+            (URL_USERS, "get", 404, ["detail"]),
+            (URL_USERS_ME, "patch", 403, ["detail"]),
+            (URL_USERS_ME, "delete", 403, ["detail"]),
+            (f"{URL_USERS}reset_email/", "post", 401, ["detail"]),
+            (f"{URL_USERS}set_email/", "post", 401, ["detail"]),
+        ],
+    )
+    def test_user_disabled_methods_user(
+        self, user_client, url, http_verb, expected_code, required_fields
+    ):
+        action = getattr(user_client, http_verb)
+        response = action(self.URL_USERS)
+        check_response(response, expected_code, required_fields)
