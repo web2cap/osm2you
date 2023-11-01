@@ -202,3 +202,16 @@ def user_client(token_user):
     client = APIClient()
     client.credentials(HTTP_AUTHORIZATION=f'Bearer {token_user["access"]}')
     return client
+
+
+@pytest.fixture
+def token_user_owner(user_owner_instance):
+    token = AccessToken.for_user(user_owner_instance)
+    return {"access": str(token)}
+
+
+@pytest.fixture
+def use_owner_client(token_user_owner):
+    client = APIClient()
+    client.credentials(HTTP_AUTHORIZATION=f'Bearer {token_user_owner["access"]}')
+    return client

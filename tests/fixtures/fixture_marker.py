@@ -1,20 +1,19 @@
 import pytest
-from django.contrib.gis.geos import Point
-
 from api.viewsets import MarkerViewSet
+from django.contrib.gis.geos import Point
 from markers.models import Marker
 
 
 @pytest.fixture
 def simple_marker_data():
-    return {"name": "Simple marker", "location": Point(1, 1)}
+    return {"name": "Simple marker", "location": Point(1, 2)}
 
 
 @pytest.fixture
 def marker_with_author_data(user_owner_instance):
     return {
         "name": "Marker with author",
-        "location": Point(1, 1),
+        "location": Point(3, 4),
         "author": user_owner_instance,
     }
 
