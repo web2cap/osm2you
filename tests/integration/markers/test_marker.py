@@ -98,10 +98,11 @@ class TestMarker:
 
     # GET INSTANCE
 
-    def check_marker_instance(self, client, marker):
+    def check_marker_instance(self, client, marker, owner_instance, simple_story_data):
         """Tests a request against of marker.
         Checking the fields and field values of marker in the list.
-        Returns the response data of a marker for detailed checking."""
+        Returns the response data of a marker for detailed checking and owner story response data
+        """
 
         response = client.get(f"{self.URL_MARKERS}{marker.id}/")
         required_fields = ["id", "type", "geometry", "properties"]
@@ -124,26 +125,55 @@ class TestMarker:
             and response.data["properties"]["name"] == marker.name
         ), "Wrong name in marker response"
 
-        return response.data
         # Storise in marker
-        """response_simple_marker = next(
+        assert "stories" in response.data["properties"], "No stories in marker response"
+        assert (
+            len(response.data["properties"]["stories"]) == 2
+        ), "Stories in marker response must include 2 story"
+        response_owner_story = next(
             (
-                feature
-                for feature in response.data["features"]
-                if feature["id"] == marker.id
+                story
+                for story in response.data["properties"]["stories"]
+                if "author" in story
+                and "id" in story["author"]
+                and story["author"]["id"] == owner_instance.id
             ),
             None,
         )
-        assert response_simple_marker, "No expected marker in response." """
+        assert response_owner_story, "No expected story in response."
+        assert (
+            "id" in response_owner_story and response_owner_story["id"]
+        ), "Wrong story id field"
+        assert (
+            "text" in response_owner_story and simple_story_data["text"]
+        ), "Wrong story text field"
+        assert (
+            "first_name" in response_owner_story["author"]
+            and response_owner_story["author"]["first_name"]
+            == owner_instance.first_name
+        ), "Wrong story author first_name field"
+        assert (
+            "username" in response_owner_story["author"]
+            and response_owner_story["author"]["username"] == owner_instance.username
+        ), "Wrong story author username field"
+
+        return response.data, response_owner_story
 
     @pytest.mark.django_db()
     def test_marker_instance_unauthorized(
-        self, client, marker_with_author_story, second_story_for_marker_user_author
+        self,
+        client,
+        marker_with_author_story,
+        second_story_for_marker_author_user,
+        user_owner_instance,
+        simple_story_data,
     ):
         """Tests unauthorized request to marker instance.
         Checks that in response is_yours is false."""
 
-        response_marker = self.check_marker_instance(client, marker_with_author_story)
+        response_marker, response_owner_story = self.check_marker_instance(
+            client, marker_with_author_story, user_owner_instance, simple_story_data
+        )
         assert (
             "is_yours" in response_marker["properties"]
             and response_marker["properties"]["is_yours"] is False
@@ -154,13 +184,18 @@ class TestMarker:
         self,
         use_owner_client,
         marker_with_author_story,
-        second_story_for_marker_user_author,
+        second_story_for_marker_author_user,
+        user_owner_instance,
+        simple_story_data,
     ):
         """Tests unauthorized request to marker instance.
         Checks that in response is_yours is false."""
 
-        response_marker = self.check_marker_instance(
-            use_owner_client, marker_with_author_story
+        response_marker, response_owner_story = self.check_marker_instance(
+            use_owner_client,
+            marker_with_author_story,
+            user_owner_instance,
+            simple_story_data,
         )
         assert (
             "is_yours" in response_marker["properties"]

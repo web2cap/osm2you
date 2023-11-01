@@ -25,11 +25,13 @@ def second_story_data_user(user_instance):
 
 
 @pytest.fixture
-def second_story_for_marker_user_author(
-    marker_with_author_data, second_story_data_user
+def second_story_for_marker_author_user(
+    marker_with_author_story, second_story_data_user
 ):
     """Adds a secont story with different author for marker_with_author_data."""
-    return second_story_data_user | {"marker": marker_with_author_data}
+    return Story.objects.create(
+        marker=marker_with_author_story, **second_story_data_user
+    )
 
 
 @pytest.fixture
