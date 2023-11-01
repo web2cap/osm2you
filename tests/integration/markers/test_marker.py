@@ -95,3 +95,74 @@ class TestMarker:
             "is_yours" in response_marker_with_author_story["properties"]
             and response_marker_with_author_story["properties"]["is_yours"] is False
         ), "is_yours must be false in authorized marker list response for this marker"
+
+    # GET INSTANCE
+
+    def check_marker_instance(self, client, marker):
+        """Tests a request against of marker.
+        Checking the fields and field values of marker in the list.
+        Returns the response data of a marker for detailed checking."""
+
+        response = client.get(f"{self.URL_MARKERS}{marker.id}/")
+        required_fields = ["id", "type", "geometry", "properties"]
+        check_response(response, 200, required_fields)
+
+        assert response.data["type"] == "Feature", "Wrong type in response"
+
+        assert (
+            "type" in response.data["geometry"]
+            and response.data["geometry"]["type"] == "Point"
+        ), "Wrong geometry type in marker response"
+        assert "coordinates" in response.data["geometry"] and response.data["geometry"][
+            "coordinates"
+        ] == [
+            marker.location.x,
+            marker.location.y,
+        ], "Wrong geometry coordinates in marker response"
+        assert (
+            "name" in response.data["properties"]
+            and response.data["properties"]["name"] == marker.name
+        ), "Wrong name in marker response"
+
+        return response.data
+        # Storise in marker
+        """response_simple_marker = next(
+            (
+                feature
+                for feature in response.data["features"]
+                if feature["id"] == marker.id
+            ),
+            None,
+        )
+        assert response_simple_marker, "No expected marker in response." """
+
+    @pytest.mark.django_db()
+    def test_marker_instance_unauthorized(
+        self, client, marker_with_author_story, second_story_for_marker_user_author
+    ):
+        """Tests unauthorized request to marker instance.
+        Checks that in response is_yours is false."""
+
+        response_marker = self.check_marker_instance(client, marker_with_author_story)
+        assert (
+            "is_yours" in response_marker["properties"]
+            and response_marker["properties"]["is_yours"] is False
+        ), "is_yours can't be true in unauthorized marker list response"
+
+    @pytest.mark.django_db()
+    def test_marker_instance_authorized(
+        self,
+        use_owner_client,
+        marker_with_author_story,
+        second_story_for_marker_user_author,
+    ):
+        """Tests unauthorized request to marker instance.
+        Checks that in response is_yours is false."""
+
+        response_marker = self.check_marker_instance(
+            use_owner_client, marker_with_author_story
+        )
+        assert (
+            "is_yours" in response_marker["properties"]
+            and response_marker["properties"]["is_yours"] is True
+        ), "is_yours must be true in authorized marker response for this marker"

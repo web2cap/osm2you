@@ -1,5 +1,4 @@
 import pytest
-
 from api.viewsets import StoryViewSet
 from stories.models import Story
 
@@ -15,6 +14,22 @@ def simple_story_data(user_owner_instance):
 @pytest.fixture
 def story_with_marker_data(simple_story_data, simple_marker):
     return simple_story_data | {"marker": simple_marker}
+
+
+@pytest.fixture
+def second_story_data_user(user_instance):
+    return {
+        "text": "Second story simle text",
+        "author": user_instance,
+    }
+
+
+@pytest.fixture
+def second_story_for_marker_user_author(
+    marker_with_author_data, second_story_data_user
+):
+    """Adds a secont story with different author for marker_with_author_data."""
+    return second_story_data_user | {"marker": marker_with_author_data}
 
 
 @pytest.fixture
