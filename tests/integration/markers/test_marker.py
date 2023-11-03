@@ -422,3 +422,21 @@ class TestMarker:
         check_response(response, 204)
 
     # TODO: PUT
+    @pytest.mark.django_db()
+    def test_marker_put_unauthorized(
+        self, client, simple_marker, simple_marker_updated_json
+    ):
+        url = f"{self.URL_MARKERS}{simple_marker.id}/"
+        response = client.put(url, data=simple_marker_updated_json, format="json")
+        check_response(response, 401, ["detail"])
+
+    @pytest.mark.django_db()
+    def test_marker_put_owner(
+        self, user_owner_client, marker_with_author_story, simple_marker_updated_json
+    ):
+        url = f"{self.URL_MARKERS}{marker_with_author_story.id}/"
+        response = user_owner_client.put(
+            url, data=simple_marker_updated_json, format="json"
+        )
+
+        check_response(response, 403, ["detail"])
