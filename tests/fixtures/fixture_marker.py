@@ -10,12 +10,25 @@ def simple_marker_data():
 
 
 @pytest.fixture
+def simple_marker_updated_data():
+    return {
+        "name": "Updated Simple marker",
+        "location": {"type": "Point", "coordinates": [10, 20]},
+    }
+
+
+@pytest.fixture
 def marker_with_author_data(user_owner_instance):
     return {
         "name": "Marker with author",
         "location": Point(3, 4),
         "author": user_owner_instance,
     }
+
+
+@pytest.fixture
+def simple_marker_updated_data_same_location():
+    return {"location": {"type": "Point", "coordinates": [3, 4]}}
 
 
 @pytest.fixture

@@ -232,6 +232,96 @@ class TestMarker:
             and response_other_user_story["is_yours"] is False
         ), "is_yours for other user story must be false in marker instance response"
 
-    # TODO: PATCH
+    # PATCH
+    @pytest.mark.django_db()
+    def test_marker_patch_unauthorized(
+        self, client, simple_marker, simple_marker_updated_data
+    ):
+        url = f"{self.URL_MARKERS}{simple_marker.id}/"
+        response = client.put(url, data=simple_marker_updated_data)
+        check_response(response, 401, ["detail"])
+
+    @pytest.mark.django_db()
+    @pytest.mark.parametrize(
+        "blank_field",
+        ["name", "location"],
+    )
+    def test_marker_patch_blank_field(
+        self,
+        user_owner_client,
+        marker_with_author_story,
+        simple_marker_updated_data,
+        blank_field,
+    ):
+        url = f"{self.URL_MARKERS}{marker_with_author_story.id}/"
+        simple_marker_updated_data[blank_field] = None
+        response = user_owner_client.patch(
+            url, data=simple_marker_updated_data, format="json"
+        )
+        check_response(response, 400, [blank_field])
+
+    @pytest.mark.django_db()
+    def test_marker_patch_location_exist(
+        self,
+        user_owner_client,
+        simple_marker,
+        marker_with_author_story,
+        simple_marker_updated_data_same_location,
+    ):
+        url = f"{self.URL_MARKERS}{marker_with_author_story.id}/"
+        response = user_owner_client.patch(
+            url, data=simple_marker_updated_data_same_location, format="json"
+        )
+        check_response(response, 400, ["coordinates"])
+
+    @pytest.mark.django_db()
+    def test_marker_patch_valid_new_name(
+        self, user_owner_client, marker_with_author_story, simple_marker_updated_data
+    ):
+        url = f"{self.URL_MARKERS}{marker_with_author_story.id}/"
+        response = user_owner_client.patch(
+            url, data={"name": simple_marker_updated_data["name"]}
+        )
+
+        required_fields = [
+            "id",
+            "type",
+            "geometry",
+            "properties",
+        ]
+        check_response(response, 200, required_fields)
+        assert (
+            response.data["properties"]["name"] == simple_marker_updated_data["name"]
+        ), "Name in response data doesn't match patched name"
+
+    @pytest.mark.django_db()
+    def test_marker_patch_valid_new_location(
+        self, user_owner_client, marker_with_author_story, simple_marker_updated_data
+    ):
+        url = f"{self.URL_MARKERS}{marker_with_author_story.id}/"
+        response = user_owner_client.patch(
+            url,
+            data={"location": simple_marker_updated_data["location"]},
+            format="json",
+        )
+
+        required_fields = [
+            "id",
+            "type",
+            "geometry",
+            "properties",
+        ]
+        check_response(response, 200, required_fields)
+        assert (
+            "type" in response.data["geometry"]
+            and "coordinates" in response.data["geometry"]
+        ), "Wrong response location format"
+
+        assert (
+            response.data["geometry"]["coordinates"]
+            == simple_marker_updated_data["location"]["coordinates"]
+        ), "Updated coordinates in response data doesn't match patched location"
+
+    # TODO: CERATE
     # TODO: DELETE
     # TODO: PUT
