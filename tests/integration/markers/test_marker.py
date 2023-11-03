@@ -232,13 +232,84 @@ class TestMarker:
             and response_other_user_story["is_yours"] is False
         ), "is_yours for other user story must be false in marker instance response"
 
+    # CREATE
+    @pytest.mark.django_db()
+    def test_marker_create_unauthorized(self, client, simple_marker_json):
+        response = client.post(self.URL_MARKERS, data=simple_marker_json, format="json")
+        check_response(response, 401, ["detail"])
+
+    @pytest.mark.django_db()
+    @pytest.mark.parametrize(
+        "blank_field",
+        ["name", "location"],
+    )
+    def test_marker_create_blank_field(
+        self,
+        user_owner_client,
+        simple_marker_json,
+        blank_field,
+    ):
+        simple_marker_json[blank_field] = None
+        response = user_owner_client.post(
+            self.URL_MARKERS, data=simple_marker_json, format="json"
+        )
+        check_response(response, 400, [blank_field])
+
+    @pytest.mark.django_db()
+    def test_marker_create_location_exist(
+        self,
+        user_owner_client,
+        simple_marker,
+        simple_marker_json,
+    ):
+        response = user_owner_client.post(
+            self.URL_MARKERS,
+            data=simple_marker_json,
+            format="json",
+        )
+        check_response(response, 400, ["coordinates"])
+
+    @pytest.mark.django_db()
+    def test_marker_create_valid(self, user_owner_client, simple_marker_json):
+        response = user_owner_client.post(
+            self.URL_MARKERS, data=simple_marker_json, format="json"
+        )
+
+        required_fields = [
+            "id",
+            "type",
+            "geometry",
+            "properties",
+        ]
+        check_response(response, 201, required_fields)
+        assert (
+            "name" in response.data["properties"]
+            and response.data["properties"]["name"] == simple_marker_json["name"]
+        ), "Name in response data doesn't match json name"
+        assert (
+            "is_yours" in response.data["properties"]
+            and response.data["properties"]["is_yours"] is True
+        ), "is_yours must be true for tour marker"
+        assert (
+            "type" in response.data["geometry"]
+            and response.data["geometry"]["type"] == "Point"
+        ), "Wrong geometry type in response"
+        assert (
+            "coordinates" in response.data["geometry"]
+            and response.data["geometry"]["coordinates"]
+            == simple_marker_json["location"]["coordinates"]
+        ), "Geometry location in response doest't match jsons coordinates"
+        assert (
+            "stories" not in response.data
+        ), "Response shusn't include stories for new marker"
+
     # PATCH
     @pytest.mark.django_db()
     def test_marker_patch_unauthorized(
-        self, client, simple_marker, simple_marker_updated_data
+        self, client, simple_marker, simple_marker_updated_json
     ):
         url = f"{self.URL_MARKERS}{simple_marker.id}/"
-        response = client.put(url, data=simple_marker_updated_data)
+        response = client.patch(url, data=simple_marker_updated_json, format="json")
         check_response(response, 401, ["detail"])
 
     @pytest.mark.django_db()
@@ -250,13 +321,13 @@ class TestMarker:
         self,
         user_owner_client,
         marker_with_author_story,
-        simple_marker_updated_data,
+        simple_marker_updated_json,
         blank_field,
     ):
         url = f"{self.URL_MARKERS}{marker_with_author_story.id}/"
-        simple_marker_updated_data[blank_field] = None
+        simple_marker_updated_json[blank_field] = None
         response = user_owner_client.patch(
-            url, data=simple_marker_updated_data, format="json"
+            url, data=simple_marker_updated_json, format="json"
         )
         check_response(response, 400, [blank_field])
 
@@ -266,21 +337,21 @@ class TestMarker:
         user_owner_client,
         simple_marker,
         marker_with_author_story,
-        simple_marker_updated_data_same_location,
+        simple_marker_updated_json_same_location,
     ):
         url = f"{self.URL_MARKERS}{marker_with_author_story.id}/"
         response = user_owner_client.patch(
-            url, data=simple_marker_updated_data_same_location, format="json"
+            url, data=simple_marker_updated_json_same_location, format="json"
         )
         check_response(response, 400, ["coordinates"])
 
     @pytest.mark.django_db()
     def test_marker_patch_valid_new_name(
-        self, user_owner_client, marker_with_author_story, simple_marker_updated_data
+        self, user_owner_client, marker_with_author_story, simple_marker_updated_json
     ):
         url = f"{self.URL_MARKERS}{marker_with_author_story.id}/"
         response = user_owner_client.patch(
-            url, data={"name": simple_marker_updated_data["name"]}
+            url, data={"name": simple_marker_updated_json["name"]}
         )
 
         required_fields = [
@@ -291,17 +362,17 @@ class TestMarker:
         ]
         check_response(response, 200, required_fields)
         assert (
-            response.data["properties"]["name"] == simple_marker_updated_data["name"]
+            response.data["properties"]["name"] == simple_marker_updated_json["name"]
         ), "Name in response data doesn't match patched name"
 
     @pytest.mark.django_db()
     def test_marker_patch_valid_new_location(
-        self, user_owner_client, marker_with_author_story, simple_marker_updated_data
+        self, user_owner_client, marker_with_author_story, simple_marker_updated_json
     ):
         url = f"{self.URL_MARKERS}{marker_with_author_story.id}/"
         response = user_owner_client.patch(
             url,
-            data={"location": simple_marker_updated_data["location"]},
+            data={"location": simple_marker_updated_json["location"]},
             format="json",
         )
 
@@ -319,9 +390,8 @@ class TestMarker:
 
         assert (
             response.data["geometry"]["coordinates"]
-            == simple_marker_updated_data["location"]["coordinates"]
+            == simple_marker_updated_json["location"]["coordinates"]
         ), "Updated coordinates in response data doesn't match patched location"
 
-    # TODO: CERATE
     # TODO: DELETE
     # TODO: PUT

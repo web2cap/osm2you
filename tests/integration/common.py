@@ -21,5 +21,5 @@ def check_response(response, expected_code, required_fields):
     for field in required_fields:
         assert field in response_json.keys() and response_json[field], (
             f"Check that request `{url}` with valid data"
-            f" in the response there is a filled {field}."
+            f" in the response there is a field {field}."
         )
