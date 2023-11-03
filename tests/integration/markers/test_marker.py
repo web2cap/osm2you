@@ -8,7 +8,7 @@ class TestMarker:
 
     # GET LIST
     def check_marker_list(self, client, marker):
-        """Tests a request against a list of markers.
+        """Tests a request to markers list.
         Checks the number of markers in the list.
         Checking the fields and field values of one marker in the list.
         Returns the response element of a single marker for detailed checking."""
@@ -71,7 +71,7 @@ class TestMarker:
 
     @pytest.mark.django_db()
     def test_marker_list_authorized(
-        self, use_owner_client, user_client, simple_marker, marker_with_author_story
+        self, user_owner_client, user_client, simple_marker, marker_with_author_story
     ):
         """Tests authorized request to marker list.
         Checks that in response is_yours eqal true for marker,
@@ -81,7 +81,7 @@ class TestMarker:
         """
 
         response_marker_with_author_story = self.check_marker_list(
-            use_owner_client, marker_with_author_story
+            user_owner_client, marker_with_author_story
         )
         assert (
             "is_yours" in response_marker_with_author_story["properties"]
@@ -99,7 +99,7 @@ class TestMarker:
     # GET INSTANCE
 
     def check_marker_instance(self, client, marker, owner_instance, simple_story_data):
-        """Tests a request against of marker.
+        """Tests a request to markers instance.
         Checking the fields and field values of marker in the list.
         Returns the response data of a marker for detailed checking and owner story response data
         """
@@ -169,7 +169,8 @@ class TestMarker:
         simple_story_data,
     ):
         """Tests unauthorized request to marker instance.
-        Checks that in response is_yours is false."""
+        Checks that in response is_yours for marker is false.
+        Checks that in response is_yours fro story is false."""
 
         response_marker, response_owner_story = self.check_marker_instance(
             client, marker_with_author_story, user_owner_instance, simple_story_data
@@ -177,22 +178,29 @@ class TestMarker:
         assert (
             "is_yours" in response_marker["properties"]
             and response_marker["properties"]["is_yours"] is False
-        ), "is_yours can't be true in unauthorized marker list response"
+        ), "is_yours can't be true in unauthorized marker instance response"
+
+        assert (
+            "is_yours" in response_owner_story
+            and response_owner_story["is_yours"] is False
+        ), "is_yours for story can't be true in unauthorized marker instance response"
 
     @pytest.mark.django_db()
     def test_marker_instance_authorized(
         self,
-        use_owner_client,
+        user_owner_client,
         marker_with_author_story,
         second_story_for_marker_author_user,
         user_owner_instance,
         simple_story_data,
     ):
         """Tests unauthorized request to marker instance.
-        Checks that in response is_yours is false."""
+        Checks that in response is_yours for marker is true.
+        Checks that in response is_yours for owner story is true.
+        Checks that in response is_yours for other user story is false."""
 
         response_marker, response_owner_story = self.check_marker_instance(
-            use_owner_client,
+            user_owner_client,
             marker_with_author_story,
             user_owner_instance,
             simple_story_data,
@@ -201,3 +209,29 @@ class TestMarker:
             "is_yours" in response_marker["properties"]
             and response_marker["properties"]["is_yours"] is True
         ), "is_yours must be true in authorized marker response for this marker"
+
+        assert (
+            "is_yours" in response_owner_story
+            and response_owner_story["is_yours"] is True
+        ), "is_yours for story with author owner must be true it authorised response"
+
+        # is_yours for other user story
+        response_other_user_story = next(
+            (
+                story
+                for story in response_marker["properties"]["stories"]
+                if story["id"] == second_story_for_marker_author_user.id
+            ),
+            None,
+        )
+        assert (
+            response_other_user_story
+        ), "No orher user story in marker instance response"
+        assert (
+            "is_yours" in response_owner_story
+            and response_other_user_story["is_yours"] is False
+        ), "is_yours for other user story must be false in marker instance response"
+
+    # TODO: PATCH
+    # TODO: DELETE
+    # TODO: PUT

@@ -211,7 +211,7 @@ def token_user_owner(user_owner_instance):
 
 
 @pytest.fixture
-def use_owner_client(token_user_owner):
+def user_owner_client(token_user_owner):
     client = APIClient()
     client.credentials(HTTP_AUTHORIZATION=f'Bearer {token_user_owner["access"]}')
     return client
