@@ -394,4 +394,31 @@ class TestMarker:
         ), "Updated coordinates in response data doesn't match patched location"
 
     # TODO: DELETE
+    @pytest.mark.django_db()
+    def test_marker_delete_unauthorized(self, client, simple_marker):
+        url = f"{self.URL_MARKERS}{simple_marker.id}/"
+        response = client.delete(url)
+        check_response(response, 401, ["detail"])
+
+    @pytest.mark.django_db()
+    def test_marker_delete_not_owner(self, user_client, marker_with_author_story):
+        url = f"{self.URL_MARKERS}{marker_with_author_story.id}/"
+        response = user_client.delete(url)
+
+        check_response(response, 403, ["detail"])
+
+    @pytest.mark.django_db()
+    def test_marker_delete_empty_owner(self, user_owner_client, simple_marker):
+        url = f"{self.URL_MARKERS}{simple_marker.id}/"
+        response = user_owner_client.delete(url)
+
+        check_response(response, 403, ["detail"])
+
+    @pytest.mark.django_db()
+    def test_marker_delete_owner(self, user_owner_client, marker_with_author_story):
+        url = f"{self.URL_MARKERS}{marker_with_author_story.id}/"
+        response = user_owner_client.delete(url)
+
+        check_response(response, 204)
+
     # TODO: PUT

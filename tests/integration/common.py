@@ -1,4 +1,4 @@
-def check_response(response, expected_code, required_fields):
+def check_response(response, expected_code, required_fields=[]):
     """Check that response hasn't 404 code, that response has expected code.
     Check that response data have required fields."""
 
@@ -17,9 +17,10 @@ def check_response(response, expected_code, required_fields):
         f"Now code is {response.status_code}. Response data: {response.data}"
     )
 
-    response_json = response.json()
-    for field in required_fields:
-        assert field in response_json.keys() and response_json[field], (
-            f"Check that request `{url}` with valid data"
-            f" in the response there is a field {field}."
-        )
+    if response.data:
+        response_json = response.json()
+        for field in required_fields:
+            assert field in response_json.keys() and response_json[field], (
+                f"Check that request `{url}` with valid data"
+                f" in the response there is a field {field}."
+            )
