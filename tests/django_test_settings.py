@@ -1,5 +1,10 @@
+import os
+from pathlib import Path
+
 from mymap.settings import *
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+LOGGING_FILE_PATH = os.path.join(BASE_DIR, "log/pytest.log")
 LOGGING_LOGGERS = {
     "django": {
         "handlers": ["console", "file"],

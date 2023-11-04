@@ -5,7 +5,7 @@ from django.http import HttpRequest
 from rest_framework.request import Request
 from rest_framework.test import APIClient
 from rest_framework.viewsets import ViewSet
-from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken
 
 User = get_user_model()
 
