@@ -3,18 +3,18 @@ repos:
     rev: v0.1.3
     hooks:
       - id: ruff
-        name: Run Ruff on backend
+        name: backend ruff
         args: [--exit-non-zero-on-fix]
         files: ^backend/
       - id: ruff
-        name: Run Ruff on tests
-        args: [--exit-non-zero-on-fix]
+        name: tests ruff
+        args: [--exit-non-zero-on-fix, --config=ruff.test.toml]
         files: ^tests/
       - id: ruff-format
-        name: Run Ruff format on backend
+        name: backend ruff check format
         args: [--check]
         files: ^backend/
       - id: ruff-format
-        name: Run Ruff format on tests
+        name: tests ruff check format
         args: [--check]
         files: ^tests/
