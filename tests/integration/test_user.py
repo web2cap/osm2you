@@ -1,7 +1,7 @@
 import pytest
 from users.models import User
 
-from ..common import check_response
+from .common import check_response
 
 
 class TestUser:

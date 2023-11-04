@@ -1,6 +1,6 @@
 import pytest
 
-from ..common import check_response
+from .common import check_response
 
 
 class TestJwt:
