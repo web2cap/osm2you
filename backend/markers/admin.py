@@ -4,7 +4,7 @@ from .models import Marker
 
 
 @admin.register(Marker)
-class MarkerAdmin(admin.OSMGeoAdmin):
+class MarkerAdmin(admin.GISModelAdmin):
     """Marker admin."""
 
     list_display = ("name", "location", "author", "add_date")

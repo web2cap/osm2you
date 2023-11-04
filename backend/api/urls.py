@@ -1,10 +1,10 @@
 from django.urls import include, path
+from drf_yasg.views import get_schema_view
 from rest_framework import routers
 from rest_framework.permissions import AllowAny
-from drf_yasg.views import get_schema_view
 
-from .viewsets import MarkerViewSet, StoryViewSet
 from .api_info import api_info
+from .viewsets import MarkerViewSet, StoryViewSet
 
 app_name = "api"
 
@@ -25,11 +25,11 @@ urlpatterns = [
     path(
         "docs/",
         schema_view.with_ui("swagger", cache_timeout=0),
-        name="api-docs",
+        name="docs",
     ),
     path(
         "redoc/",
         schema_view.with_ui("redoc", cache_timeout=0),
-        name="api-redoc",
+        name="redoc",
     ),
 ]

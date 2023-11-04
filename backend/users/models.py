@@ -7,7 +7,6 @@ from .managers import CustomUserManager
 
 
 class User(AbstractUser):
-
     email = models.EmailField(_("email address"), unique=True)
 
     username_validator = UnicodeUsernameValidator()
@@ -52,13 +51,12 @@ class User(AbstractUser):
         "Add default username if blank."
 
         super(User, self).save(*args, **kwargs)
-        save_user = User.objects.get(username=self.username)
-        if not save_user.username:
+        if not self.username:
             for i in range(123, 300000):
-                username = "hunter" + str(i) + str(save_user.pk)
+                username = "hunter" + str(i) + str(self.pk)
                 if not User.objects.filter(username=username).exists():
-                    save_user.username = username
-                    save_user.save()
+                    self.username = username
+                    self.save()
                     break
 
     def __str__(self):

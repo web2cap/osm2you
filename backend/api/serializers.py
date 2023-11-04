@@ -1,30 +1,10 @@
+from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from djoser.serializers import UserCreateSerializer, UserSerializer
 
 from markers.models import Marker
-from users.models import User
 from stories.models import Story
-
-
-class CustomUserCreateSerializer(UserCreateSerializer):
-    class Meta(UserCreateSerializer.Meta):
-        model = User
-        fields = ("email", "password", "first_name", "username")
-
-
-class CustomUserSerializer(UserSerializer):
-    class Meta(UserSerializer.Meta):
-        model = User
-        fields = (
-            "email",
-            "first_name",
-            "username",
-            "bio",
-            "instagram",
-            "telegram",
-            "facebook",
-        )
+from users.models import User
 
 
 class CustomUserShortSerializer(UserCreateSerializer):
