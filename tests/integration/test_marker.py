@@ -170,7 +170,7 @@ class TestMarker:
     ):
         """Tests unauthorized request to marker instance.
         Checks that in response is_yours for marker is false.
-        Checks that in response is_yours fro story is false."""
+        Checks that in response is_yours for story is false."""
 
         response_marker, response_owner_story = self.check_marker_instance(
             client, marker_with_author_story, user_owner_instance, simple_story_data
@@ -289,7 +289,7 @@ class TestMarker:
         assert (
             "is_yours" in response.data["properties"]
             and response.data["properties"]["is_yours"] is True
-        ), "is_yours must be true for tour marker"
+        ), "is_yours must be true for your marker"
         assert (
             "type" in response.data["geometry"]
             and response.data["geometry"]["type"] == "Point"
@@ -393,7 +393,7 @@ class TestMarker:
             == simple_marker_updated_json["location"]["coordinates"]
         ), "Updated coordinates in response data doesn't match patched location"
 
-    # TODO: DELETE
+    # DELETE
     @pytest.mark.django_db()
     def test_marker_delete_unauthorized(self, client, simple_marker):
         url = f"{self.URL_MARKERS}{simple_marker.id}/"
@@ -421,7 +421,7 @@ class TestMarker:
 
         check_response(response, 204)
 
-    # TODO: PUT
+    # PUT
     @pytest.mark.django_db()
     def test_marker_put_unauthorized(
         self, client, simple_marker, simple_marker_updated_json
