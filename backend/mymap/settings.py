@@ -1,14 +1,12 @@
 import os
-import dotenv
 from datetime import timedelta
 from pathlib import Path
 
+import dotenv
 from corsheaders.defaults import default_headers
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-dotenv.load_dotenv(
-    os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
-)
+dotenv.load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
 SECRET_KEY = os.getenv(
     "ST_SECRET_KEY",
@@ -20,7 +18,6 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 
-CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "access-control-allow-origin",
 ]
@@ -34,15 +31,12 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "food.w2c.net.eu.org",
+    "osm.w2c.net.eu.org",
 ]
 
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
-
-
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -138,21 +132,25 @@ REST_FRAMEWORK = {
 
 
 DJOSER = {
-    # "ACTIVATION_URL": "#/activate/{uid}/{token}",
-    # "SEND_ACTIVATION_EMAIL": True,
     "SERIALIZERS": {
         "user_create": "users.serializers.UserCreateCustomSerializer",
         "user": "users.serializers.UserCustomSerializer",
         "current_user": "users.serializers.UserCustomSerializer",
     },
     "PERMISSIONS": {
+        "activation": ["api.permissions.DenyAll"],
+        "set_password": ["djoser.permissions.CurrentUserOrAdmin"],
+        "username_reset": ["api.permissions.DenyAll"],
+        "username_reset_confirm": ["api.permissions.DenyAll"],
+        "set_username": ["api.permissions.DenyAll"],
         "user_create": ["rest_framework.permissions.AllowAny"],
-        "user_delete": ["core.permissions.DenyAll"],
-        "user": ["core.permissions.CreateOrCurrentUser"],
-        "user_list": ["core.permissions.DenyAll"],
+        "user_delete": ["api.permissions.DenyAll"],
+        "user": ["api.permissions.CurrentUserGetPut"],
+        "user_list": ["api.permissions.DenyAll"],
         "token_create": ["rest_framework.permissions.AllowAny"],
         "token_destroy": ["rest_framework.permissions.IsAuthenticated"],
     },
+    "HIDE_USERS": True,
 }
 
 
@@ -189,7 +187,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
-LOGGING_FILE_PATH = "log/django.log"
+LOGGING_FILE_PATH = os.path.join(BASE_DIR, "log/django.log")
 LOGGING_LOGGERS = {
     "django": {
         "handlers": ["console", "file"],
@@ -200,7 +198,7 @@ LOGGING_LOGGERS = {
         "level": "DEBUG",
     },
 }
-if DEBUG == True:
+if DEBUG is True:
     LOGGING_LOGGERS["django.db.backends"] = {
         "handlers": ["console"],
         "level": "DEBUG",

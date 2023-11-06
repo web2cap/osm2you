@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('stories', '0002_remove_story_image'),
+        ("stories", "0002_remove_story_image"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='story',
-            name='created',
-            field=models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Creation date.'),
+            model_name="story",
+            name="created",
+            field=models.DateTimeField(
+                auto_now_add=True, db_index=True, verbose_name="Creation date."
+            ),
         ),
     ]

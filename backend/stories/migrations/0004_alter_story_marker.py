@@ -5,16 +5,21 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('markers', '0003_marker_add_date'),
-        ('stories', '0003_alter_story_created'),
+        ("markers", "0003_marker_add_date"),
+        ("stories", "0003_alter_story_created"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='story',
-            name='marker',
-            field=models.ForeignKey(help_text='Choice marker', on_delete=django.db.models.deletion.CASCADE, related_name='stories', to='markers.marker', verbose_name='Marker'),
+            model_name="story",
+            name="marker",
+            field=models.ForeignKey(
+                help_text="Choice marker",
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="stories",
+                to="markers.marker",
+                verbose_name="Marker",
+            ),
         ),
     ]

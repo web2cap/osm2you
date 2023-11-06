@@ -1,18 +1,27 @@
 from core.models import CreatedModel
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Q, TextField
+from django.db.models.functions import Length
 from markers.models import Marker
+
+TextField.register_lookup(Length, "length")
+
 
 User = get_user_model()
 
 
 class Story(CreatedModel):
-    text = models.TextField(verbose_name="Text", help_text="Write you story")
+    text = models.TextField(
+        verbose_name="Text", help_text="Write you story", null=False, blank=False
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="stories",
         verbose_name="Author",
+        null=False,
+        blank=False,
     )
     marker = models.ForeignKey(
         Marker,
@@ -28,6 +37,12 @@ class Story(CreatedModel):
         ordering = ("-created",)
         verbose_name = "Story"
         verbose_name_plural = "Stories"
+        constraints = [
+            models.CheckConstraint(
+                check=Q(text__length__gte=10),
+                name="text_min_length",
+            )
+        ]
 
     def __str__(self) -> str:
         return self.text[:15]

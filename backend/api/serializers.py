@@ -1,10 +1,10 @@
+from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from djoser.serializers import UserCreateSerializer, UserSerializer
 
 from markers.models import Marker
-from users.models import User
 from stories.models import Story
+<<<<<<< HEAD
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -29,6 +29,9 @@ class CustomUserSerializer(UserSerializer):
             "telegram",
             "facebook",
         )
+=======
+from users.models import User
+>>>>>>> main
 
 
 class CustomUserShortSerializer(UserCreateSerializer):

@@ -4,19 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0004_user_bio_user_facebook_user_instagram_user_telegtam'),
+        ("users", "0004_user_bio_user_facebook_user_instagram_user_telegtam"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='user',
-            name='telegtam',
+            model_name="user",
+            name="telegtam",
         ),
         migrations.AddField(
-            model_name='user',
-            name='telegram',
-            field=models.CharField(blank=True, default=None, max_length=64, null=True, verbose_name='telegram'),
+            model_name="user",
+            name="telegram",
+            field=models.CharField(
+                blank=True,
+                default=None,
+                max_length=64,
+                null=True,
+                verbose_name="telegram",
+            ),
         ),
     ]
