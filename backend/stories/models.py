@@ -7,12 +7,16 @@ User = get_user_model()
 
 
 class Story(CreatedModel):
-    text = models.TextField(verbose_name="Text", help_text="Write you story")
+    text = models.TextField(
+        verbose_name="Text", help_text="Write you story", null=False, blank=False
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="stories",
         verbose_name="Author",
+        null=False,
+        blank=False,
     )
     marker = models.ForeignKey(
         Marker,
