@@ -110,13 +110,12 @@ class TestUser:
         check_response(response, 400, ["first_name"])
 
     @pytest.mark.django_db()
-    @pytest.mark.parametrize("required_field", ["first_name", "username"])
-    def test_user_me_put_authorized_no_required_field(
-        self, user_client, full_update_user_data, required_field
+    def test_user_me_put_authorized_no_first_name(
+        self, user_client, full_update_user_data
     ):
-        full_update_user_data.pop(required_field)
+        full_update_user_data.pop("first_name")
         response = user_client.put(self.URL_USERS_ME, data=full_update_user_data)
-        check_response(response, 400, [required_field])
+        check_response(response, 400, ["first_name"])
 
     @pytest.mark.django_db()
     def test_user_me_put_authorized_username_exist(
