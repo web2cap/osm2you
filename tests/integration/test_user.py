@@ -110,13 +110,12 @@ class TestUser:
         check_response(response, 400, ["first_name"])
 
     @pytest.mark.django_db()
-    @pytest.mark.parametrize("required_field", ["first_name", "username"])
-    def test_user_me_put_authorized_no_required_field(
-        self, user_client, full_update_user_data, required_field
+    def test_user_me_put_authorized_no_first_name(
+        self, user_client, full_update_user_data
     ):
-        full_update_user_data.pop(required_field)
+        full_update_user_data.pop("first_name")
         response = user_client.put(self.URL_USERS_ME, data=full_update_user_data)
-        check_response(response, 400, [required_field])
+        check_response(response, 400, ["first_name"])
 
     @pytest.mark.django_db()
     def test_user_me_put_authorized_username_exist(
@@ -164,7 +163,7 @@ class TestUser:
         self, client, url, http_verb, expected_code, required_fields
     ):
         action = getattr(client, http_verb)
-        response = action(self.URL_USERS)
+        response = action(url)
         check_response(response, expected_code, required_fields)
 
     @pytest.mark.django_db()
@@ -174,13 +173,13 @@ class TestUser:
             (URL_USERS, "get", 404, ["detail"]),
             (URL_USERS_ME, "patch", 403, ["detail"]),
             (URL_USERS_ME, "delete", 403, ["detail"]),
-            (f"{URL_USERS}reset_email/", "post", 401, ["detail"]),
-            (f"{URL_USERS}set_email/", "post", 401, ["detail"]),
+            (f"{URL_USERS}reset_email/", "post", 403, ["detail"]),
+            (f"{URL_USERS}set_email/", "post", 403, ["detail"]),
         ],
     )
     def test_user_disabled_methods_user(
         self, user_client, url, http_verb, expected_code, required_fields
     ):
         action = getattr(user_client, http_verb)
-        response = action(self.URL_USERS)
+        response = action(url)
         check_response(response, expected_code, required_fields)

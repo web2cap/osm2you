@@ -1,7 +1,3 @@
-import logging
-
-logger = logging.getLogger(__name__)
-
 from rest_framework import permissions
 
 
@@ -16,7 +12,6 @@ class CurrentUserGetPut(permissions.BasePermission):
         return request.user.is_authenticated and request.method in allow_methods
 
     def has_object_permission(self, request, view, obj):
-        print(f"***********obj.pk == request.user.pk {obj.pk} == {request.user.pk}")
         return obj.pk == request.user.pk
 
 
