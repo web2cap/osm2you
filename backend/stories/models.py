@@ -1,7 +1,12 @@
 from core.models import CreatedModel
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Q, TextField
+from django.db.models.functions import Length
 from markers.models import Marker
+
+TextField.register_lookup(Length, "length")
+
 
 User = get_user_model()
 
@@ -32,6 +37,12 @@ class Story(CreatedModel):
         ordering = ("-created",)
         verbose_name = "Story"
         verbose_name_plural = "Stories"
+        constraints = [
+            models.CheckConstraint(
+                check=Q(text__length__gte=10),
+                name="text_min_length",
+            )
+        ]
 
     def __str__(self) -> str:
         return self.text[:15]
