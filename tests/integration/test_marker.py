@@ -267,7 +267,7 @@ class TestMarker:
             data=simple_marker_json,
             format="json",
         )
-        check_response(response, 400, ["coordinates"])
+        check_response(response, 400, ["location"])
 
     @pytest.mark.django_db()
     def test_marker_create_valid(self, user_owner_client, simple_marker_json):
@@ -343,7 +343,7 @@ class TestMarker:
         response = user_owner_client.patch(
             url, data=simple_marker_updated_json_same_location, format="json"
         )
-        check_response(response, 400, ["coordinates"])
+        check_response(response, 400, ["location"])
 
     @pytest.mark.django_db()
     def test_marker_patch_valid_new_name(

@@ -6,7 +6,7 @@ class Marker(models.Model):
     """A marker with name and location."""
 
     name = models.CharField(max_length=255, null=False, blank=False)
-    location = models.PointField(null=False, blank=False)
+    location = models.PointField(null=False, blank=False, unique=True)
 
     author = models.ForeignKey(
         User,
