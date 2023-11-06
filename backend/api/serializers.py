@@ -17,9 +17,18 @@ class CustomUserShortSerializer(UserCreateSerializer):
 class StorySerializer(serializers.ModelSerializer):
     """Stories serializer."""
 
+    def validate_text(self, value):
+        value = value.strip()
+        if len(value) < 10:
+            raise serializers.ValidationError(
+                "Text must be at least 10 characters long."
+            )
+        return value
+
     class Meta:
         model = Story
         fields = ("id", "text", "author", "marker")
+        read_only_fields = ("id", "author")
 
 
 class StorySerializerEdit(serializers.ModelSerializer):

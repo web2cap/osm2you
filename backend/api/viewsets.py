@@ -58,3 +58,6 @@ class StoryViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         return self.serializers.get(self.action, self.serializers["default"])
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
