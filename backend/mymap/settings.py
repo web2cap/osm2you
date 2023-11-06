@@ -132,14 +132,17 @@ REST_FRAMEWORK = {
 
 
 DJOSER = {
-    # "ACTIVATION_URL": "#/activate/{uid}/{token}",
-    # "SEND_ACTIVATION_EMAIL": True,
     "SERIALIZERS": {
         "user_create": "users.serializers.UserCreateCustomSerializer",
         "user": "users.serializers.UserCustomSerializer",
         "current_user": "users.serializers.UserCustomSerializer",
     },
     "PERMISSIONS": {
+        "activation": ["api.permissions.DenyAll"],
+        "set_password": ["djoser.permissions.CurrentUserOrAdmin"],
+        "username_reset": ["api.permissions.DenyAll"],
+        "username_reset_confirm": ["api.permissions.DenyAll"],
+        "set_username": ["api.permissions.DenyAll"],
         "user_create": ["rest_framework.permissions.AllowAny"],
         "user_delete": ["api.permissions.DenyAll"],
         "user": ["api.permissions.CurrentUserGetPut"],
