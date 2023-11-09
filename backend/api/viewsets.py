@@ -1,15 +1,17 @@
 from django.db.models import Prefetch
+from markers.models import Marker
 from rest_framework import viewsets
 from rest_framework_gis import filters
-
-from markers.models import Marker
 from stories.models import Story
+
+from api.permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly
 from api.serializers import (
-    MarkerSerializer,
     MarkerInstanceSerializer,
+    MarkerSerializer,
     StorySerializer,
+    StorySerializerDisplay,
+    StorySerializerEdit,
 )
-from api.permissions import AuthorAdminOrReadOnly, AuthorAdminOrInstanceOnly
 
 
 class MarkerViewSet(viewsets.ModelViewSet):
@@ -47,3 +49,15 @@ class StoryViewSet(viewsets.ModelViewSet):
     queryset = Story.objects.select_related("author").all()
     serializer_class = StorySerializer
     permission_classes = (AuthorAdminOrInstanceOnly,)
+    serializers = {
+        "list": StorySerializerDisplay,
+        "retrieve": StorySerializerDisplay,
+        "partial_update": StorySerializerEdit,
+        "default": StorySerializer,
+    }
+
+    def get_serializer_class(self):
+        return self.serializers.get(self.action, self.serializers["default"])
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)

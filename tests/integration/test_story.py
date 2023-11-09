@@ -93,21 +93,16 @@ class TestStory:
         check_response(response, 401, ["detail"])
 
     @pytest.mark.django_db()
-    @pytest.mark.parametrize(
-        "blank_field",
-        ["text", "author"],
-    )
-    def test_story_create_blank_field(
+    def test_story_create_blank_text(
         self,
         user_owner_client,
         simple_story_json,
-        blank_field,
     ):
-        simple_story_json[blank_field] = None
+        simple_story_json["text"] = None
         response = user_owner_client.post(
             self.URL_STORIES, data=simple_story_json, format="json"
         )
-        check_response(response, 400, [blank_field])
+        check_response(response, 400, ["text"])
 
     @pytest.mark.django_db()
     def test_story_create_valid(
@@ -117,17 +112,26 @@ class TestStory:
             self.URL_STORIES, data=simple_story_json, format="json"
         )
 
-        required_fields = ["id", "text", "author", "is_yours"]
+        required_fields = ["id", "text", "author", "marker"]
         check_response(response, 201, required_fields)
         assert (
             response.data["text"] == simple_story_json["text"]
         ), "Text in response data doesn't match json text"
-        assert response.data["is_yours"] is True, "is_yours must be true for your story"
 
         assert (
-            "id" in response.data["author"]
-            and response.data["author"]["id"] == user_owner_instance.id
+            response.data["author"] == user_owner_instance.id
         ), "Wrong author id in story instance response"
+
+    @pytest.mark.django_db()
+    def test_story_create_short_text(
+        self, user_owner_client, simple_story_json, user_owner_instance
+    ):
+        simple_story_json["text"] = simple_story_json["text"][:8]
+        response = user_owner_client.post(
+            self.URL_STORIES, data=simple_story_json, format="json"
+        )
+
+        check_response(response, 400, ["text"])
 
     # PATCH
     @pytest.mark.django_db()
@@ -137,34 +141,42 @@ class TestStory:
         check_response(response, 401, ["detail"])
 
     @pytest.mark.django_db()
-    @pytest.mark.parametrize(
-        "blank_field",
-        ["text", "marker"],
-    )
-    def test_story_patch_blank_field(
+    def test_story_patch_blank_text(
         self,
         user_owner_client,
         simple_story,
-        simple_story_json,
-        blank_field,
     ):
         url = f"{self.URL_STORIES}{simple_story.id}/"
-        simple_story_json[blank_field] = None
-        response = user_owner_client.patch(url, data=simple_story_json, format="json")
-        check_response(response, 400, [blank_field])
+        response = user_owner_client.patch(url, data={"text": None}, format="json")
+        check_response(response, 400, ["text"])
 
     @pytest.mark.django_db()
-    def test_story_patch_marker(
+    def test_story_patch_short_text(
         self,
         user_owner_client,
         simple_story,
+    ):
+        url = f"{self.URL_STORIES}{simple_story.id}/"
+        short_text = simple_story.text[:8]
+        response = user_owner_client.patch(
+            url, data={"text": short_text}, format="json"
+        )
+        check_response(response, 400, ["text"])
+
+    @pytest.mark.django_db()
+    def test_story_patch_other_marker(
+        self,
+        user_owner_client,
+        simple_story,
+        simple_marker,
         marker_with_author_story,
     ):
         url = f"{self.URL_STORIES}{simple_story.id}/"
         response = user_owner_client.patch(
-            url, data={"marker": marker_with_author_story.id}, format="json"
+            url, data={"marker": marker_with_author_story}
         )
-        check_response(response, 400, ["marker"])
+        check_response(response, 200, ["text"])
+        assert simple_story.marker == simple_marker, "Story marker isn't patchable."
 
     @pytest.mark.django_db()
     def test_story_patch_other_user(
@@ -185,7 +197,7 @@ class TestStory:
             url, data=simple_story_update_json, format="json"
         )
 
-        required_fields = ["id", "text", "author", "is_yours"]
+        required_fields = ["text"]
         check_response(response, 200, required_fields)
 
     # DELETE

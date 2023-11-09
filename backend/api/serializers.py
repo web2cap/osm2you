@@ -1,19 +1,57 @@
 from djoser.serializers import UserCreateSerializer
+from markers.models import Marker
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-
-from markers.models import Marker
 from stories.models import Story
 from users.models import User
 
 
 class CustomUserShortSerializer(UserCreateSerializer):
+    """Shot user serializer for display user data in related models."""
+
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = ("id", "first_name", "username")
 
 
 class StorySerializer(serializers.ModelSerializer):
+    """Stories serializer."""
+
+    def validate_text(self, value):
+        value = value.strip()
+        if len(value) < 10:
+            raise serializers.ValidationError(
+                "Text must be at least 10 characters long."
+            )
+        return value
+
+    class Meta:
+        model = Story
+        fields = ("id", "text", "author", "marker")
+        read_only_fields = ("id", "author")
+
+
+class StorySerializerEdit(serializers.ModelSerializer):
+    """Stories serializer for edit. Enable edit text."""
+
+    def validate_text(self, value):
+        value = value.strip()
+        if len(value) < 10:
+            raise serializers.ValidationError(
+                "Text must be at least 10 characters long."
+            )
+        return value
+
+    class Meta:
+        model = Story
+        fields = ("text",)
+
+
+class StorySerializerDisplay(serializers.ModelSerializer):
+    """Extendet stories serializer with aditional user info.
+    Field is_yours True for owners of record.
+    Field marker excludet."""
+
     author = CustomUserShortSerializer(many=False, read_only=True)
     is_yours = serializers.SerializerMethodField()
 
@@ -49,10 +87,10 @@ class MarkerSerializer(GeoFeatureModelSerializer):
 class MarkerInstanceSerializer(MarkerSerializer):
     """Extend MarkerSerializer,  add marker stories list."""
 
-    stories = StorySerializer(many=True, read_only=True)
+    stories = StorySerializerDisplay(many=True, read_only=True)
 
     class Meta:
         fields = ("id", "name", "is_yours", "stories")
-        read_only_fields = ("id",)
+        read_only_fields = ("id", "stories")
         geo_field = "location"
         model = Marker
