@@ -1,6 +1,6 @@
 import pytest
 from abc_serializer_test import AbstractTestSerializer
-from api.serializers import StorySerializer, StorySerializerDisplay
+from api.serializers import StorySerializer, StorySerializerDisplay, StorySerializerEdit
 
 
 @pytest.fixture
@@ -14,6 +14,8 @@ def simple_json(simple_story_json, simple_marker):
 
 
 class TestStorySerializer(AbstractTestSerializer):
+    """Tests default story serializer. Check text validator."""
+
     @property
     def serializer_class(self):
         return StorySerializer
@@ -40,7 +42,37 @@ class TestStorySerializer(AbstractTestSerializer):
         ), "Serializer must rise the error if text len is less 10"
 
 
+class TestStorySerializerEdit(AbstractTestSerializer):
+    """Tests edit story serializer. Check text validator."""
+
+    @property
+    def serializer_class(self):
+        return StorySerializerEdit
+
+    @property
+    def fields_must_present(self):
+        return ["text"]
+
+    def expected_data(self, simple_instance):
+        return {
+            "text": simple_instance.text,
+        }
+
+    @pytest.mark.django_db
+    def test_serializer_short_text(self, simple_story_json):
+        """Check that serializer rise error if text less 10 ch."""
+
+        simple_story_json["text"] = simple_story_json["text"][:8]
+        serializer = self.serializer_class(data=simple_story_json)
+        assert (
+            not serializer.is_valid()
+        ), "Serializer must rise the error if text len is less 10"
+
+
 class TestStorySerializerDisplay(AbstractTestSerializer):
+    """Test read only story serializer for display instance.
+    Test nested story author data."""
+
     @property
     def serializer_class(self):
         return StorySerializerDisplay
