@@ -34,6 +34,14 @@ class StorySerializer(serializers.ModelSerializer):
 class StorySerializerEdit(serializers.ModelSerializer):
     """Stories serializer for edit. Enable edit text."""
 
+    def validate_text(self, value):
+        value = value.strip()
+        if len(value) < 10:
+            raise serializers.ValidationError(
+                "Text must be at least 10 characters long."
+            )
+        return value
+
     class Meta:
         model = Story
         fields = ("text",)
