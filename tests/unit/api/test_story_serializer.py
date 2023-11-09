@@ -28,3 +28,13 @@ class TestStorySerializer(AbstractTestSerializer):
             "author": simple_instance.author.id,
             "marker": simple_instance.marker.id,
         }
+
+    @pytest.mark.django_db
+    def test_serializer_short_text(self, simple_story_json):
+        """Check that serializer rise error if text less 10 ch."""
+
+        simple_story_json["text"] = simple_story_json["text"][:8]
+        serializer = self.serializer_class(data=simple_story_json)
+        assert (
+            not serializer.is_valid()
+        ), "Serializer must rise the error if text len is less 10"

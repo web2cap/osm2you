@@ -122,6 +122,17 @@ class TestStory:
             response.data["author"] == user_owner_instance.id
         ), "Wrong author id in story instance response"
 
+    @pytest.mark.django_db()
+    def test_story_create_short_text(
+        self, user_owner_client, simple_story_json, user_owner_instance
+    ):
+        simple_story_json["text"] = simple_story_json["text"][:8]
+        response = user_owner_client.post(
+            self.URL_STORIES, data=simple_story_json, format="json"
+        )
+
+        check_response(response, 400, ["text"])
+
     # PATCH
     @pytest.mark.django_db()
     def test_story_patch_unauthorized(self, client, simple_story, simple_story_json):
@@ -137,6 +148,19 @@ class TestStory:
     ):
         url = f"{self.URL_STORIES}{simple_story.id}/"
         response = user_owner_client.patch(url, data={"text": None}, format="json")
+        check_response(response, 400, ["text"])
+
+    @pytest.mark.django_db()
+    def test_story_patch_short_text(
+        self,
+        user_owner_client,
+        simple_story,
+    ):
+        url = f"{self.URL_STORIES}{simple_story.id}/"
+        short_text = simple_story.text[:8]
+        response = user_owner_client.patch(
+            url, data={"text": short_text}, format="json"
+        )
         check_response(response, 400, ["text"])
 
     @pytest.mark.django_db()
