@@ -1,6 +1,6 @@
 import pytest
+from abc_serializer_test import AbstractTestSerializer
 from api.serializers import StorySerializer
-from drf_unit_pytest import AbstractTestSerializer
 
 
 @pytest.fixture
@@ -22,7 +22,7 @@ class TestStorySerializer(AbstractTestSerializer):
     def fields_must_present(self):
         return ["id", "text", "author", "marker"]
 
-    def fields_must_equal(self, simple_instance):
+    def expected_data(self, simple_instance):
         return {
             "text": simple_instance.text,
             "author": simple_instance.author.id,
