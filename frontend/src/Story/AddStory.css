@@ -1,0 +1,48 @@
+.add-story-form {
+    display: flex;
+    flex-direction: column; /* Updated to column layout */
+    width: 100%;
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .add-story-form h3{
+    padding-top: 20px;
+  }
+  
+  .add-story-form form {
+    display: flex;
+    flex-direction: column; /* Updated to column layout */
+    align-items: center;
+    width: 100%;
+  }
+  
+  .add-story-form textarea {
+    margin-bottom: 10px; /* Added margin for separation */
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    width: 100%;
+  }
+  
+  .add-story-form button,
+  .add-story-form button.cancel {
+    box-sizing: border-box; /* Include padding and border in the width */
+    margin-bottom: 10px; /* Added margin for separation */
+  }
+  
+  .add-story-form button.cancel {
+    background-color: #dc3545;
+  }
+  
+  .add-story-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  .add-story-form button:disabled {
+    background-color: #f0f0f0;
+    color: #888;
+    cursor: not-allowed;
+  }
+  

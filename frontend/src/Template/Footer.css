@@ -2,6 +2,7 @@
     background-color: #f8f9fa;
     padding: 4px 0;
     position: absolute;
+    position: inherit;
     bottom: 0;
     width: 100%;
 }

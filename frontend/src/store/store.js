@@ -55,4 +55,11 @@ export default createStore({
     setInfoMsg: action((state, payload) => {
         state.infoMsg = payload
     }),
+    //stories
+    STORIES_URL: '/api/v1/stories/',
+    // adding story
+    addingStory: false,
+    setAddingStory: action((state, payload) => {
+        state.addingStory = payload
+    }),
 })
