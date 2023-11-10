@@ -1,0 +1,14 @@
+.errmsg {
+    background-color: lightpink;
+    color: firebrick;
+    font-weight: bold;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.ingomsg {
+    background-color: rgb(190, 226, 190);
+    color: black;
+    font-weight:lighter;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
