@@ -7,6 +7,7 @@ import Missing from "../Template/Missing"
 import './MarkerInstance.css'
 import AddMarkerPoint from './AddMarkerPoint';
 import AddStory from "../Story/AddStory";
+import Stories from "../Story/Stories";
 import StatusMessage from "../StatusMessage/StatusMessage";
 
 const MarkerInstance = () => {
@@ -26,7 +27,8 @@ const MarkerInstance = () => {
     const addingStory = useStoreState((state) => state.addingStory)
     const setAddingStory = useStoreActions((actions) => actions.setAddingStory)
 
-    const [marker, setMarker] = useState(null)
+    const marker = useStoreState((state) => state.marker)
+    const setMarker = useStoreActions((actions) => actions.setMarker)
 
     const [editMode, setEditMode] = useState(false)
     const [editName, setEditName] = useState('')
@@ -43,6 +45,7 @@ const MarkerInstance = () => {
                 throw TypeError("Failed load marker");
             }
             setMarker(response.data);
+            console.log(response.data)
         } catch (err) {
             setErrMsg(`Error fetching marker: ${err}`)
             setErrMissing(true)
@@ -180,6 +183,7 @@ const MarkerInstance = () => {
                         }
                         {addingStory && <AddStory />}
                         <p className="description"></p>
+                        <Stories stories_list={marker.properties.stories}  />
                         <ul className="related-markers">
                             {/* marker.relatedMarkers.map(relatedMarker => (
                                 <li key={relatedMarker.id}>

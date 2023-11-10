@@ -46,6 +46,11 @@ export default createStore({
     setAddingMarkerPosition: action((state, payload) => {
         state.addingMarkerPosition = payload
     }),
+    // marker instance
+    marker: null,
+    setMarker: action((state, payload) => {
+        state.marker = payload
+    }),
     //Status message
     errMsg: '',
     setErrMsg: action((state, payload) => {
