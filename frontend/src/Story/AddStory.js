@@ -16,7 +16,12 @@ const AddStory = () => {
     const setErrMsg = useStoreActions((actions) => actions.setErrMsg)
     const setInfoMsg = useStoreActions((actions) => actions.setInfoMsg)
 
-    const setAddingStory = useStoreActions((actions) => actions.setAddingStory) 
+    const setAddingStory = useStoreActions((actions) => actions.setAddingStory)
+
+    const marker = useStoreState((state) => state.marker)
+    const setMarker = useStoreActions((actions) => actions.setMarker)
+
+    const user = useStoreState((state) => state.user)
 
     const handleStoryAdd = async (e) => {
         e.preventDefault();
@@ -40,7 +45,23 @@ const AddStory = () => {
                 console.log(errorResponse.message)
                 throw new Error(errorResponse.message || 'Add Failed');
             }
-            setInfoMsg('History added successfully')
+            setInfoMsg('Story added successfully')
+
+            // Assuming response.data contains the new story
+            const addedStory = {
+                id: response.data.id,
+                text: response.data.text,
+                author: {
+                    id: response.data.author,
+                    first_name: user.first_name,
+                    username: user.username
+                },
+                is_yours: true
+            };
+            console.log(addedStory)
+            marker.properties.stories.push(addedStory)
+            setMarker(marker)
+
         } catch (err) {
             setErrMsg(`${err.message} ${err?.response?.data?.detail ? err.response.data.detail : ''}`)
             console.log(err)
