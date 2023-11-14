@@ -50,7 +50,6 @@ const Story = ({ story }) => {
             );
             if (response.status !== 200) {
                 const errorResponse = await response.json();
-                console.log(errorResponse.message)
                 throw new Error(errorResponse.message || 'Edited Failed');
             }
             setInfoMsg('Story edited successfully')
@@ -60,7 +59,6 @@ const Story = ({ story }) => {
             
         } catch (err) {
             setErrMsg(`${err.message} ${err?.response?.data?.detail ? err.response.data.detail : ''}`)
-            console.log(err)
         }
 
         setEditingThisStory(false);
@@ -80,7 +78,6 @@ const Story = ({ story }) => {
             setInfoMsg('Story delted successfully')
             setMarkerUpdated(true)
         } catch (err) {
-            console.log(err)
             setErrMsg(err?.response?.data?.detail
                 ? err.response.data.detail
                 : "Deletion filed"

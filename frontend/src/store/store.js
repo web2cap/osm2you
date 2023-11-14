@@ -1,9 +1,9 @@
 import { createStore, action } from "easy-peasy";
 import axios from 'axios';
 
-//TODO: Combine Store
 export default createStore({
     // GENERAL
+    DEBUG: true,
     // user
     user: null,
     setUser: action((state, payload) => {
@@ -27,6 +27,7 @@ export default createStore({
 
     //MAP
     mapCenter: [51.505, -0.09],
+    DEBOUNCE_DELAY: 300,
     //markers
     MARKERS_URL: '/api/v1/markers/',
     markers: [],

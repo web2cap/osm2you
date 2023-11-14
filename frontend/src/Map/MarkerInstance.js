@@ -50,7 +50,6 @@ const MarkerInstance = () => {
                 throw TypeError("Failed load marker");
             }
             setMarker(response.data);
-            console.log(response.data)
         } catch (err) {
             setErrMsg(`Error fetching marker: ${err}`)
             setErrMissing(true)
@@ -81,7 +80,6 @@ const MarkerInstance = () => {
             }
             navigate('/')
         } catch (err) {
-            console.log(err)
             setErrMsg(err?.response?.data?.detail
                 ? err.response.data.detail
                 : "Deletion filed"
@@ -123,7 +121,6 @@ const MarkerInstance = () => {
             }
         } catch (err) {
             setErrMsg(`${err.message} ${err?.response?.data?.detail ? err.response.data.detail : ''}`)
-            console.log(err)
         }
 
         setAddingMarkerPosition(null);

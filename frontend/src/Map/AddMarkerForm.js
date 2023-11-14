@@ -39,8 +39,6 @@ function AddMarkerForm() {
         } catch (err) {
             setErrMsg(err)
         }
-
-        console.log(newMarker)
         setAddingMarkerPosition(null);
         setAddingMarker(false)
         setName('');

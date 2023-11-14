@@ -42,7 +42,6 @@ const AddStory = () => {
             );
             if (response.status !== 201) {
                 const errorResponse = await response.json();
-                console.log(errorResponse.message)
                 throw new Error(errorResponse.message || 'Add Failed');
             }
             setInfoMsg('Story added successfully')
@@ -58,16 +57,12 @@ const AddStory = () => {
                 },
                 is_yours: true
             };
-            console.log(addedStory)
             marker.properties.stories.push(addedStory)
             setMarker(marker)
 
         } catch (err) {
             setErrMsg(`${err.message} ${err?.response?.data?.detail ? err.response.data.detail : ''}`)
-            console.log(err)
         }
-
-        console.log(newStory)
         setAddingStory(false)
         setStoryText('');
         return
