@@ -51,6 +51,10 @@ export default createStore({
     setMarker: action((state, payload) => {
         state.marker = payload
     }),
+    markerUpdated: false,
+    setMarkerUpdated: action((state, payload) => {
+        state.markerUpdated = payload
+    }),
     //Status message
     errMsg: '',
     setErrMsg: action((state, payload) => {
@@ -66,5 +70,9 @@ export default createStore({
     addingStory: false,
     setAddingStory: action((state, payload) => {
         state.addingStory = payload
+    }),
+    editingStory: false,
+    setEditingStory: action((state, payload) => {
+        state.editingStory = payload
     }),
 })

@@ -27,8 +27,13 @@ const MarkerInstance = () => {
     const addingStory = useStoreState((state) => state.addingStory)
     const setAddingStory = useStoreActions((actions) => actions.setAddingStory)
 
+    const editingStory = useStoreState((state) => state.editingStory)
+
     const marker = useStoreState((state) => state.marker)
     const setMarker = useStoreActions((actions) => actions.setMarker)
+    
+    const markerUpdated = useStoreState((state) => state.markerUpdated)
+    const setMarkerUpdated = useStoreActions((actions) => actions.setMarkerUpdated)
 
     const [editMode, setEditMode] = useState(false)
     const [editName, setEditName] = useState('')
@@ -56,7 +61,15 @@ const MarkerInstance = () => {
     useEffect(() => {
         setErrMsg('')
         fetchMarker(id)
+        console.log('useEffect id')
     }, [id])
+    useEffect(() => {
+        if (markerUpdated){
+            fetchMarker(id)
+            setMarkerUpdated(false)
+            console.log('useEffect markerUpdated')
+        }
+    }, [markerUpdated])
 
     //delete
     const handleDelete = async () => {
@@ -166,7 +179,7 @@ const MarkerInstance = () => {
                             </>
                             : <>
                                 <h1 className="marker-name">{marker.properties.name}</h1>
-                                {!addingStory && <div className="button-group">
+                                {!addingStory && !editingStory && <div className="button-group">
                                     <button
                                         onClick={handleEditMode}
                                     >Edit</button>

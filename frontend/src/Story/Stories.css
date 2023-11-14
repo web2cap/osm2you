@@ -3,33 +3,3 @@
     list-style: none;
     padding: 0;
 }
-
-.story-item {
-    margin-bottom: 15px; /* Increased margin for better separation */
-    padding: 15px; /* Added padding for better spacing */
-    border: 1px solid #ddd; /* Border for visual separation */
-    border-radius: 5px;
-}
-
-.story-author {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: bold; /* Emphasize the title */
-    display: block; /* Make the title a block element for better spacing */
-    margin-bottom: 8px; /* Add margin below the title */
-}
-
-.story-text {
-    margin-bottom: 10px;
-}
-
-.button-group {
-    display: flex;
-    gap: 10px;
-}
-
-.story-item div button{
-    padding: 1px 2px;
-    width: 64px;
-
-}
