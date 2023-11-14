@@ -61,13 +61,11 @@ const MarkerInstance = () => {
     useEffect(() => {
         setErrMsg('')
         fetchMarker(id)
-        console.log('useEffect id')
     }, [id])
     useEffect(() => {
         if (markerUpdated){
             fetchMarker(id)
             setMarkerUpdated(false)
-            console.log('useEffect markerUpdated')
         }
     }, [markerUpdated])
 

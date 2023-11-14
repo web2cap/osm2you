@@ -66,12 +66,27 @@ const Story = ({ story }) => {
         setEditingThisStory(false);
         setEditingStory(false);
         return
-    };
+    }
 
-    const handleDeleteClick = () => {
-        // Handle delete logic
-        return
-    };
+    const handleDeleteClick = async () => {
+        setErrMsg('');
+        try {
+            const response = await backend.delete(`${STORIES_URL}${story.id}/`,
+                { headers: { 'Content-Type': 'application/json' } }
+            )
+            if (response.status !== 204) {
+                throw TypeError("Deletion filed")
+            }
+            setInfoMsg('Story delted successfully')
+            setMarkerUpdated(true)
+        } catch (err) {
+            console.log(err)
+            setErrMsg(err?.response?.data?.detail
+                ? err.response.data.detail
+                : "Deletion filed"
+            )
+        }
+    }
 
     return (
         <li key={story.id} className="story-item">
