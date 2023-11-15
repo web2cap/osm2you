@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom';
 
 const Markers = () => {
     const MARKERS_URL = useStoreState((state) => state.MARKERS_URL)
-    const DEBOUNCE_DELAY = 300
+
+    const DEBOUNCE_DELAY = useStoreState((state) => state.DEBOUNCE_DELAY);
     const backend = useStoreState((state) => state.backend);
 
     const markers = useStoreState((state) => state.markers)
@@ -61,7 +62,7 @@ const Markers = () => {
         const bounds = map.getBounds();
         const bbox = bounds.toBBoxString();
         setBbox(bbox)
-        console.log('Set bbox:', bbox);
+        // console.log('Set bbox:', bbox);
     };
 
     useEffect(() => {

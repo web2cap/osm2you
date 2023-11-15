@@ -1,9 +1,9 @@
 import { createStore, action } from "easy-peasy";
 import axios from 'axios';
 
-//TODO: Combine Store
 export default createStore({
     // GENERAL
+    DEBUG: true,
     // user
     user: null,
     setUser: action((state, payload) => {
@@ -27,6 +27,7 @@ export default createStore({
 
     //MAP
     mapCenter: [51.505, -0.09],
+    DEBOUNCE_DELAY: 300,
     //markers
     MARKERS_URL: '/api/v1/markers/',
     markers: [],
@@ -45,5 +46,34 @@ export default createStore({
     addingMarkerPosition: null,
     setAddingMarkerPosition: action((state, payload) => {
         state.addingMarkerPosition = payload
+    }),
+    // marker instance
+    marker: null,
+    setMarker: action((state, payload) => {
+        state.marker = payload
+    }),
+    markerUpdated: false,
+    setMarkerUpdated: action((state, payload) => {
+        state.markerUpdated = payload
+    }),
+    //Status message
+    errMsg: '',
+    setErrMsg: action((state, payload) => {
+        state.errMsg = payload
+    }),
+    infoMsg: '',
+    setInfoMsg: action((state, payload) => {
+        state.infoMsg = payload
+    }),
+    //stories
+    STORIES_URL: '/api/v1/stories/',
+    // adding story
+    addingStory: false,
+    setAddingStory: action((state, payload) => {
+        state.addingStory = payload
+    }),
+    editingStory: false,
+    setEditingStory: action((state, payload) => {
+        state.editingStory = payload
     }),
 })

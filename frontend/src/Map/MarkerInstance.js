@@ -6,20 +6,34 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import Missing from "../Template/Missing"
 import './MarkerInstance.css'
 import AddMarkerPoint from './AddMarkerPoint';
+import AddStory from "../Story/AddStory";
+import Stories from "../Story/Stories";
+import StatusMessage from "../StatusMessage/StatusMessage";
 
 const MarkerInstance = () => {
     const { id } = useParams()
 
-    const [errMsg, setErrMsg] = useState('')
     const [errMissing, setErrMissing] = useState(false)
 
     const MARKERS_URL = useStoreState((state) => state.MARKERS_URL)
     const backend = useStoreState((state) => state.backend);
 
+    const setErrMsg = useStoreActions((actions) => actions.setErrMsg)
+
     const addingMarkerPosition = useStoreState((state) => state.addingMarkerPosition)
     const setAddingMarkerPosition = useStoreActions((actions) => actions.setAddingMarkerPosition)
 
-    const [marker, setMarker] = useState(null)
+
+    const addingStory = useStoreState((state) => state.addingStory)
+    const setAddingStory = useStoreActions((actions) => actions.setAddingStory)
+
+    const editingStory = useStoreState((state) => state.editingStory)
+
+    const marker = useStoreState((state) => state.marker)
+    const setMarker = useStoreActions((actions) => actions.setMarker)
+    
+    const markerUpdated = useStoreState((state) => state.markerUpdated)
+    const setMarkerUpdated = useStoreActions((actions) => actions.setMarkerUpdated)
 
     const [editMode, setEditMode] = useState(false)
     const [editName, setEditName] = useState('')
@@ -44,8 +58,15 @@ const MarkerInstance = () => {
     }
 
     useEffect(() => {
+        setErrMsg('')
         fetchMarker(id)
-    }, [])
+    }, [id])
+    useEffect(() => {
+        if (markerUpdated){
+            fetchMarker(id)
+            setMarkerUpdated(false)
+        }
+    }, [markerUpdated])
 
     //delete
     const handleDelete = async () => {
@@ -59,7 +80,6 @@ const MarkerInstance = () => {
             }
             navigate('/')
         } catch (err) {
-            console.log(err)
             setErrMsg(err?.response?.data?.detail
                 ? err.response.data.detail
                 : "Deletion filed"
@@ -101,7 +121,6 @@ const MarkerInstance = () => {
             }
         } catch (err) {
             setErrMsg(`${err.message} ${err?.response?.data?.detail ? err.response.data.detail : ''}`)
-            console.log(err)
         }
 
         setAddingMarkerPosition(null);
@@ -112,7 +131,7 @@ const MarkerInstance = () => {
 
     return (
         <main>
-            {errMsg && <div className='errmsg' aria-live="assertive">{errMsg}</div>}
+            <StatusMessage />
             {errMissing
                 ? <Missing />
                 : marker && <div>
@@ -155,16 +174,24 @@ const MarkerInstance = () => {
                             </>
                             : <>
                                 <h1 className="marker-name">{marker.properties.name}</h1>
-                                <div className="button-group">
+                                {!addingStory && !editingStory && <div className="button-group">
                                     <button
                                         onClick={handleEditMode}
                                     >Edit</button>
                                     <button onClick={handleDelete} className="delete">Delete</button>
-                                    <button className="add">Add story</button>
-                                </div>
+                                    <button
+                                        onClick={() => {
+                                            setAddingStory(true)
+                                            setErrMsg('')
+                                        }}
+                                        className="add"
+                                    >Add story</button>
+                                </div>}
                             </>
                         }
+                        {addingStory && <AddStory />}
                         <p className="description"></p>
+                        <Stories stories_list={marker.properties.stories}  />
                         <ul className="related-markers">
                             {/* marker.relatedMarkers.map(relatedMarker => (
                                 <li key={relatedMarker.id}>

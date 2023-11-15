@@ -14,6 +14,9 @@ import MarkerInstance from "./Map/MarkerInstance";
 import EditMarker from "./Map/EditMarker";
 
 function App() {
+
+  const DEBUG = useStoreState((state) => state.DEBUG)
+
   const user = useStoreState((state) => state.user)
   const setUser = useStoreActions((actions) => actions.setUser)
 
@@ -29,18 +32,13 @@ function App() {
     userAuth(accessToken, setAccessToken, setUser, backend, setBackendHeader, unsetBackendHeader)
   }, [accessToken])
 
-  // DUBUG
+
   useEffect(() => {
     // print user
-    console.log(user)
+    if (DEBUG) console.log(user)
   }, [user])
-  const addingMarkerPosition = useStoreState((state) => state.addingMarkerPosition)
-  useEffect(() => {
-    // add click
-    console.log(`Set addingMarkerPosition:`)
-    console.log(addingMarkerPosition)
-  }, [addingMarkerPosition])
 
+  
 
   return (
     <Routes>
