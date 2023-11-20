@@ -1,11 +1,15 @@
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
+from django.shortcuts import get_object_or_404
 from markers.models import Marker
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from rest_framework_gis import filters
 from stories.models import Story
+from users.models import User
 
-from api.permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly
-from api.serializers import (
+from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly
+from .serializers import (
     MarkerInstanceSerializer,
     MarkerSerializer,
     StorySerializer,
@@ -25,11 +29,14 @@ class MarkerViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "retrieve":
             return MarkerInstanceSerializer
+        elif self.action == "user":
+            # todo serializer
+            pass
         return MarkerSerializer
 
     def get_queryset(self):
         queryset = Marker.objects.all()
-        if self.action == "retrieve":
+        if self.action in ("retrieve", "user"):
             queryset = queryset.prefetch_related(
                 Prefetch(
                     "stories",
@@ -41,6 +48,17 @@ class MarkerViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+    @action(methods=["get"], detail=False, url_path="user/(?P<username>[^/.]+)")
+    def user(self, request, username):
+        user = get_object_or_404(User, username=username)
+        queryset = (
+            self.get_queryset()
+            .filter(Q(author=user) | Q(stories__author=user))
+            .distinct()
+        )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class StoryViewSet(viewsets.ModelViewSet):
