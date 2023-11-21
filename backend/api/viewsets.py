@@ -12,9 +12,10 @@ from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly
 from .serializers import (
     MarkerInstanceSerializer,
     MarkerSerializer,
+    MarkerUserSerializer,
     StorySerializer,
     StorySerializerDisplay,
-    StorySerializerEdit,
+    StorySerializerText,
 )
 
 
@@ -26,18 +27,19 @@ class MarkerViewSet(viewsets.ModelViewSet):
     bbox_filter_field = "location"
     filter_backends = (filters.InBBoxFilter,)
 
+    serializers = {
+        "retrieve": MarkerInstanceSerializer,
+        "user": MarkerUserSerializer,
+        "default": MarkerSerializer,
+    }
+
     def get_serializer_class(self):
-        if self.action == "retrieve":
-            return MarkerInstanceSerializer
-        elif self.action == "user":
-            # todo serializer
-            pass
-        return MarkerSerializer
+        return self.serializers.get(self.action, self.serializers["default"])
 
     def get_queryset(self):
         queryset = Marker.objects.all()
-        if self.action in ("retrieve", "user"):
-            queryset = queryset.prefetch_related(
+        if self.action in ("retrieve"):
+            queryset = Marker.objects.select_related("author").prefetch_related(
                 Prefetch(
                     "stories",
                     queryset=Story.objects.select_related("author"),
@@ -53,9 +55,16 @@ class MarkerViewSet(viewsets.ModelViewSet):
     def user(self, request, username):
         user = get_object_or_404(User, username=username)
         queryset = (
-            self.get_queryset()
-            .filter(Q(author=user) | Q(stories__author=user))
+            Marker.objects.filter(
+                Q(stories__isnull=False, stories__author=user) | Q(author=user)
+            )
             .distinct()
+            .prefetch_related(
+                Prefetch(
+                    "stories",
+                    queryset=Story.objects.filter(author=user),
+                )
+            )
         )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -70,7 +79,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     serializers = {
         "list": StorySerializerDisplay,
         "retrieve": StorySerializerDisplay,
-        "partial_update": StorySerializerEdit,
+        "partial_update": StorySerializerText,
         "default": StorySerializer,
     }
 
