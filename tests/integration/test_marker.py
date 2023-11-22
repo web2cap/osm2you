@@ -440,3 +440,147 @@ class TestMarker:
         )
 
         check_response(response, 403, ["detail"])
+
+    # ACTION USER
+    def check_marker_author_list(self, client, marker, username, markers_count):
+        """Tests a request to markers list.
+        Checks the number of markers in the list.
+        Checking the fields and field values of one marker in the list.
+        Returns the response element of a single marker for detailed checking."""
+
+        response = client.get(f"{self.URL_MARKERS}user/{username}/")
+        required_fields = ["type", "features"]
+        check_response(response, 200, required_fields)
+
+        assert (
+            len(response.data["features"]) == markers_count
+        ), f"Response must has {markers_count} markers"
+
+        response_simple_marker = next(
+            (
+                feature
+                for feature in response.data["features"]
+                if feature["id"] == marker.id
+            ),
+            None,
+        )
+        assert response_simple_marker, "No expected marker in response."
+
+        assert (
+            "type" in response_simple_marker
+            and response_simple_marker["type"] == "Feature"
+        ), "Wrong type in marker list response"
+        assert (
+            "geometry" in response_simple_marker
+        ), "No geometry in marker list response"
+        assert (
+            "type" in response_simple_marker["geometry"]
+            and response_simple_marker["geometry"]["type"] == "Point"
+        ), "Wrong geometry type in marker list response"
+        assert "coordinates" in response_simple_marker[
+            "geometry"
+        ] and response_simple_marker["geometry"]["coordinates"] == [
+            marker.location.x,
+            marker.location.y,
+        ], "Wrong geometry coordinates in marker list response"
+        assert (
+            "properties" in response_simple_marker
+        ), "No properties in marker list response"
+        assert (
+            "name" in response_simple_marker["properties"]
+            and response_simple_marker["properties"]["name"] == marker.name
+        ), "Wrong name in marker list response"
+
+        return response_simple_marker
+
+    @pytest.mark.django_db()
+    def test_marker_user_action_unauthorized(
+        self, client, simple_marker, marker_with_author_story
+    ):
+        """Tests unauthorized request to marker user action.
+        Chech that marker include story with text."""
+
+        response_simple_marker = self.check_marker_author_list(
+            client,
+            marker_with_author_story,
+            marker_with_author_story.author.username,
+            markers_count=1,
+        )
+        assert (
+            "stories" in response_simple_marker["properties"]
+        ), "No stories field in response"
+        assert len(
+            response_simple_marker["properties"]["stories"]
+        ), "No  one story in response"
+        assert (
+            "text" in response_simple_marker["properties"]["stories"][0]
+        ), "No text field of story in response"
+        assert (
+            response_simple_marker["properties"]["stories"][0]["text"]
+            == marker_with_author_story.stories.first().text
+        ), "Response story text doesn't eqal story instance text"
+
+    @pytest.mark.django_db()
+    def test_marker_user_action_authorized(
+        self, client, simple_marker, marker_with_author_story
+    ):
+        """Tests authorized request to marker user action.
+        Chech that marker include story with text."""
+
+        response_simple_marker = self.check_marker_author_list(
+            client,
+            marker_with_author_story,
+            marker_with_author_story.author.username,
+            markers_count=1,
+        )
+        assert (
+            "stories" in response_simple_marker["properties"]
+        ), "No stories field in response"
+        assert len(
+            response_simple_marker["properties"]["stories"]
+        ), "No  one story in response"
+        assert (
+            "text" in response_simple_marker["properties"]["stories"][0]
+        ), "No text field of story in response"
+        assert (
+            response_simple_marker["properties"]["stories"][0]["text"]
+            == marker_with_author_story.stories.first().text
+        ), "Response story text doesn't eqal story instance text"
+
+    @pytest.mark.django_db()
+    def test_marker_user_action_dataset(
+        self,
+        client,
+        simple_marker,
+        marker_with_author_story,
+        marker_different_author_with_story_owner_story_user,
+        simple_story_data,
+    ):
+        """Test that response include 2 expected markers from 3.
+        One with users marker, other with marker with users story.
+        Test that response include onlu users stories."""
+
+        self.check_marker_author_list(
+            client,
+            marker_with_author_story,
+            marker_with_author_story.author.username,
+            markers_count=2,
+        )
+        response_different_author = self.check_marker_author_list(
+            client,
+            marker_different_author_with_story_owner_story_user,
+            marker_with_author_story.author.username,
+            markers_count=2,
+        )
+
+        assert (
+            "stories" in response_different_author["properties"]
+        ), "No stories field in response"
+        assert (
+            len(response_different_author["properties"]["stories"]) == 1
+        ), "Expected 1 story in this marker response"
+        assert (
+            "text" in response_different_author["properties"]["stories"][0]
+            and response_different_author["properties"]["stories"][0]["text"]
+            == simple_story_data["text"]
+        ), "Response story text doesn't eqal simple_story_data text"
