@@ -70,3 +70,10 @@ def marker_viewset_instance_retrieve():
     marker_viewset = MarkerViewSet()
     marker_viewset.action = "retrieve"
     return marker_viewset
+
+
+@pytest.fixture
+def marker_viewset_instance_user():
+    marker_viewset = MarkerViewSet()
+    marker_viewset.action = "user"
+    return marker_viewset

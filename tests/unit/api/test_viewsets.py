@@ -1,22 +1,33 @@
 import pytest
-
-from api.serializers import MarkerInstanceSerializer, MarkerSerializer
+from api.serializers import (
+    MarkerInstanceSerializer,
+    MarkerSerializer,
+    MarkerUserSerializer,
+)
 from markers.models import Marker
 
 
 # Marker
 @pytest.mark.django_db
 def test_marker_viewset_get_serializer_class(
-    marker_viewset_instance_list, marker_viewset_instance_retrieve
+    marker_viewset_instance_list,
+    marker_viewset_instance_retrieve,
+    marker_viewset_instance_user,
 ):
     """Test that for list action viewset use MarkerSerializer.
-    For action retrieve viewset use MarkerInstanceSerializer."""
+    For action retrieve viewset use MarkerInstanceSerializer.
+    For action user viewset use MarkerUserSerializer."""
 
-    assert marker_viewset_instance_list.get_serializer_class() == MarkerSerializer
+    assert (
+        marker_viewset_instance_list.get_serializer_class() == MarkerSerializer
+    ), "For list action viewset should use MarkerSerializer"
     assert (
         marker_viewset_instance_retrieve.get_serializer_class()
         == MarkerInstanceSerializer
-    )
+    ), "For retrieve action viewset should use MarkerInstanceSerializer"
+    assert (
+        marker_viewset_instance_user.get_serializer_class() == MarkerUserSerializer
+    ), "For user action viewset should use MarkerUserSerializer"
 
 
 @pytest.mark.django_db
@@ -76,6 +87,19 @@ def test_marker_viewset_perform_create_mock(marker_viewset, simple_marker_data):
     with pytest.raises(AttributeError):
         marker_serializer.is_valid()
         marker_viewset.perform_create(marker_serializer)
+
+
+@pytest.mark.django_db
+def test_get_user_markers_queryset(
+    marker_viewset_instance_user, marker_with_author_story
+):
+    user = marker_with_author_story.author
+    queryset = marker_viewset_instance_user.get_user_markers_queryset(user)
+
+    assert marker_with_author_story in queryset, "No marker in markers queryset"
+    assert (
+        marker_with_author_story.stories.first() in queryset.first().stories.all()
+    ), "No story in markers queryset"
 
 
 # Story
