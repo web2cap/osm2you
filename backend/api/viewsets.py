@@ -42,7 +42,7 @@ class MarkerViewSet(viewsets.ModelViewSet):
         If retrive join author ans stories to marker and author to story.
         """
         queryset = Marker.objects.all()
-        if self.action in ("retrieve"):
+        if self.action == "retrieve":
             queryset = Marker.objects.select_related("author").prefetch_related(
                 Prefetch(
                     "stories",
