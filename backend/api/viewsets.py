@@ -72,9 +72,8 @@ class MarkerViewSet(viewsets.ModelViewSet):
     @action(methods=["get"], detail=False, url_path="user/(?P<username>[^/.]+)")
     def user(self, request, username):
         """Markers with users stories and users markers by users username."""
-
         user = get_object_or_404(User, username=username)
-        queryset = self.get_user_markers_queryset(user)
+        queryset = self.filter_queryset(self.get_user_markers_queryset(user))
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
