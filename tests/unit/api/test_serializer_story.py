@@ -1,6 +1,6 @@
 import pytest
 from abc_serializer_test import AbstractTestSerializer
-from api.serializers import StorySerializer, StorySerializerDisplay, StorySerializerEdit
+from api.serializers import StorySerializer, StorySerializerDisplay, StorySerializerText
 
 
 @pytest.fixture
@@ -42,12 +42,12 @@ class TestStorySerializer(AbstractTestSerializer):
         ), "Serializer must rise the error if text len is less 10"
 
 
-class TestStorySerializerEdit(AbstractTestSerializer):
+class TestStorySerializerText(AbstractTestSerializer):
     """Tests edit story serializer. Check text validator."""
 
     @property
     def serializer_class(self):
-        return StorySerializerEdit
+        return StorySerializerText
 
     @property
     def fields_must_present(self):

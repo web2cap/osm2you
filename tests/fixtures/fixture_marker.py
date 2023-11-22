@@ -54,6 +54,20 @@ def marker_with_author_story(user_owner_instance, simple_story_data):
 
 
 @pytest.fixture
+def marker_different_author_with_story_owner_story_user(
+    user_instance, simple_story_data, second_story_data_user
+):
+    marker = Marker.objects.create(
+        name="Marker by author user, with story by author owner",
+        location=Point(4, 2),
+        author=user_instance,
+    )
+    marker.stories.create(**simple_story_data)
+    marker.stories.create(**second_story_data_user)
+    return marker
+
+
+@pytest.fixture
 def marker_viewset():
     return MarkerViewSet()
 
@@ -69,4 +83,11 @@ def marker_viewset_instance_list():
 def marker_viewset_instance_retrieve():
     marker_viewset = MarkerViewSet()
     marker_viewset.action = "retrieve"
+    return marker_viewset
+
+
+@pytest.fixture
+def marker_viewset_instance_user():
+    marker_viewset = MarkerViewSet()
+    marker_viewset.action = "user"
     return marker_viewset

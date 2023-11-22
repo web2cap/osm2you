@@ -31,7 +31,7 @@ class StorySerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "author")
 
 
-class StorySerializerEdit(serializers.ModelSerializer):
+class StorySerializerText(serializers.ModelSerializer):
     """Stories serializer for edit. Enable edit text."""
 
     def validate_text(self, value):
@@ -92,5 +92,16 @@ class MarkerInstanceSerializer(MarkerSerializer):
     class Meta:
         fields = ("id", "name", "is_yours", "stories")
         read_only_fields = ("id", "stories")
+        geo_field = "location"
+        model = Marker
+
+
+class MarkerUserSerializer(GeoFeatureModelSerializer):
+    """Serializer for user stories and markers."""
+
+    stories = StorySerializerText(many=True, read_only=True)
+
+    class Meta:
+        fields = ("id", "name", "stories")
         geo_field = "location"
         model = Marker
