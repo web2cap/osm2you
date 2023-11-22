@@ -1,5 +1,6 @@
 import pytest
 from abc_serializer_test import AbstractTestSerializer
+from api.serializers import MarkerSerializer
 
 
 @pytest.fixture
@@ -66,3 +67,24 @@ class AbstractTestMarkerSerializer(AbstractTestSerializer):
         assert (
             serializer.data["properties"]["name"] == simple_instance.name
         ), "Field properties.name should be equal instance name."
+
+
+class TestMarkerSerializer(AbstractTestMarkerSerializer):
+    """Tests default marker serializer."""
+
+    @property
+    def serializer_class(self):
+        return MarkerSerializer
+
+    @pytest.mark.django_db
+    def test_serializer_data_is_yours(self, simple_instance):
+        """Check that properties.is_yours is correct."""
+
+        serializer = self.serializer_class(instance=simple_instance)
+
+        assert (
+            "is_yours" in serializer.data["properties"]
+        ), "Field properties.is_yours should be present in valid data."
+        assert (
+            serializer.data["properties"]["is_yours"] is False
+        ), "Field properties.is_yours should be equal False."
