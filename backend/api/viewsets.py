@@ -34,9 +34,13 @@ class MarkerViewSet(viewsets.ModelViewSet):
     }
 
     def get_serializer_class(self):
+        """Get the serializer class based on the action."""
         return self.serializers.get(self.action, self.serializers["default"])
 
     def get_queryset(self):
+        """Get the queryset for Marker objects.
+        If retrive join author ans stories to marker and author to story.
+        """
         queryset = Marker.objects.all()
         if self.action in ("retrieve"):
             queryset = Marker.objects.select_related("author").prefetch_related(
@@ -48,24 +52,29 @@ class MarkerViewSet(viewsets.ModelViewSet):
             )
         return queryset
 
+    def get_user_markers_queryset(self, user):
+        """Select users markers and markers with users stories."""
+
+        return Marker.objects.filter(
+            Q(stories__isnull=False, stories__author=user) | Q(author=user)
+        ).prefetch_related(
+            Prefetch(
+                "stories",
+                queryset=Story.objects.filter(author=user),
+            )
+        )
+
     def perform_create(self, serializer):
+        """Add autorized user to author field."""
+
         serializer.save(author=self.request.user)
 
     @action(methods=["get"], detail=False, url_path="user/(?P<username>[^/.]+)")
     def user(self, request, username):
+        """Markers with users stories and users markers by users username."""
+
         user = get_object_or_404(User, username=username)
-        queryset = (
-            Marker.objects.filter(
-                Q(stories__isnull=False, stories__author=user) | Q(author=user)
-            )
-            .distinct()
-            .prefetch_related(
-                Prefetch(
-                    "stories",
-                    queryset=Story.objects.filter(author=user),
-                )
-            )
-        )
+        queryset = self.get_user_markers_queryset(user)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -74,7 +83,6 @@ class StoryViewSet(viewsets.ModelViewSet):
     """Story view set."""
 
     queryset = Story.objects.select_related("author").all()
-    serializer_class = StorySerializer
     permission_classes = (AuthorAdminOrInstanceOnly,)
     serializers = {
         "list": StorySerializerDisplay,
