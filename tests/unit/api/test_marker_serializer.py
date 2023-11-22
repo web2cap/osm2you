@@ -1,6 +1,10 @@
 import pytest
 from abc_serializer_test import AbstractTestSerializer
-from api.serializers import MarkerInstanceSerializer, MarkerSerializer
+from api.serializers import (
+    MarkerInstanceSerializer,
+    MarkerSerializer,
+    MarkerUserSerializer,
+)
 
 
 @pytest.fixture
@@ -91,7 +95,7 @@ class TestMarkerSerializer(AbstractTestMarkerSerializer):
 
 
 class TestMarkerInstanceSerializer(TestMarkerSerializer):
-    """Tests default marker instance serializer with stories."""
+    """Tests marker instance serializer with stories and stories author."""
 
     @property
     def serializer_class(self):
@@ -168,3 +172,33 @@ class TestMarkerInstanceSerializer(TestMarkerSerializer):
         assert (
             serializer_story_author["username"] == isinstance_story_author.username
         ), "Field properties.stories.author.username should be equal instance stories.author.username."
+
+
+class TestMarkerUserSerializer(AbstractTestMarkerSerializer):
+    """Tests users marker serializer with stories."""
+
+    @property
+    def serializer_class(self):
+        return MarkerUserSerializer
+
+    @pytest.mark.django_db
+    def test_serializer_data_properties_stories(self, simple_instance):
+        """Check that properties stories is correct."""
+
+        serializer = self.serializer_class(instance=simple_instance)
+
+        assert (
+            "stories" in serializer.data["properties"]
+        ), "Field properties.stories should be present in valid data."
+
+        assert len(
+            serializer.data["properties"]["stories"]
+        ), "properties.stories.id should content elemet."
+
+        assert (
+            "text" in serializer.data["properties"]["stories"][0]
+        ), "Field properties.stories.text should be present in valid data."
+        assert (
+            serializer.data["properties"]["stories"][0]["text"]
+            == simple_instance.stories.first().text
+        ), "Field properties.stories.text should be equal instance stories.text."
