@@ -89,11 +89,11 @@ const Story = ({ story }) => {
         <li key={story.id} className="story-item">
         {!editingThisStory ? (
             <>
-            <Link 
+            {story?.author && <Link 
                 to={`/markers/user/${story.author.username}/`}
                 className="story-author"
             >{story.author.first_name ? story.author.first_name : story.author.username}
-            </Link>
+            </Link>}
             <p className="story-text">{story.text}</p>
             {!addingStory && !editingStory && story.is_yours && (
                 <div className="button-group">
