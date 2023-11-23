@@ -117,6 +117,21 @@ class TestMarkerInstanceSerializer(TestMarkerSerializer):
             serializer_story_author["username"] == isinstance_story_author.username
         ), "Field properties.stories.author.username should be equal instance stories.author.username."
 
+    @pytest.mark.django_db
+    def test_serializer_data_properties_add_date(self, simple_instance):
+        """Check that properties add_date is correct."""
+
+        serializer = self.serializer_class(instance=simple_instance)
+
+        assert (
+            "add_date" in serializer.data["properties"]
+        ), "Field properties.add_date should be present in valid data."
+        assert serializer.data["properties"][
+            "add_date"
+        ] == simple_instance.add_date.strftime(
+            "%Y-%m-%dT%H:%M:%S.%f"
+        ), "Wrong add_date in marker serialized data"
+
 
 class TestMarkerUserSerializer(AbstractTestMarkerSerializer):
     """Tests users marker serializer with stories."""

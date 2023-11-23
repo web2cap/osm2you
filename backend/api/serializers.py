@@ -14,6 +14,14 @@ class CustomUserShortSerializer(UserCreateSerializer):
         fields = ("id", "first_name", "username")
 
 
+class CustomUserInfoSerializer(UserCreateSerializer):
+    """User serializer for display users data in users page."""
+
+    class Meta(UserCreateSerializer.Meta):
+        model = User
+        fields = ("id", "first_name", "username", "date_joined", "bio")
+
+
 class StorySerializer(serializers.ModelSerializer):
     """Stories serializer."""
 
@@ -44,7 +52,8 @@ class StorySerializerText(serializers.ModelSerializer):
 
     class Meta:
         model = Story
-        fields = ("text",)
+        fields = ("text", "created")
+        read_only_fields = ("created",)
 
 
 class StorySerializerDisplay(serializers.ModelSerializer):
@@ -63,7 +72,7 @@ class StorySerializerDisplay(serializers.ModelSerializer):
 
     class Meta:
         model = Story
-        fields = ("id", "text", "author", "is_yours")
+        fields = ("id", "text", "author", "is_yours", "created")
 
 
 class MarkerSerializer(GeoFeatureModelSerializer):
@@ -90,8 +99,8 @@ class MarkerInstanceSerializer(MarkerSerializer):
     stories = StorySerializerDisplay(many=True, read_only=True)
 
     class Meta:
-        fields = ("id", "name", "is_yours", "stories")
-        read_only_fields = ("id", "stories")
+        fields = ("id", "name", "is_yours", "stories", "add_date")
+        read_only_fields = ("id", "stories", "add_date")
         geo_field = "location"
         model = Marker
 
