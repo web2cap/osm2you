@@ -20,7 +20,7 @@ const MarkerUser = () => {
             <div className="map-container">
             <MapContainer center={mapCenter} zoom={7} className='MapContainer'>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                <Markers />
+                <Markers backend_path={`user/${username}/`}/>
                 <LocationMarker />
             </MapContainer>
         </div>
