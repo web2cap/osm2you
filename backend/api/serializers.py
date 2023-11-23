@@ -14,6 +14,14 @@ class CustomUserShortSerializer(UserCreateSerializer):
         fields = ("id", "first_name", "username")
 
 
+class CustomUserInfoSerializer(UserCreateSerializer):
+    """User serializer for display users data in users page."""
+
+    class Meta(UserCreateSerializer.Meta):
+        model = User
+        fields = ("id", "first_name", "username", "date_joined", "bio")
+
+
 class StorySerializer(serializers.ModelSerializer):
     """Stories serializer."""
 

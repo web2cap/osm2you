@@ -10,7 +10,7 @@ from users.models import User
 
 from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly
 from .serializers import (
-    CustomUserShortSerializer,
+    CustomUserInfoSerializer,
     MarkerInstanceSerializer,
     MarkerSerializer,
     MarkerUserSerializer,
@@ -80,7 +80,7 @@ class MarkerViewSet(viewsets.ModelViewSet):
         Add markers with users stories and users markers."""
 
         user = get_object_or_404(User, username=username)
-        user_data = {"user": CustomUserShortSerializer(user).data}
+        user_data = {"user": CustomUserInfoSerializer(user).data}
 
         markers_queryset = self.filter_queryset(self.get_user_markers_queryset(user))
         markers_data = self.get_serializer(markers_queryset, many=True).data
