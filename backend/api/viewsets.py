@@ -55,12 +55,16 @@ class MarkerViewSet(viewsets.ModelViewSet):
     def get_user_markers_queryset(self, user):
         """Select users markers and markers with users stories."""
 
-        return Marker.objects.filter(
-            Q(stories__isnull=False, stories__author=user) | Q(author=user)
-        ).prefetch_related(
-            Prefetch(
-                "stories",
-                queryset=Story.objects.filter(author=user),
+        return (
+            Marker.objects.filter(
+                Q(stories__isnull=False, stories__author=user) | Q(author=user)
+            )
+            .distinct()
+            .prefetch_related(
+                Prefetch(
+                    "stories",
+                    queryset=Story.objects.filter(author=user),
+                )
             )
         )
 
