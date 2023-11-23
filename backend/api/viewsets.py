@@ -10,6 +10,7 @@ from users.models import User
 
 from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly
 from .serializers import (
+    CustomUserShortSerializer,
     MarkerInstanceSerializer,
     MarkerSerializer,
     MarkerUserSerializer,
@@ -75,11 +76,16 @@ class MarkerViewSet(viewsets.ModelViewSet):
 
     @action(methods=["get"], detail=False, url_path="user/(?P<username>[^/.]+)")
     def user(self, request, username):
-        """Markers with users stories and users markers by users username."""
+        """Chech if usernmame exists get user. Add user info to response.
+        Add markers with users stories and users markers."""
+
         user = get_object_or_404(User, username=username)
-        queryset = self.filter_queryset(self.get_user_markers_queryset(user))
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        user_data = {"user": CustomUserShortSerializer(user).data}
+
+        markers_queryset = self.filter_queryset(self.get_user_markers_queryset(user))
+        markers_data = self.get_serializer(markers_queryset, many=True).data
+
+        return Response(user_data | markers_data)
 
 
 class StoryViewSet(viewsets.ModelViewSet):
