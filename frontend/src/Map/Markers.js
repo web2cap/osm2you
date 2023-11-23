@@ -14,6 +14,8 @@ const Markers = ({backend_path = ''}) => {
     const setMarkers = useStoreActions((actions) => actions.setMarkers)
     const addingMarker = useStoreState((state) => state.addingMarker)
 
+    const setErrMsg = useStoreActions((actions) => actions.setErrMsg)
+
     const [bbox, setBbox] = useState(null)
 
     const isFirstCallRef = useRef(true);
@@ -27,7 +29,6 @@ const Markers = ({backend_path = ''}) => {
             const url = bbox 
                 ? `${MARKERS_URL}${backend_path}?in_bbox=${bbox}` 
                 : `${MARKERS_URL}${backend_path}`
-            console.log(url)
             try {
                 const response = await backend.get(url);
                 if (response.status !== 200) {
@@ -35,6 +36,7 @@ const Markers = ({backend_path = ''}) => {
                 }
                 setMarkers(response.data.features);
             } catch (err) {
+                setErrMsg(`Error fetching marker: ${err}`)
                 console.error('Error fetching markers:', err);
             }
         }
