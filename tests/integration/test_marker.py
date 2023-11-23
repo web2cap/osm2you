@@ -124,6 +124,11 @@ class TestMarker:
             "name" in response.data["properties"]
             and response.data["properties"]["name"] == marker.name
         ), "Wrong name in marker response"
+        assert "add_date" in response.data["properties"] and response.data[
+            "properties"
+        ]["add_date"] == marker.add_date.strftime(
+            "%Y-%m-%dT%H:%M:%S.%f"
+        ), "Wrong add_date in marker response"
 
         # Storise in marker
         assert "stories" in response.data["properties"], "No stories in marker response"
