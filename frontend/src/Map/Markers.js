@@ -4,7 +4,7 @@ import { useStoreState, useStoreActions } from 'easy-peasy';
 import { Marker, Popup, useMap } from 'react-leaflet';
 import { Link } from 'react-router-dom';
 
-const Markers = () => {
+const Markers = ({backend_path = ''}) => {
     const MARKERS_URL = useStoreState((state) => state.MARKERS_URL)
 
     const DEBOUNCE_DELAY = useStoreState((state) => state.DEBOUNCE_DELAY);
@@ -24,7 +24,10 @@ const Markers = () => {
     // fetch markers
     useEffect(() => {
         async function fetchData() {
-            const url = bbox ? `${MARKERS_URL}?in_bbox=${bbox}` : MARKERS_URL
+            const url = bbox 
+                ? `${MARKERS_URL}${backend_path}?in_bbox=${bbox}` 
+                : `${MARKERS_URL}${backend_path}`
+            console.log(url)
             try {
                 const response = await backend.get(url);
                 if (response.status !== 200) {
