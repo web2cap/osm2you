@@ -19,10 +19,10 @@ const MarkerUser = () => {
     
     const mapCenter = useStoreState((state) => state.mapCenter)
     const markers = useStoreState((state) => state.markers)
+
+    const markersUser = useStoreState((state) => state.markersUser)
     
     const errMsg = useStoreState((state) => state.errMsg)
-
-
 
     
     return (
@@ -39,8 +39,12 @@ const MarkerUser = () => {
                     </MapContainer>
                 </div>
                 <div className="UserInfo">
-                    <h1 className="marker-name">{username}</h1>
+                    {markersUser && <div>
+                        <h1 className="marker-name">{markersUser.first_name? markersUser.first_name : ''} page.</h1>
+                        <h5>username: {markersUser.username}</h5>
+                    </div>}
                     <>
+                        <h2 className="marker-name">Markers and stories:</h2>
                     {markers.map(marker => (
                     <div>
                         <Link to={`/markers/${marker.id}`} className="story-marker">

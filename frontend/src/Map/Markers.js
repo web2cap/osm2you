@@ -14,6 +14,9 @@ const Markers = ({backend_path = ''}) => {
     const setMarkers = useStoreActions((actions) => actions.setMarkers)
     const addingMarker = useStoreState((state) => state.addingMarker)
 
+    const markersUser = useStoreState((state) => state.markersUser)
+    const setMarkersUser = useStoreActions((actions) => actions.setMarkersUser)
+
     const setErrMsg = useStoreActions((actions) => actions.setErrMsg)
 
     const [bbox, setBbox] = useState(null)
@@ -34,7 +37,11 @@ const Markers = ({backend_path = ''}) => {
                 if (response.status !== 200) {
                     throw TypeError("Failed");
                 }
+                // store markers user info
                 setMarkers(response.data.features);
+                if(response.data?.user && !markersUser){
+                    setMarkersUser(response.data.user)
+                }
             } catch (err) {
                 setErrMsg(`Error fetching marker: ${err}`)
                 console.error('Error fetching markers:', err);
