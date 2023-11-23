@@ -8,7 +8,7 @@
     position: relative;
 }
 
-.MarkerInfo {
+.UserInfo {
     padding: 20px;
     background-color: #f0f0f0;
     border-radius: 5px;
@@ -16,8 +16,10 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-
-.marker-name {
-    font-size: 24px;
-    margin-bottom: 10px;
+.story-marker {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold; /* Emphasize the title */
+    display: block; /* Make the title a block element for better spacing */
+    margin-bottom: 8px; /* Add margin below the title */
 }
