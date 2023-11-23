@@ -99,8 +99,8 @@ class MarkerInstanceSerializer(MarkerSerializer):
     stories = StorySerializerDisplay(many=True, read_only=True)
 
     class Meta:
-        fields = ("id", "name", "is_yours", "stories")
-        read_only_fields = ("id", "stories")
+        fields = ("id", "name", "is_yours", "stories", "add_date")
+        read_only_fields = ("id", "stories", "add_date")
         geo_field = "location"
         model = Marker
 
