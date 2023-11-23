@@ -4,7 +4,7 @@ import { useStoreState } from 'easy-peasy'
 
 import LocationMarker from './LocationMarker';
 import Markers from './Markers';
-import './Map.css';
+import './MarkerUser.css';
 
 
 
@@ -18,7 +18,7 @@ const MarkerUser = () => {
     return (
         <main>
             <div className="map-container">
-            <MapContainer center={mapCenter} zoom={7} className='MapContainer'>
+            <MapContainer center={mapCenter} zoom={2} className='MapUserContainer'>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <Markers backend_path={`user/${username}/`}/>
                 <LocationMarker />
