@@ -52,7 +52,8 @@ class StorySerializerText(serializers.ModelSerializer):
 
     class Meta:
         model = Story
-        fields = ("text",)
+        fields = ("text", "created")
+        read_only_fields = ("created",)
 
 
 class StorySerializerDisplay(serializers.ModelSerializer):
@@ -71,7 +72,7 @@ class StorySerializerDisplay(serializers.ModelSerializer):
 
     class Meta:
         model = Story
-        fields = ("id", "text", "author", "is_yours")
+        fields = ("id", "text", "author", "is_yours", "created")
 
 
 class MarkerSerializer(GeoFeatureModelSerializer):

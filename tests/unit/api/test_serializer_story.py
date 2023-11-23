@@ -51,7 +51,7 @@ class TestStorySerializerText(AbstractTestSerializer):
 
     @property
     def fields_must_present(self):
-        return ["text"]
+        return ["text", "created"]
 
     def expected_data(self, simple_instance):
         return {
@@ -79,7 +79,7 @@ class TestStorySerializerDisplay(AbstractTestSerializer):
 
     @property
     def fields_must_present(self):
-        return ["id", "text", "author", "is_yours"]
+        return ["id", "text", "author", "is_yours", "created"]
 
     def expected_data(self, simple_instance):
         return {
