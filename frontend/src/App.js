@@ -12,6 +12,7 @@ import userAuth from "./User/hooks/userAuth";
 
 import MarkerInstance from "./Map/MarkerInstance";
 import EditMarker from "./Map/EditMarker";
+import MarkerUser from "./Map/MarkerUser";
 
 function App() {
 
@@ -54,6 +55,7 @@ function App() {
         <Route path="markers">
           <Route path=":id" element={<MarkerInstance />} />
           <Route path="edit/:id" element={<EditMarker />} />
+          <Route path="user/:username" element={<MarkerUser />} />
         </Route>
         <Route path="*" element={<Missing />} />
       </Route>
