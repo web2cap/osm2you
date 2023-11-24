@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 
+import FormatDate from '../common/FormatDate';
+
 import './Story.css'
 
 const Story = ({ story }) => {
@@ -89,8 +91,13 @@ const Story = ({ story }) => {
         <li key={story.id} className="story-item">
         {!editingThisStory ? (
             <>
-            <Link className="story-author">{story.author.first_name ? story.author.first_name : story.author.username}</Link>
+            {story?.author && <Link 
+                to={`/markers/user/${story.author.username}/`}
+                className="story-author"
+            >{story.author.first_name ? story.author.first_name : story.author.username}
+            </Link>}
             <p className="story-text">{story.text}</p>
+            <p className="story-date">{FormatDate(story.created)}</p>
             {!addingStory && !editingStory && story.is_yours && (
                 <div className="button-group">
                 <button onClick={handleEditClick}>Edit</button>

@@ -56,6 +56,11 @@ export default createStore({
     setMarkerUpdated: action((state, payload) => {
         state.markerUpdated = payload
     }),
+    // user markers
+    markersUser: null,
+    setMarkersUser: action((state, payload) => {
+        state.markersUser = payload
+    }),
     //Status message
     errMsg: '',
     setErrMsg: action((state, payload) => {
