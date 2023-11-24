@@ -22,6 +22,10 @@
 .UserInfo h5 {
     margin-bottom: 20px;
     font-style:normal;
+    color:darkgray;
+    font-size: medium;
+    text-decoration: none;
+    display: block; 
 
 }
 
