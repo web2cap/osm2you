@@ -9,6 +9,7 @@ import AddMarkerPoint from './AddMarkerPoint';
 import AddStory from "../Story/AddStory";
 import Stories from "../Story/Stories";
 import StatusMessage from "../StatusMessage/StatusMessage";
+import FormatDate from "../common/FormatDate";
 
 const MarkerInstance = () => {
     const { id } = useParams()
@@ -174,6 +175,7 @@ const MarkerInstance = () => {
                             </>
                             : <>
                                 <h1 className="marker-name">{marker.properties.name}</h1>
+                                <p className="marker-date">Added: {FormatDate(marker.properties.add_date)}</p>
                                 {!addingStory && !editingStory && <div className="button-group">
                                     <button
                                         onClick={handleEditMode}

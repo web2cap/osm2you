@@ -21,7 +21,13 @@
     font-size: 24px;
     margin-bottom: 10px;
 }
-
+.marker-date{
+    color:darkgray;
+    font-size: 14px;
+    text-decoration: none;
+    display: block; 
+    margin-bottom: 8px; 
+}
 
 .edit-link {
     color: #007bff;
