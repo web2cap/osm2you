@@ -171,3 +171,4 @@ static/
 
 old_front/
 log/
+.ruff_cache/
