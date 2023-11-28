@@ -2,7 +2,7 @@ import pytest
 from django.urls import resolve
 
 
-class TestMymapUrls:
+class TestOsm2youUrls:
     @pytest.mark.parametrize(
         "url, view_name",
         [
