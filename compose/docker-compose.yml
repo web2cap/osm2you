@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+
+  osm2you_frontend:
+    build:
+      context: ../frontend
+    volumes:
+      - ../frontend/:/app/result_build/
+
+
+
