@@ -172,3 +172,6 @@ static/
 old_front/
 log/
 .ruff_cache/
+poetry.lock
+# dev local
+re.sh
