@@ -26,7 +26,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
 ]
 
-DEBUG = True
+DEBUG = os.getenv("ST_DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
     "localhost",
