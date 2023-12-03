@@ -7,11 +7,40 @@ services:
     volumes:
       - ../frontend/:/app/result_build/
 
+  osm_db:
+    image: postgis/postgis:16-3.4
+    environment:
+        POSTGRES_PASSWORD: changeme
+    volumes:
+      - /var/lib/postgresql/data/
+    env_file:
+      - ./.env
+
+  osm_back:
+    build:
+      context: ../backend
+    restart: always
+    volumes:
+      - osm_static_value:/backend/static/
+      - osm_media_value:/backend/media/
+    depends_on:
+      - osm_db
+    env_file:
+      - ./.env
+
   osm_nginx:
     image: nginx:latest
     ports:
-      - "1080:80"
+      - "8000:80"
     volumes:
       - ../nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - ../frontend/build:/usr/share/nginx/html/
+      - osm_static_value:/var/html/static/
+      - osm_media_value:/var/html/media/
+    depends_on:
+      - osm_back
       
+
+volumes:
+  osm_static_value:
+  osm_media_value:
