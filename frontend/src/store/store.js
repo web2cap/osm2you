@@ -16,7 +16,7 @@ export default createStore({
     }),
     // backend api
     backend: axios.create({
-        baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000'
+        baseURL: process.env.REACT_APP_API_BASE_URL || ''
     }),
     setBackendHeader: action((state) => {
         state.backend.defaults.headers.common['Authorization'] = `Bearer ${state.accessToken}`
