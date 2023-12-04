@@ -1,6 +1,5 @@
 name: not_main_osm2you_workflow
 
-# on: [push]
 on:
   push:
     branches:
