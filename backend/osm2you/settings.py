@@ -26,7 +26,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
 ]
 
-DEBUG = True
+DEBUG = os.getenv("ST_DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -70,7 +70,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "mymap.urls"
+ROOT_URLCONF = "osm2you.urls"
 
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 TEMPLATES = [
@@ -89,7 +89,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "mymap.wsgi.application"
+WSGI_APPLICATION = "osm2you.wsgi.application"
 
 DATABASES = {
     "default": {
@@ -193,7 +193,7 @@ LOGGING_LOGGERS = {
         "handlers": ["console", "file"],
         "level": "INFO",
     },
-    "mymap": {
+    "osm2you": {
         "handlers": ["console", "file"],
         "level": "DEBUG",
     },
