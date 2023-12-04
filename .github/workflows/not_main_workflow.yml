@@ -41,7 +41,7 @@ jobs:
 
     - name: Test with pytest
       env:
-        ST_SECRET_KEY: *******
+        ST_SECRET_KEY: "*******"
         DB_NAME: postgres
         DB_USER: postgres
         DB_PASSWORD: postgres
