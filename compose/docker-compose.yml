@@ -26,6 +26,8 @@ services:
       - osm_db
     env_file:
       - ./.env
+    command: sh -c "python manage.py migrate && yes yes | python manage.py collectstatic && gunicorn osm2you.wsgi:application --bind 0:8000"
+
 
   osm_nginx:
     image: nginx:latest
