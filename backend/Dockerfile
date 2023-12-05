@@ -4,12 +4,14 @@ ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && apt-get install -y pip
 RUN pip install --upgrade pip
+RUN apt-get install -y tree
 
 WORKDIR /backend
 COPY . .
 
 RUN pip install poetry \
     && poetry config virtualenvs.create false \
+    && tree \
     && poetry install
 
 CMD ["gunicorn", "osm2you.wsgi:application", "--bind", "0:8000" ]
