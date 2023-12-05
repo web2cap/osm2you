@@ -41,6 +41,7 @@ jobs:
         cd backend/
         poetry config virtualenvs.create false
         poetry install
+      shell: /bin/bash
 
     - name: Test with pytest
       env:
@@ -52,7 +53,10 @@ jobs:
         DB_TEST_NAME: postgres
         GDAL_LIBRARY_PATH: /usr/lib/libgdal.so
       run: |
-        pytest
+        cd backend/
+        poetry run pytest
+      shell: /bin/bash
+
   send_message:
     runs-on: ubuntu-latest
     needs: tests
