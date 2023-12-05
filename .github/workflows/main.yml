@@ -73,7 +73,8 @@ jobs:
       - name: Build and push to GHCR
         uses: docker/build-push-action@v5
         with:
-          file: ./backend/Dockerfile
+          # file: ./backend/Dockerfile
+          context: ./backend
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository_name }}osm2you_backend:latest
 
