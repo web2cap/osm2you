@@ -44,7 +44,7 @@ jobs:
 
     - name: Test with pytest
       env:
-        SECRET_KEY: '*******************************'
+        SECRET_KEY: +r@zjp=kc@qh#=ov6^vyvx0kb7g=11(*_^a3@%6en$-9_kr_)j
         DB_NAME: postgres
         DB_USER: postgres
         DB_PASSWORD: postgres
