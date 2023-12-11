@@ -43,7 +43,7 @@ poetry run python manage.py migrate
 poetry run python manage.py collectstatic
 poetry run python manage.py runserver
 ```
-- Create superuser (optional):
+- Create superuser (optional)
 ```
 poetry run python manage.py createsuperuser  
 ```

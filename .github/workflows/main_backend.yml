@@ -16,13 +16,18 @@ jobs:
           fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
       - name: Get all test and backend files that have changed
         id: changed-files-yaml
-        uses: tj-actions/changed-files@v40
+        uses: tj-actions/changed-files
         with:
           files_yaml: |
             tests:
               - tests/**
             backend:
               - backend/**
+      - name: List all changed files
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "$file was changed"
+          done
   tests:
     runs-on: ubuntu-latest
     needs: changed_files
