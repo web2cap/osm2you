@@ -27,6 +27,7 @@ if PROJECT_DIR_NAME not in root_dir_content or not os.path.isdir(
 MANAGE_PATH = os.path.join(BASE_DIR, PROJECT_DIR_NAME)
 project_dir_content = os.listdir(MANAGE_PATH)
 FILENAME = "manage.py"
+
 # check that the project structure is correct and manage.py is in place
 if FILENAME not in project_dir_content:
     assert False, (
