@@ -25,9 +25,8 @@ jobs:
               - backend/**
       - name: List all changed files
         run: |
-          for file in ${{ steps.changed-files-yaml.outputs.backend_any_changed }}; do
-            echo "$file was changed"
-          done
+          echo ${{steps.changed-files-yaml.outputs.backend_any_changed}}
+          echo ${{steps.changed-files-yaml.outputs.tests_any_changed}}
   tests:
     runs-on: ubuntu-latest
     needs: changed_files
