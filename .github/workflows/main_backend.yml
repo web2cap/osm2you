@@ -35,6 +35,7 @@ jobs:
           echo "backend_changed=${{ steps.changed-files-yaml.outputs.backend_any_changed }}" >> "$GITHUB_OUTPUT"
           echo "tests_changed=${{ steps.changed-files-yaml.outputs.tests_any_changed }}" >> "$GITHUB_OUTPUT"
           echo "frontend_changed=${{ steps.changed-files-yaml.outputs.frontend_any_changed }}" >> "$GITHUB_OUTPUT"
+          echo "frontend_changed: ${{ steps.changed-files-yaml.outputs.frontend_any_changed }}"
   # BACKEND JOBS         
   tests:
     runs-on: ubuntu-latest
