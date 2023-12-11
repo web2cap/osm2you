@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Set up Git
-        run: git diff --name-only ${{ github.event.before }} ${{ github.sha }} > changed_files.txt
+        run: git diff --name-only ${{ github.event.before || 'HEAD^' }} ${{ github.sha }} > changed_files.txt
       - name: Check if backend directory is modified
         id: backend_changes
         run: echo "::set-output name=changes::$(cat changed_files.txt | grep '^backend/')"
@@ -91,7 +91,6 @@ jobs:
       - name: Build and push to GHCR
         uses: docker/build-push-action@v5
         with:
-          # file: ./backend/Dockerfile
           context: ./backend
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository_name }}osm2you_backend:latest
