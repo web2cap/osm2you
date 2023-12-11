@@ -58,11 +58,20 @@ jobs:
           share-id: backend_any_changed
           mode: get
           key: status
-      - name: Debug environment variables
+      - name: Get backend_any_changed
+        id: get_tests_any_changed
+        uses: noobly314/share-data@v1
+        with:
+          share-id: tests_any_changed
+          mode: get
+          key: status
+      - name: Print changed files variables
         run: |
-          echo "${{ steps.get_backend_any_changed.outputs.data }}"
-          echo "${{ steps.get_backend_any_changed.outputs.data.get_backend_any_changed }}"
-          echo "${{ steps.get_backend_any_changed.outputs.data.get_backend_any_changed.status }}"
+          echo "1 ${{ steps.get_backend_any_changed.outputs.data }}"
+          echo "2 ${{ steps.get_backend_any_changed.outputs.data.get_backend_any_changed }}"
+          echo "3 ${{ steps.get_backend_any_changed.outputs.data.get_backend_any_changed.status }}"
+          echo "1 ${{ steps.get_tests_any_changed.outputs.data }}"
+          
           
 
   tests:
