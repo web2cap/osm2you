@@ -39,6 +39,7 @@ jobs:
   # DEBUG
   changed_trace:
     runs-on: ubuntu-latest 
+    needs: changed_files
     name: changed_trace
     steps:
         
