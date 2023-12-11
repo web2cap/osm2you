@@ -40,5 +40,6 @@ poetry install
 - Then make  manage.py in project folder:
 ```
 poetry run python manage.py migrate  
+poetry run python manage.py collectstatic
 poetry run python manage.py runserver
 ```
