@@ -31,10 +31,19 @@ jobs:
           echo "BACKEND_CHANGED=${{ steps.changed-files-yaml.outputs.backend_any_changed }}" >> $GITHUB_ENV
           echo "TESTS_CHANGED=${{ steps.changed-files-yaml.outputs.tests_any_changed }}" >> $GITHUB_ENV
 
+  debug_cf:
+    runs-on: ubuntu-latest
+    needs: changed_files
+    steps:
+      - name: Debug environment variables
+        run: |
+          echo "BACKEND_CHANGED=${BACKEND_CHANGED}"
+          echo "TESTS_CHANGED=${TESTS_CHANGED}"
+
   tests:
     runs-on: ubuntu-latest
     needs: changed_files
-    if: ${{ needs.changed_files.outputs.BACKEND_CHANGED == 'true' }}
+    if: ${{ needs.changed_files.outputs.BACKEND_CHANGED }}
     services:
       postgres:
         image: postgis/postgis:16-3.4
