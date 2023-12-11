@@ -12,8 +12,8 @@ jobs:
     name: Test changed-files
     outputs:
       backend_changed: ${{ steps.set_output_verb.outputs.backend_changed }}
-      tests_changed: ${{ steps.changed-files-yaml.outputs.tests_changed }}
-      frontend_changed: ${{ steps.changed-files-yaml.outputs.frontend_changed }}
+      tests_changed: ${{ steps.set_output_verb.outputs.tests_changed }}
+      frontend_changed: ${{ steps.set_output_verb.outputs.frontend_changed }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,15 +30,12 @@ jobs:
             frontend:
               - frontend/**
 
-      - name: Set backend_changed
-        id: set_backend_changed
-        run: echo "backend_changed=${{ steps.changed-files-yaml.outputs.backend_any_changed }}" >> "$GITHUB_OUTPUT"
-      - name: Set tests_changed
-        id: set_tests_changed
-        run: echo "tests_changed=${{ steps.changed-files-yaml.outputs.tests_any_changed }}" >> "$GITHUB_OUTPUT"
-      - name: Set frontend_changed
-        id: set_frontend_changed
-        run: echo "frontend_changed=${{ steps.changed-files-yaml.outputs.frontend_any_changed }}" >> "$GITHUB_OUTPUT"
+      - name: Set output
+        id: set_output_verb
+        run: |
+          echo "backend_changed=${{ steps.changed-files-yaml.outputs.backend_any_changed }}" >> "$GITHUB_OUTPUT"
+          echo "tests_changed=${{ steps.changed-files-yaml.outputs.tests_any_changed }}" >> "$GITHUB_OUTPUT"
+          echo "frontend_changed=${{ steps.changed-files-yaml.outputs.frontend_any_changed }}" >> "$GITHUB_OUTPUT"
   # DEBUG
   changed_trace:
     runs-on: ubuntu-latest 
