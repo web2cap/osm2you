@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "osmmainer"
+version = "0.1.0"
+description = ""
+authors = ["Pavel <web2cap@gmail.com>"]
+license = "BSD-3"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
