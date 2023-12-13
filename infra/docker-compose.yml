@@ -11,6 +11,9 @@ services:
 
   osm_db:
     image: postgis/postgis:16-3.4
+    # dev forvard
+    ports:
+      - "54320:5432"
     volumes:
       - /var/lib/postgresql/data/
       - ./postgres/init:/docker-entrypoint-initdb.d
