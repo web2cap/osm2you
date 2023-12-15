@@ -47,4 +47,5 @@ pytest_plugins = [
     "tests.fixtures.fixture_user",
     "tests.fixtures.fixture_marker",
     "tests.fixtures.fixture_story",
+    "tests.fixtures.fixture_tag",
 ]
