@@ -5,7 +5,7 @@ from django.db import models
 class Tag(CreatedModel):
     """Tags clasifficator with human-friendly name"""
 
-    name = models.CharField(max_length=255, null=False, blank=False)
+    name = models.CharField(max_length=255, null=False, blank=False, unique=True)
     display_name = models.CharField(
         max_length=255, null=True, blank=False, default=None
     )
