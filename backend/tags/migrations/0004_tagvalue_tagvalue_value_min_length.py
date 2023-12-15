@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("markers", "0004_alter_marker_location"),
         ("tags", "0003_alter_tag_options_tag_name_min_length"),
