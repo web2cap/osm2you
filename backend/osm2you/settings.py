@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "users",
     "markers",
+    "tags",
     "stories",
     "api",
     "drf_yasg",
