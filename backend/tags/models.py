@@ -58,11 +58,15 @@ class TagValue(CreatedModel):
         verbose_name = "Tag value"
         verbose_name_plural = "Tags values"
         constraints = [
+            models.UniqueConstraint(
+                fields=["tag", "model"],
+                name="unique_marker_tag",
+            ),
             models.CheckConstraint(
                 check=Q(value__length__gte=1),
                 name="value_min_length",
-            )
+            ),
         ]
 
     def __str__(self):
-        return self.tag
+        return self.tag.name
