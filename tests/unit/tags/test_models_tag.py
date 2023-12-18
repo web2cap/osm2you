@@ -23,7 +23,6 @@ class TestTagModels:
         with pytest.raises(IntegrityError):
             tag = Tag.objects.create(**simple_tag_data)
             tag.save()
-            print(Tag.objects.first())
 
     @pytest.mark.django_db
     def test_create_tag_no_display_name(self, simple_tag_data):
