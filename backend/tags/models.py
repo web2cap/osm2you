@@ -59,7 +59,7 @@ class TagValue(CreatedModel):
         verbose_name_plural = "Tags values"
         constraints = [
             models.UniqueConstraint(
-                fields=["tag", "model"],
+                fields=["tag", "marker"],
                 name="unique_marker_tag",
             ),
             models.CheckConstraint(
