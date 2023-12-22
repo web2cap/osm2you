@@ -8,7 +8,6 @@ def overpass_camp_site(south=-90, west=-180, north=90, east=180):
             south=south, west=west, north=north, east=east
         )
     }
-    print(params)
     response = requests.get(OVERPASS["url"], params=params)
 
     if response.status_code == 200:
