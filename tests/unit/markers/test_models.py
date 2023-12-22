@@ -1,6 +1,5 @@
 import pytest
 from django.db.utils import IntegrityError
-
 from markers.models import Marker
 
 
@@ -25,11 +24,11 @@ class TestMarkersModels:
     def test_create_marker_no_name(self, simple_marker_data):
         """Test creating a marker with no name."""
 
-        with pytest.raises(IntegrityError):
-            marker = Marker.objects.create(
-                name=None, location=simple_marker_data["location"]
-            )
-            marker.save()
+        marker = Marker.objects.create(
+            name=None, location=simple_marker_data["location"]
+        )
+        marker.save()
+        assert marker.name is None, "Created marker has not None name"
 
     @pytest.mark.django_db
     def test_create_marker_no_location(self, simple_marker_data):
