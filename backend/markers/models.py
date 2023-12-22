@@ -22,4 +22,6 @@ class Marker(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        if not self.name:
+            return str(self.id)
+        return str(self.name)
