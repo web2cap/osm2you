@@ -244,21 +244,16 @@ class TestMarker:
         check_response(response, 401, ["detail"])
 
     @pytest.mark.django_db()
-    @pytest.mark.parametrize(
-        "blank_field",
-        ["name", "location"],
-    )
     def test_marker_create_blank_field(
         self,
         user_owner_client,
         simple_marker_json,
-        blank_field,
     ):
-        simple_marker_json[blank_field] = None
+        simple_marker_json["location"] = None
         response = user_owner_client.post(
             self.URL_MARKERS, data=simple_marker_json, format="json"
         )
-        check_response(response, 400, [blank_field])
+        check_response(response, 400, ["location"])
 
     @pytest.mark.django_db()
     def test_marker_create_location_exist(
@@ -273,6 +268,25 @@ class TestMarker:
             format="json",
         )
         check_response(response, 400, ["location"])
+
+    @pytest.mark.django_db()
+    def test_marker_create_valid_no_name(self, user_owner_client, simple_marker_json):
+        simple_marker_json.pop("name")
+        response = user_owner_client.post(
+            self.URL_MARKERS, data=simple_marker_json, format="json"
+        )
+
+        required_fields = [
+            "id",
+            "type",
+            "geometry",
+            "properties",
+        ]
+        check_response(response, 201, required_fields)
+        assert (
+            "name" in response.data["properties"]
+            and response.data["properties"]["name"] is None
+        ), "Name in response data doesn't equal None"
 
     @pytest.mark.django_db()
     def test_marker_create_valid(self, user_owner_client, simple_marker_json):
@@ -318,23 +332,18 @@ class TestMarker:
         check_response(response, 401, ["detail"])
 
     @pytest.mark.django_db()
-    @pytest.mark.parametrize(
-        "blank_field",
-        ["name", "location"],
-    )
     def test_marker_patch_blank_field(
         self,
         user_owner_client,
         marker_with_author_story,
         simple_marker_updated_json,
-        blank_field,
     ):
         url = f"{self.URL_MARKERS}{marker_with_author_story.id}/"
-        simple_marker_updated_json[blank_field] = None
+        simple_marker_updated_json["location"] = None
         response = user_owner_client.patch(
             url, data=simple_marker_updated_json, format="json"
         )
-        check_response(response, 400, [blank_field])
+        check_response(response, 400, ["location"])
 
     @pytest.mark.django_db()
     def test_marker_patch_location_exist(
