@@ -27,6 +27,8 @@ sqlparse = "0.4.4"
 pre-commit = "^3.5.0"
 gunicorn = "^21.2.0"
 tzdata = "^2023.3"
+bs4 = "^0.0.1"
+lxml = "^4.9.4"
 
 
 
