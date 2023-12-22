@@ -229,3 +229,8 @@ LOGGING = {
     },
     "loggers": LOGGING_LOGGERS,
 }
+
+OVERPASS = {
+    "url": "https://overpass-api.de/api/interpreter",
+    "camp_site": """node[tourism=camp_site]({south},{west},{north},{east});out;""",
+}
