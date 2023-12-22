@@ -13,5 +13,7 @@ Base = automap_base(metadata=metadata)
 Base.prepare()
 
 Marker = Base.classes.markers_marker
+Tag = Base.classes.tags_tag
+TagValues = Base.classes.tags_tagvalue
 
 session = Session(engine)
