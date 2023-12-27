@@ -234,3 +234,8 @@ OVERPASS = {
     "url": "https://overpass-api.de/api/interpreter",
     "camp_site": """node[tourism=camp_site]({south},{west},{north},{east});out;""",
 }
+
+MESSAGES = {
+    "SCRAPDATA_SUCCESS_MESSAGE": "Markers updated successfully. Computed {num_records} records.",
+    "SCRAPDATA_FAILURE_MESSAGE": "Markers update failure.",
+}
