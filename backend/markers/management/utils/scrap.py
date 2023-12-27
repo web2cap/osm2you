@@ -2,6 +2,16 @@ from bs4 import BeautifulSoup
 
 
 def scrap_nodes(xml_data):
+    """
+    Extract information from XML data containing node details.
+
+    Args:
+        xml_data (str): XML data containing node details.
+
+    Returns:
+        list: A list of dictionaries, each representing a place/node with its attributes.
+    """
+
     soup = BeautifulSoup(xml_data, "xml")
     places = []
     for node in soup.find_all("node"):
