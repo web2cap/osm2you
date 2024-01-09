@@ -1,7 +1,10 @@
+import logging
+
 import requests
 from django.conf import settings
 
 OVERPASS = getattr(settings, "OVERPASS", {})
+logger = logging.getLogger(__name__)
 
 
 def overpass_camp_site(south=-90, west=-180, north=90, east=180):
@@ -32,5 +35,5 @@ def overpass_camp_site(south=-90, west=-180, north=90, east=180):
     if response.status_code == 200:
         return response.text
     else:
-        print(f"Error: {response.status_code}")
+        logger.error(f"overpass_camp_site response {response.status_code}")
         return None
