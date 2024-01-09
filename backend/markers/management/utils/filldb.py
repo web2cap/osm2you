@@ -38,16 +38,16 @@ def update_nodes(nodes):
         - The function updates or creates markers, tags, and tag values in an atomic transaction for data consistency.
     """
 
-    for node in nodes:
-        stat = {
-            "markers_upd": 0,
-            "markers_add": 0,
-            "tags_use": 0,
-            "tags_add": 0,
-            "tv_upd": 0,
-            "tv_add": 0,
-        }
+    stat = {
+        "markers_upd": 0,
+        "markers_add": 0,
+        "tags_use": 0,
+        "tags_add": 0,
+        "tv_upd": 0,
+        "tv_add": 0,
+    }
 
+    for node in nodes:
         try:
             # Marker
             location = Point(float(node["lon"]), float(node["lat"]))
