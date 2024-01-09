@@ -7,6 +7,7 @@ class Marker(models.Model):
 
     name = models.CharField(max_length=255, null=True, blank=False)
     location = models.PointField(null=False, blank=False, unique=True)
+    osm_id = models.BigIntegerField(null=True, blank=True, default=None)
 
     author = models.ForeignKey(
         User,
