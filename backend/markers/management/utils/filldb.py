@@ -54,17 +54,22 @@ def update_nodes(nodes):
             marker_queryset = Marker.objects.filter(location__exact=location)
             if marker_queryset.exists():  # get marker
                 marker = marker_queryset.first()
-                if not marker.name:  # update marker name
-                    marker.name = (
-                        node["name"]["v"]
-                        if isinstance(node["name"], dict)
-                        else node["name"]
-                    )
+                if not marker.name or not marker.osm_id:  # update marker name or osm_id
+                    if not marker.name:
+                        marker.name = (
+                            node["name"]["v"]
+                            if isinstance(node["name"], dict)
+                            else node["name"]
+                        )
+                    if not marker.osm_id:
+                        marker.osm_id = node["id"]
                     marker.save()
                     stat["markers_upd"] += 1
 
             else:  # create marker
-                marker = Marker.objects.create(name=node.get("name"), location=location)
+                marker = Marker.objects.create(
+                    name=node.get("name"), location=location, osm_id=node.get("id")
+                )
                 stat["markers_add"] += 1
             # Tag
             for tag_name, tag_value in node["tags"].items():
