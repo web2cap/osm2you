@@ -26,3 +26,19 @@ class Marker(models.Model):
         if not self.name:
             return str(self.id)
         return str(self.name)
+
+
+class MarkerCluster(models.Model):
+    """A markers cluster with count of markers for zoom."""
+
+    location = models.PointField(null=False, blank=False)
+    zoom = models.SmallIntegerField(null=False, blank=False)
+    markers_count = models.IntegerField(null=False, blank=False, default=0)
+
+    update_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Update date",
+    )
+
+    def __str__(self):
+        return str(self.id)
