@@ -68,6 +68,15 @@ def marker_different_author_with_story_owner_story_user(
 
 
 @pytest.fixture
+def marker_with_tag(user_owner_instance, simple_tagǜalue_withoutmarker_data):
+    marker = Marker.objects.create(
+        name="Marker with tag", location=Point(5, 5), author=user_owner_instance
+    )
+    marker.tag_value.create(**simple_tagǜalue_withoutmarker_data)
+    return marker
+
+
+@pytest.fixture
 def marker_viewset():
     return MarkerViewSet()
 

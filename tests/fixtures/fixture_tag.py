@@ -22,3 +22,11 @@ def simple_tag_value_data(simple_marker, simple_tag):
         "marker": simple_marker,
         "value": "tagvalue example",
     }
+
+
+@pytest.fixture
+def simple_tagǜalue_withoutmarker_data(simple_tag):
+    return {
+        "tag": simple_tag,
+        "value": "tagvalue example",
+    }
