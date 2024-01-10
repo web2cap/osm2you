@@ -94,13 +94,18 @@ class MarkerSerializer(GeoFeatureModelSerializer):
 
 
 class MarkerInstanceSerializer(MarkerSerializer):
-    """Extend MarkerSerializer,  add marker stories list."""
+    """Extend MarkerSerializer,  add marker stories and tags with values lists."""
 
     stories = StorySerializerDisplay(many=True, read_only=True)
+    tags = serializers.SerializerMethodField()
+
+    def get_tags(self, obj):
+        tags = obj.tag_value.all()
+        return {tag.tag.name: tag.value for tag in tags}
 
     class Meta:
-        fields = ("id", "name", "is_yours", "stories", "add_date")
-        read_only_fields = ("id", "stories", "add_date")
+        fields = ("id", "name", "is_yours", "stories", "tags", "add_date")
+        read_only_fields = ("id", "stories", "tags", "add_date")
         geo_field = "location"
         model = Marker
 

@@ -237,6 +237,38 @@ class TestMarker:
             and response_other_user_story["is_yours"] is False
         ), "is_yours for other user story must be false in marker instance response"
 
+    @pytest.mark.django_db()
+    def test_marker_instance_tags(
+        self,
+        client,
+        marker_with_tag,
+    ):
+        """Tests tags in unauthorized request to marker instance."""
+
+        response_marker = client.get(f"{self.URL_MARKERS}{marker_with_tag.id}/")
+        required_fields = ["id", "type", "geometry", "properties"]
+        check_response(response_marker, 200, required_fields)
+        response_json = response_marker.json()
+
+        assert (
+            "tags" in response_json["properties"]
+        ), "Field tags should be present in valid response."
+
+        assert len(
+            response_json["properties"]["tags"]
+        ), "Field tags  should content elemet."
+
+        isinstance_tag_value = marker_with_tag.tag_value.first()
+
+        assert (
+            isinstance_tag_value.tag.name in response_json["properties"]["tags"]
+        ), "Field with tag name should be present in valid response."
+
+        assert (
+            response_json["properties"]["tags"][isinstance_tag_value.tag.name]
+            == isinstance_tag_value.value
+        ), "Field with tag value should be equal instance tag value."
+
     # CREATE
     @pytest.mark.django_db()
     def test_marker_create_unauthorized(self, client, simple_marker_json):

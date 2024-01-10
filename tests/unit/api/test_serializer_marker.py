@@ -118,6 +118,30 @@ class TestMarkerInstanceSerializer(TestMarkerSerializer):
         ), "Field properties.stories.author.username should be equal instance stories.author.username."
 
     @pytest.mark.django_db
+    def test_serializer_data_properties_tags(self, marker_with_tag):
+        """Check that properties tags is correct."""
+
+        serializer = self.serializer_class(instance=marker_with_tag)
+
+        assert (
+            "tags" in serializer.data["properties"]
+        ), "Field properties.tags should be present in valid data."
+
+        assert len(
+            serializer.data["properties"]["tags"]
+        ), "properties.tags should content elemet."
+
+        isinstance_tag_value = marker_with_tag.tag_value.first()
+
+        assert (
+            isinstance_tag_value.tag.name in serializer.data["properties"]["tags"]
+        ), "Key properties.tags should be present in valid data."
+        assert (
+            serializer.data["properties"]["tags"][isinstance_tag_value.tag.name]
+            == isinstance_tag_value.value
+        ), "Field properties.tags.value should be equal instance value."
+
+    @pytest.mark.django_db
     def test_serializer_data_properties_add_date(self, simple_instance):
         """Check that properties add_date is correct."""
 
