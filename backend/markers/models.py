@@ -32,8 +32,8 @@ class MarkerCluster(models.Model):
     """A markers cluster with count of markers for zoom."""
 
     location = models.PointField(null=False, blank=False)
-    zoom = models.SmallIntegerField(null=False, blank=False)
-    markers_count = models.IntegerField(null=False, blank=False, default=0)
+    zoom = models.PositiveSmallIntegerField(null=False, blank=False)
+    markers_count = models.PositiveIntegerField(null=False, blank=False)
 
     update_date = models.DateTimeField(
         auto_now_add=True,
