@@ -6,6 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_gis import filters
 from stories.models import Story
+from tags.models import TagValue
 from users.models import User
 
 from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly
@@ -39,8 +40,9 @@ class MarkerViewSet(viewsets.ModelViewSet):
         return self.serializers.get(self.action, self.serializers["default"])
 
     def get_queryset(self):
-        """Get the queryset for Marker objects.
-        If retrive join author ans stories to marker and author to story.
+        """Gets the queryset for Marker objects.
+        If action is retrieve, joins author and stories with story author to marker.
+        If action is retrieve, joins tags values and this tags names to marker.
         """
         queryset = Marker.objects.all()
         if self.action == "retrieve":
@@ -50,6 +52,11 @@ class MarkerViewSet(viewsets.ModelViewSet):
                     queryset=Story.objects.select_related("author"),
                 ),
                 "stories__author",
+                Prefetch(
+                    "tag_value",
+                    queryset=TagValue.objects.select_related("tag"),
+                ),
+                "tag_value__tag",
             )
         return queryset
 
