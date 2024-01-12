@@ -234,3 +234,19 @@ OVERPASS = {
     "url": "https://overpass-api.de/api/interpreter",
     "camp_site": """node[tourism=camp_site]({south},{west},{north},{east});out;""",
 }
+
+
+CLUSTERING = {
+    "square_size": [
+        # 0.01,
+        # 0.1,
+        1.0,
+        10.0,
+    ],
+    "zoom": [
+        # 14,
+        # 12,
+        10,
+        8,
+    ],
+}
