@@ -43,6 +43,11 @@ services:
     depends_on:
       - osm_back
       
+  osm_redis:
+    image: redis:latest
+    depends_on:
+      - osm_back
+    
 
 volumes:
   osm_static_value:
