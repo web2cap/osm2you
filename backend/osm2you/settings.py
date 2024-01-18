@@ -248,3 +248,18 @@ CLUSTERING = {
         8,
     ],
 }
+
+
+# Celery
+CELERY_BROKER_URL = (
+    f"{os.getenv('REDIS_USER')}://{os.getenv('REDIS_HOST')}:"
+    f"{os.getenv('REDIS_PORT')}/{os.getenv('REDIS_INDEX')}"
+)
+CELERY_RESULT_BACKEND = (
+    f"{os.getenv('REDIS_USER')}://{os.getenv('REDIS_HOST')}:"
+    f"{os.getenv('REDIS_PORT')}/{os.getenv('REDIS_INDEX')}"
+)
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "UTC"
