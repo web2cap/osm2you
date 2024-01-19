@@ -11,12 +11,15 @@ app = Celery("osm2you")
 app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
 
+app.conf.beat_scheduler = "django_celery_beat.schedulers:DatabaseScheduler"
+
 app.conf.beat_schedule = {
     "run_scrapdata": {
         # Run every night at 2 AM
         "task": "osm2you.tasks.run_scrapdata",
         "schedule": crontab(minute=0, hour=2),
     },
+    # Add other scheduled tasks as needed
 }
 
 app.conf.timezone = "UTC"

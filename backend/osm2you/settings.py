@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "djoser",
     "rest_framework_simplejwt",
     "rest_framework.authtoken",
+    "django_celery_beat",
     "users",
     "markers",
     "tags",
