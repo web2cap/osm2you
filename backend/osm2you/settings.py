@@ -3,6 +3,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import dotenv
+from celery.schedules import crontab
 from corsheaders.defaults import default_headers
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -250,8 +251,6 @@ CLUSTERING = {
     ],
 }
 
-
-# Celery
 CELERY_BROKER_URL = (
     f"{os.getenv('REDIS_USER')}://{os.getenv('REDIS_HOST')}:"
     f"{os.getenv('REDIS_PORT')}/{os.getenv('REDIS_INDEX')}"
@@ -264,3 +263,12 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_BEAT_SCHEDULE = {
+    "run_scrapdata": {
+        # Run every night at 2 AM
+        "task": "markers.tasks.run_scrapdata",
+        # "schedule": crontab(minute=10, hour=19),
+        "schedule": crontab(minute="*/10"),
+    },
+}
