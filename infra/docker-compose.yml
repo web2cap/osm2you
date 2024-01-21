@@ -34,15 +34,15 @@ services:
       - ./.env
     command: sh -c "python manage.py migrate && yes yes | python manage.py collectstatic && python manage.py scrapdata && python manage.py clustermarkers && gunicorn osm2you.wsgi:application --bind 0:8000"
 
-  osm_celery:
+  osm_celery_worker:
     build:
       context: ../backend
+    command: celery -A osm2you worker --loglevel=info
     depends_on:
-      - osm_back
+      - osm_db
+      - osm_redis
     env_file:
       - ./.env
-    command: celery -A osm2you worker --loglevel=info
-
 
   osm_nginx:
     image: nginx:latest
@@ -55,8 +55,6 @@ services:
       - osm_media_value:/var/html/media/
     depends_on:
       - osm_back
-      
-
 
 volumes:
   osm_static_value:
