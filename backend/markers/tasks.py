@@ -20,12 +20,6 @@ def run_scrapdata():
 
 
 @shared_task
-def run_makemigration():
-    call_command("makemigration")
-    logger.warning("Makemigration completed")
-
-
-@shared_task
 def run_sleeper():
     sleep(120)
     logger.warning("Sleep completed")
