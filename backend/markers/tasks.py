@@ -5,8 +5,6 @@ from django.core.management import call_command
 
 logger = logging.getLogger(__name__)
 
-from time import sleep
-
 
 @shared_task
 def run_clustermarkers():
@@ -17,9 +15,3 @@ def run_clustermarkers():
 def run_scrapdata():
     call_command("scrapdata")
     run_clustermarkers.delay()
-
-
-@shared_task
-def run_sleeper():
-    sleep(120)
-    logger.warning("Sleep completed")
