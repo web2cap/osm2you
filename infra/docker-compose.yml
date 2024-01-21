@@ -32,7 +32,8 @@ services:
       - osm_redis
     env_file:
       - ./.env
-    command: sh -c "python manage.py migrate && yes yes | python manage.py collectstatic && python manage.py scrapdata && python manage.py clustermarkers && gunicorn osm2you.wsgi:application --bind 0:8000"
+    # command: sh -c "python manage.py migrate && yes yes | python manage.py collectstatic && python manage.py scrapdata && python manage.py clustermarkers && gunicorn osm2you.wsgi:application --bind 0:8000"
+    command: sh -c "python manage.py migrate && yes yes | python manage.py collectstatic && gunicorn osm2you.wsgi:application --bind 0:8000"
 
   osm_celery_worker:
     build:
@@ -47,9 +48,22 @@ services:
   osm_celery_beat:
     build:
       context: ../backend
-    command: celery -A django_celery_example beat -l INFO
+    command: celery -A osm2you beat -l INFO
     depends_on:
       - osm_back
+    env_file:
+      - ./.env
+
+  osm_flower:
+    build:
+      context: ../backend
+    command: /flower/start.sh
+    ports:
+      - 5555:5555
+    volumes:
+      - ./flower/start.sh:/flower/start.sh
+    depends_on:
+      - osm_celery_beat
     env_file:
       - ./.env
 
