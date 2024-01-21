@@ -17,9 +17,13 @@ app.conf.beat_schedule = {
     "run_scrapdata": {
         # Run every night at 2 AM
         "task": "osm2you.tasks.run_scrapdata",
-        "schedule": crontab(minute=0, hour=2),
+        "schedule": crontab(minute=10, hour=19),
     },
-    # Add other scheduled tasks as needed
+    "run_sleeper": {
+        # Run every 5 min TEST
+        "task": "osm2you.tasks.run_sleeper",
+        "schedule": crontab(minute="*/5"),
+    },
 }
 
 app.conf.timezone = "UTC"
