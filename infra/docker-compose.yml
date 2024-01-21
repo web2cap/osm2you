@@ -38,6 +38,7 @@ services:
   osm_celery_worker:
     build:
       context: ../backend
+    restart: always
     command: celery -A osm2you worker --loglevel=info
     depends_on:
       - osm_db
@@ -48,6 +49,7 @@ services:
   osm_celery_beat:
     build:
       context: ../backend
+    restart: always
     command: celery -A osm2you beat -l INFO
     depends_on:
       - osm_back
@@ -57,6 +59,7 @@ services:
   osm_flower:
     build:
       context: ../backend
+    restart: always
     command: /flower/start.sh
     ports:
       - 5555:5555
