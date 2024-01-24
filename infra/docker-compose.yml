@@ -54,7 +54,7 @@ services:
       - osm_celery_beat
     env_file:
       - ./.env
-    command: /scripts/start.sh
+    command: /scripts/startback.sh
 
   osm_nginx:
     image: nginx:latest
@@ -67,6 +67,19 @@ services:
       - osm_media_value:/var/html/media/
     depends_on:
       - osm_back
+
+  osm_flower:
+    build:
+      context: ../backend
+    restart: always
+    command: /scripts/startflower.sh
+    ports:
+      - 5555:5555
+    depends_on:
+      - osm_celery_beat
+    env_file:
+      - ./.env
+
 
 volumes:
   osm_static_value:
