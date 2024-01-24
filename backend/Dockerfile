@@ -8,8 +8,12 @@ RUN pip install --upgrade pip
 WORKDIR /backend
 COPY . .
 
+RUN mv scripts /
+RUN chmod +x /scripts/*
+
 RUN pip install poetry \
     && poetry config virtualenvs.create false \
     && poetry install
 
-CMD ["gunicorn", "osm2you.wsgi:application", "--bind", "0:8000" ]
+
+ENTRYPOINT ["/scripts/entrypoint.sh"]
