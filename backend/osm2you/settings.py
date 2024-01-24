@@ -268,7 +268,6 @@ CELERY_BEAT_SCHEDULE = {
     "run_scrapdata": {
         # Run every night at 2 AM
         "task": "markers.tasks.run_scrapdata",
-        # "schedule": crontab(minute=10, hour=19),
-        "schedule": crontab(minute="*/10"),
+        "schedule": crontab(minute=0, hour=2),
     },
 }
