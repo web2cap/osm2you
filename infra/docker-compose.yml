@@ -17,6 +17,31 @@ services:
     env_file:
       - ./.env
 
+  osm_redis:
+    image: redis:latest
+
+  osm_celery_worker:
+    build:
+      context: ../backend
+    restart: always
+    command: celery -A osm2you worker --loglevel=info
+    depends_on:
+      - osm_db
+      - osm_redis
+    env_file:
+      - ./.env
+  
+  osm_celery_beat:
+    build:
+      context: ../backend
+    restart: always
+    command: celery -A osm2you beat -l INFO
+    depends_on:
+      - osm_db
+      - osm_redis
+    env_file:
+      - ./.env
+
   osm_back:
     build:
       context: ../backend
@@ -25,16 +50,16 @@ services:
       - osm_static_value:/backend/static/
       - osm_media_value:/backend/media/
     depends_on:
-      - osm_db
+      - osm_celery_worker
+      - osm_celery_beat
     env_file:
       - ./.env
-    command: sh -c "python manage.py migrate && yes yes | python manage.py collectstatic && gunicorn osm2you.wsgi:application --bind 0:8000"
-
+    command: /scripts/startback.sh
 
   osm_nginx:
     image: nginx:latest
     ports:
-      - "1083:80"
+      - "80:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - ../frontend/build:/usr/share/nginx/html/
@@ -42,7 +67,19 @@ services:
       - osm_media_value:/var/html/media/
     depends_on:
       - osm_back
-      
+
+  osm_flower:
+    build:
+      context: ../backend
+    restart: always
+    command: /scripts/startflower.sh
+    ports:
+      - 5555:5555
+    depends_on:
+      - osm_celery_beat
+    env_file:
+      - ./.env
+
 
 volumes:
   osm_static_value:
