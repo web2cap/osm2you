@@ -20,6 +20,28 @@ services:
   osm_redis:
     image: redis:latest
 
+  osm_celery_worker:
+    build:
+      context: ../backend
+    restart: always
+    command: celery -A osm2you worker --loglevel=info
+    depends_on:
+      - osm_db
+      - osm_redis
+    env_file:
+      - ./.env
+  
+  osm_celery_beat:
+    build:
+      context: ../backend
+    restart: always
+    command: celery -A osm2you beat -l INFO
+    depends_on:
+      - osm_db
+      - osm_redis
+    env_file:
+      - ./.env
+
   osm_back:
     build:
       context: ../backend
@@ -28,8 +50,8 @@ services:
       - osm_static_value:/backend/static/
       - osm_media_value:/backend/media/
     depends_on:
-      - osm_db
-      - osm_redis
+      - osm_celery_worker
+      - osm_celery_beat
     env_file:
       - ./.env
     command: /scripts/start.sh
