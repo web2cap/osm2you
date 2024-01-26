@@ -1,6 +1,9 @@
+from django.conf import settings
+
+# from django.contrib.gis.geos import Point
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404
-from markers.models import Marker
+from markers.models import Marker, MarkerCluster
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -12,6 +15,7 @@ from users.models import User
 from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly
 from .serializers import (
     CustomUserInfoSerializer,
+    MarkerClusterSerializer,
     MarkerInstanceSerializer,
     MarkerSerializer,
     MarkerUserSerializer,
@@ -19,6 +23,9 @@ from .serializers import (
     StorySerializerDisplay,
     StorySerializerText,
 )
+
+CLUSTERING = getattr(settings, "CLUSTERING", {})
+CLUSTERING_DENCITY = getattr(settings, "CLUSTERING_DENCITY", 36)
 
 
 class MarkerViewSet(viewsets.ModelViewSet):
@@ -32,11 +39,15 @@ class MarkerViewSet(viewsets.ModelViewSet):
     serializers = {
         "retrieve": MarkerInstanceSerializer,
         "user": MarkerUserSerializer,
+        "clusters": MarkerClusterSerializer,
         "default": MarkerSerializer,
     }
 
     def get_serializer_class(self):
         """Get the serializer class based on the action."""
+
+        if self.action == "list" and self.zoom_level():
+            return self.serializers.get("clusters")
         return self.serializers.get(self.action, self.serializers["default"])
 
     def get_queryset(self):
@@ -44,6 +55,8 @@ class MarkerViewSet(viewsets.ModelViewSet):
         If action is retrieve, joins author and stories with story author to marker.
         If action is retrieve, joins tags values and this tags names to marker.
         """
+
+        zoom_level = self.zoom_level()
         queryset = Marker.objects.all()
         if self.action == "retrieve":
             queryset = Marker.objects.select_related("author").prefetch_related(
@@ -58,6 +71,8 @@ class MarkerViewSet(viewsets.ModelViewSet):
                 ),
                 "tag_value__tag",
             )
+        elif self.action == "list" and zoom_level:
+            queryset = MarkerCluster.objects.all()
         return queryset
 
     def get_user_markers_queryset(self, user):
@@ -93,6 +108,32 @@ class MarkerViewSet(viewsets.ModelViewSet):
         markers_data = self.get_serializer(markers_queryset, many=True).data
 
         return Response(user_data | markers_data)
+
+    def get_bbox_area(self):
+        bbox = self.request.query_params.get("in_bbox")
+        if not bbox:
+            return 360 * 180
+
+        min_lon, min_lat, max_lon, max_lat = map(float, bbox.split(","))
+        dif_lon = max_lon - min_lon
+        if dif_lon > 360:
+            dif_lon = 360
+        dif_lat = max_lat - min_lat
+        if dif_lat > 180:
+            dif_lon = 180
+        return dif_lon * dif_lat
+
+    def zoom_level(self):
+        """Calculate the zoom level based on CLUSTERING_DENCITY and bbox area."""
+        bbox_area = self.get_bbox_area()
+        if bbox_area < CLUSTERING["square_size"][0] ** 2 * CLUSTERING_DENCITY:
+            return False
+
+        for i in range(1, len(CLUSTERING["square_size"])):
+            if bbox_area < CLUSTERING["square_size"][i] ** 2 * CLUSTERING_DENCITY:
+                return CLUSTERING["zoom"][i - 1]
+
+        return CLUSTERING["zoom"][len(CLUSTERING["square_size"]) - 1]
 
 
 class StoryViewSet(viewsets.ModelViewSet):
