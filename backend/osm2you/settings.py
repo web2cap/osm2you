@@ -240,7 +240,7 @@ OVERPASS = {
 
 CLUSTERING = {
     "square_size": [
-        0.1,
+        0.24,
         1.0,
         10.0,
     ],
@@ -250,6 +250,8 @@ CLUSTERING = {
         8,
     ],
 }
+CLUSTERING_DENCITY = 36
+
 
 CELERY_BROKER_URL = (
     f"{os.getenv('REDIS_USER')}://{os.getenv('REDIS_HOST')}:"
