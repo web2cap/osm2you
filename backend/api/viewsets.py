@@ -1,6 +1,4 @@
 from django.conf import settings
-
-# from django.contrib.gis.geos import Point
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404
 from markers.models import Marker, MarkerCluster
@@ -72,7 +70,7 @@ class MarkerViewSet(viewsets.ModelViewSet):
                 "tag_value__tag",
             )
         elif self.action == "list" and zoom_level:
-            queryset = MarkerCluster.objects.all()
+            queryset = MarkerCluster.objects.filter(zoom=zoom_level)
         return queryset
 
     def get_user_markers_queryset(self, user):
