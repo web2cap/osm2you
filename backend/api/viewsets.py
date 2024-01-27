@@ -40,12 +40,12 @@ class MarkerViewSet(viewsets.ModelViewSet):
         "default": MarkerSerializer,
     }
 
-    calculated_zoom = None
+    calculated_square_size = None
 
     def get_serializer_class(self):
         """Get the appropriate serializer class based on the action."""
 
-        if self.action == "list" and self.zoom_level():
+        if self.action == "list" and self.square_size():
             return self.serializers.get("clusters")
         return self.serializers.get(self.action, self.serializers["default"])
 
@@ -53,7 +53,7 @@ class MarkerViewSet(viewsets.ModelViewSet):
         """Get the queryset for Marker objects or MarkerCluster objects based on the action."""
         if self.action == "retrieve":
             return self.get_retrieve_queryset()
-        if self.action == "list" and self.zoom_level():
+        if self.action == "list" and self.square_size():
             return self.get_cluster_queryset()
         return Marker.objects.all()
 
@@ -74,9 +74,9 @@ class MarkerViewSet(viewsets.ModelViewSet):
         )
 
     def get_cluster_queryset(self):
-        """Get the queryset for MarkerCluster objects based on the current zoom level."""
+        """Get the queryset for MarkerCluster objects based on the current square size."""
 
-        return MarkerCluster.objects.filter(zoom=self.zoom_level())
+        return MarkerCluster.objects.filter(square_size=self.square_size())
 
     def get_user_markers_queryset(self, user):
         """Get the queryset for markers associated with a specific user and their stories."""
@@ -132,27 +132,29 @@ class MarkerViewSet(viewsets.ModelViewSet):
             dif_lon = 180
         return dif_lon * dif_lat
 
-    def zoom_level(self):
-        """Calculate and return the zoom level based on CLUSTERING_DENCITY and bounding box area.
+    def square_size(self):
+        """Calculate and return the square_size level based on CLUSTERING_DENCITY and bounding box area.
 
         Returns:
-            int or False: The calculated zoom level, or False if the zoom is too large.
+            int or False: The calculated square_size level, or False if the zoom is too large.
         """
-        if self.calculated_zoom:  # If zoom computed before
-            return self.calculated_zoom
+        if self.calculated_square_size:  # If square_size computed before
+            return self.calculated_square_size
 
         bbox_area = self.get_bbox_area()
         if bbox_area < CLUSTERING["square_size"][0] ** 2 * CLUSTERING_DENCITY:
-            self.calculated_zoom = False
+            self.calculated_square_size = False
             return False
 
         for i in range(1, len(CLUSTERING["square_size"])):
             if bbox_area < CLUSTERING["square_size"][i] ** 2 * CLUSTERING_DENCITY:
-                self.calculated_zoom = CLUSTERING["zoom"][i - 1]
-                return self.calculated_zoom
+                self.calculated_square_size = CLUSTERING["square_size"][i - 1]
+                return self.calculated_square_size
 
-        self.calculated_zoom = CLUSTERING["zoom"][len(CLUSTERING["square_size"]) - 1]
-        return self.calculated_zoom
+        self.calculated_square_size = CLUSTERING["square_size"][
+            len(CLUSTERING["square_size"]) - 1
+        ]
+        return self.calculated_square_size
 
 
 class StoryViewSet(viewsets.ModelViewSet):

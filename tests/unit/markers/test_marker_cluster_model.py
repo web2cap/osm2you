@@ -13,14 +13,14 @@ class TestMarkerClusterModels:
             marker_cluster.location == simple_marker_cluster_data["location"]
         ), "Created cluster has wrong location"
         assert (
-            marker_cluster.zoom == simple_marker_cluster_data["zoom"]
+            marker_cluster.square_size == simple_marker_cluster_data["square_size"]
         ), "Created cluster has wrong zoom"
         assert marker_cluster.update_date, "Created cluster hasn't update_date"
 
     @pytest.mark.django_db
     @pytest.mark.parametrize(
         "required_field",
-        ["location", "zoom", "markers_count"],
+        ["location", "square_size", "markers_count"],
     )
     def test_create_marker_cluster_no_required(
         self, simple_marker_cluster_data, required_field
@@ -28,15 +28,6 @@ class TestMarkerClusterModels:
         """Test creating a marker cluster with no required field."""
 
         simple_marker_cluster_data.pop(required_field)
-        with pytest.raises(IntegrityError):
-            marker_cluster = MarkerCluster.objects.create(**simple_marker_cluster_data)
-            marker_cluster.save()
-
-    @pytest.mark.django_db
-    def test_create_marker_cluster_negative_zoom(self, simple_marker_cluster_data):
-        """Test creating a marker cluster with negative zoom."""
-
-        simple_marker_cluster_data["zoom"] = -1
         with pytest.raises(IntegrityError):
             marker_cluster = MarkerCluster.objects.create(**simple_marker_cluster_data)
             marker_cluster.save()

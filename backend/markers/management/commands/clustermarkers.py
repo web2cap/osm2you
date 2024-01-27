@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import connection
 
-from markers.models import MarkerCluster
+from markers.models import MarkerCluster, UpdatedMarkerCluster
 
 CLUSTERING = getattr(settings, "CLUSTERING", {})
 
@@ -15,29 +15,24 @@ class Command(BaseCommand):
     help = "Create MarkerClusters based on Marker locations"
 
     def handle(self, *args, **options):
-        clusters_kinds = zip(CLUSTERING["square_size"], CLUSTERING["zoom"])
-        for size, zoom in clusters_kinds:
-            markers = self.create_marker_clusters(size, zoom)
-            self.clear_marker_clusters(zoom)
-            self.update_marker_clusters(markers, size, zoom)
-
+        self.clear_clusters(UpdatedMarkerCluster)
+        for square_size in CLUSTERING["square_size"]:
+            markers = self.create_marker_clusters(square_size)
+            self.update_marker_clusters(markers, square_size)
+        self.move_clusters_into_main_model()
         self.stdout.write(self.style.SUCCESS("MarkerClusters created successfully"))
 
-    def clear_marker_clusters(self, zoom):
+    def clear_clusters(self, model):
         """Clear existing MarkerCluster data."""
-        if not zoom:
-            return False
+        return model.objects.all().delete()
 
-        return MarkerCluster.objects.filter(zoom=zoom).delete()
-
-    def create_marker_clusters(self, square_size, zoom_level):
+    def create_marker_clusters(self, square_size):
         """Calculate clusters for each square."""
 
         sql_query = f"""
-            SELECT ST_SnapToGrid(location, {square_size}) as squared_location, COUNT(id) as marker_count
+            SELECT ST_Centroid(ST_Collect(location)) as squared_location, COUNT(id) as marker_count
             FROM markers_marker
-            GROUP BY ST_SnapToGrid(location, {square_size})
-            ORDER BY squared_location;
+            GROUP BY ST_SnapToGrid(location, {square_size});
         """
 
         with connection.cursor() as cursor:
@@ -45,12 +40,26 @@ class Command(BaseCommand):
             marker_clusters = cursor.fetchall()
         return marker_clusters
 
-    def update_marker_clusters(self, marker_clusters, square_size, zoom_level):
-        """Save the clusters in the MarkerCluster table."""
+    def update_marker_clusters(self, marker_clusters, square_size):
+        """Save the clusters in the UpdatedMarkerCluster table."""
 
         for marker_cluster in marker_clusters:
-            MarkerCluster.objects.create(
+            UpdatedMarkerCluster.objects.create(
                 location=marker_cluster[0],
-                zoom=zoom_level,
+                square_size=square_size,
                 markers_count=marker_cluster[1],
             )
+
+    def move_clusters_into_main_model(self):
+        """Clear MarkerCluster and copy data from UpdatedMarkerCluster to MarkerCluster."""
+
+        if not UpdatedMarkerCluster.objects.all().count():
+            raise ValueError("UpdatedMarkerCluster should not be empty.")
+
+        self.clear_clusters(MarkerCluster)
+        sql_query = """
+            INSERT INTO markers_markercluster
+            SELECT * FROM markers_updatedmarkercluster;
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(sql_query)

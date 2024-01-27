@@ -28,11 +28,11 @@ class Marker(models.Model):
         return str(self.name)
 
 
-class MarkerCluster(models.Model):
-    """A markers cluster with count of markers for zoom."""
+class MarkerClusterMixin(models.Model):
+    """Mixin for common fields in MarkerCluster and UpdatedMarkerCluster."""
 
     location = models.PointField(null=False, blank=False)
-    zoom = models.PositiveSmallIntegerField(null=False, blank=False)
+    square_size = models.FloatField(null=False, blank=False)
     markers_count = models.PositiveIntegerField(null=False, blank=False)
 
     update_date = models.DateTimeField(
@@ -40,5 +40,22 @@ class MarkerCluster(models.Model):
         verbose_name="Update date",
     )
 
+    class Meta:
+        abstract = True
+
     def __str__(self):
         return str(self.id)
+
+
+class MarkerCluster(MarkerClusterMixin):
+    """A markers cluster with count of markers for zoom."""
+
+    class Meta:
+        verbose_name_plural = "Marker Clusters"
+
+
+class UpdatedMarkerCluster(MarkerClusterMixin):
+    """Copy of MarkerCluster for preparing new clusters and immediately update."""
+
+    class Meta:
+        verbose_name_plural = "Updated Marker Clusters"

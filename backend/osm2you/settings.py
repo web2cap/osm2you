@@ -244,15 +244,14 @@ CLUSTERING = {
         4,
         8,
         12,
-    ],
-    "zoom": [
-        12,
-        10,
-        8,
-        6,
-    ],
+        24,
+    ]
 }
 CLUSTERING_DENCITY = 12
+
+
+if CLUSTERING["square_size"] != sorted(CLUSTERING["square_size"]):
+    raise ValueError("CLUSTERING['square_size'] must be in ascending order.")
 
 
 CELERY_BROKER_URL = (

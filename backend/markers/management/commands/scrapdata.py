@@ -18,7 +18,7 @@ class Command(BaseCommand):
 
         try:
             logger.warning("Start loading overpass xml data")
-            xml_data = overpass_camp_site(south=0, west=0, north=90, east=180)
+            xml_data = overpass_camp_site()
             xml_data_size = sys.getsizeof(xml_data) / 1024
             logger.warning(f"XML loadded, size {xml_data_size:.2f} KB")
             logger.warning("Start scrapping xml data")
