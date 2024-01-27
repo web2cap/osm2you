@@ -15,22 +15,21 @@ class Command(BaseCommand):
     help = "Create MarkerClusters based on Marker locations"
 
     def handle(self, *args, **options):
-        clusters_kinds = zip(CLUSTERING["square_size"], CLUSTERING["zoom"])
-        for size, zoom in clusters_kinds:
-            markers = self.create_marker_clusters(size, zoom)
-            self.clear_marker_clusters(zoom)
-            self.update_marker_clusters(markers, size, zoom)
+        for square_size in CLUSTERING["square_size"]:
+            markers = self.create_marker_clusters(square_size)
+            self.clear_marker_clusters(square_size)
+            self.update_marker_clusters(markers, square_size)
 
         self.stdout.write(self.style.SUCCESS("MarkerClusters created successfully"))
 
-    def clear_marker_clusters(self, zoom):
+    def clear_marker_clusters(self, square_size):
         """Clear existing MarkerCluster data."""
-        if not zoom:
+        if not square_size:
             return False
 
-        return MarkerCluster.objects.filter(zoom=zoom).delete()
+        return MarkerCluster.objects.filter(square_size=square_size).delete()
 
-    def create_marker_clusters(self, square_size, zoom_level):
+    def create_marker_clusters(self, square_size):
         """Calculate clusters for each square."""
 
         sql_query = f"""
@@ -45,12 +44,12 @@ class Command(BaseCommand):
             marker_clusters = cursor.fetchall()
         return marker_clusters
 
-    def update_marker_clusters(self, marker_clusters, square_size, zoom_level):
+    def update_marker_clusters(self, marker_clusters, square_size):
         """Save the clusters in the MarkerCluster table."""
 
         for marker_cluster in marker_clusters:
             MarkerCluster.objects.create(
                 location=marker_cluster[0],
-                zoom=zoom_level,
+                square_size=square_size,
                 markers_count=marker_cluster[1],
             )
