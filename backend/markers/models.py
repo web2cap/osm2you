@@ -3,7 +3,11 @@ from users.models import User
 
 
 class Marker(models.Model):
-    """A marker with name and location."""
+    KIND_CAMP_SITE = "camp_site"
+    KIND_CHOICES = [
+        (KIND_CAMP_SITE, "Camp Site"),
+        # Add more choices as needed
+    ]
 
     name = models.CharField(max_length=255, null=True, blank=False)
     location = models.PointField(null=False, blank=False, unique=True)
@@ -20,6 +24,12 @@ class Marker(models.Model):
     add_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name="Add date",
+    )
+    kind = models.CharField(
+        choices=KIND_CHOICES,
+        blank=False,
+        null=False,
+        default=KIND_CAMP_SITE,
     )
 
     def __str__(self):
