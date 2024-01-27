@@ -240,17 +240,19 @@ OVERPASS = {
 
 CLUSTERING = {
     "square_size": [
-        0.24,
-        1.0,
-        10.0,
+        1,
+        4,
+        8,
+        12,
     ],
     "zoom": [
         12,
         10,
         8,
+        6,
     ],
 }
-CLUSTERING_DENCITY = 36
+CLUSTERING_DENCITY = 12
 
 
 CELERY_BROKER_URL = (
