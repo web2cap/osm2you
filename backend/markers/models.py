@@ -42,3 +42,9 @@ class MarkerCluster(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+
+class UpdatedMarkerCluster(MarkerCluster):
+    """Copy of MarkerCluster for preparing new clusters and immediately update."""
+
+    pass
