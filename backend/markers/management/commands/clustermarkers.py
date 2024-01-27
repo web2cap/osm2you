@@ -35,8 +35,7 @@ class Command(BaseCommand):
         sql_query = f"""
             SELECT ST_Centroid(ST_Collect(location)) as squared_location, COUNT(id) as marker_count
             FROM markers_marker
-            GROUP BY ST_SnapToGrid(location, {square_size})
-            ORDER BY squared_location;
+            GROUP BY ST_SnapToGrid(location, {square_size});
         """
 
         with connection.cursor() as cursor:
