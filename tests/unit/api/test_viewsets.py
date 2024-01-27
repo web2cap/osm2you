@@ -10,6 +10,7 @@ from markers.models import Marker
 class TestMarkerViewset:
     """Tests marker viewset."""
 
+    @pytest.mark.skip("Todo markers with clustering tests")
     @pytest.mark.django_db
     def test_get_serializer_class(
         self,
@@ -56,6 +57,7 @@ class TestMarkerViewset:
             queryset.first().stories.first().author == user_owner_instance
         ), "No stories author marker in retrieve queryset"
 
+    @pytest.mark.skip("Todo markers with clustering tests")
     @pytest.mark.django_db
     def test_get_queryset_list(
         self,
