@@ -33,7 +33,7 @@ class Command(BaseCommand):
         """Calculate clusters for each square."""
 
         sql_query = f"""
-            SELECT ST_SnapToGrid(location, {square_size}) as squared_location, COUNT(id) as marker_count
+            SELECT ST_Centroid(ST_Collect(location)) as squared_location, COUNT(id) as marker_count
             FROM markers_marker
             GROUP BY ST_SnapToGrid(location, {square_size})
             ORDER BY squared_location;
