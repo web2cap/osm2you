@@ -1,6 +1,7 @@
 from djoser.serializers import UserCreateSerializer
 from markers.models import Marker, MarkerCluster
 from rest_framework import serializers
+from rest_framework.serializers import ReadOnlyField
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from stories.models import Story
 from users.models import User
@@ -124,8 +125,10 @@ class MarkerUserSerializer(GeoFeatureModelSerializer):
 class MarkerClusterSerializer(GeoFeatureModelSerializer):
     """Marker Cluster GeoJSON serializer."""
 
+    kind = ReadOnlyField(default="cluster")
+
     class Meta:
-        fields = ("id", "markers_count")
-        read_only_fields = ("id", "markers_count")
+        fields = ("id", "markers_count", "kind")
+        read_only_fields = ("id", "markers_count", "kind")
         geo_field = "location"
         model = MarkerCluster
