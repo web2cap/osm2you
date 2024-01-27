@@ -41,6 +41,8 @@ class MarkerViewSet(viewsets.ModelViewSet):
         "default": MarkerSerializer,
     }
 
+    calculated_zoom = None
+
     def get_serializer_class(self):
         """Get the serializer class based on the action."""
 
@@ -54,24 +56,28 @@ class MarkerViewSet(viewsets.ModelViewSet):
         If action is retrieve, joins tags values and this tags names to marker.
         """
 
-        zoom_level = self.zoom_level()
-        queryset = Marker.objects.all()
         if self.action == "retrieve":
-            queryset = Marker.objects.select_related("author").prefetch_related(
-                Prefetch(
-                    "stories",
-                    queryset=Story.objects.select_related("author"),
-                ),
-                "stories__author",
-                Prefetch(
-                    "tag_value",
-                    queryset=TagValue.objects.select_related("tag"),
-                ),
-                "tag_value__tag",
-            )
-        elif self.action == "list" and zoom_level:
-            queryset = MarkerCluster.objects.filter(zoom=zoom_level)
-        return queryset
+            return self.get_retrieve_queryset()
+        if self.action == "list" and self.zoom_level():
+            return self.get_retriev_queryset()
+        return Marker.objects.all()
+
+    def get_retrieve_queryset(self):
+        return Marker.objects.select_related("author").prefetch_related(
+            Prefetch(
+                "stories",
+                queryset=Story.objects.select_related("author"),
+            ),
+            "stories__author",
+            Prefetch(
+                "tag_value",
+                queryset=TagValue.objects.select_related("tag"),
+            ),
+            "tag_value__tag",
+        )
+
+    def get_retriev_queryset(self):
+        return MarkerCluster.objects.filter(zoom=self.zoom_level())
 
     def get_user_markers_queryset(self, user):
         """Select users markers and markers with users stories."""
@@ -123,15 +129,25 @@ class MarkerViewSet(viewsets.ModelViewSet):
 
     def zoom_level(self):
         """Calculate the zoom level based on CLUSTERING_DENCITY and bbox area."""
+
+        if self.calculated_zoom:  # If zoom computed before
+            return self.calculated_zoom
+
         bbox_area = self.get_bbox_area()
+        # If the zoom is large
         if bbox_area < CLUSTERING["square_size"][0] ** 2 * CLUSTERING_DENCITY:
+            self.calculated_zoom = False
             return False
 
+        # If the zoom in setted areas
         for i in range(1, len(CLUSTERING["square_size"])):
             if bbox_area < CLUSTERING["square_size"][i] ** 2 * CLUSTERING_DENCITY:
-                return CLUSTERING["zoom"][i - 1]
+                self.calculated_zoom = CLUSTERING["zoom"][i - 1]
+                return self.calculated_zoom
 
-        return CLUSTERING["zoom"][len(CLUSTERING["square_size"]) - 1]
+        # If the zoom is more then setted areas
+        self.calculated_zoom = CLUSTERING["zoom"][len(CLUSTERING["square_size"]) - 1]
+        return self.calculated_zoom
 
 
 class StoryViewSet(viewsets.ModelViewSet):
