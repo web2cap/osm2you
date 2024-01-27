@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import connection
 
-from markers.models import MarkerCluster
+from markers.models import MarkerCluster, UpdatedMarkerCluster
 
 CLUSTERING = getattr(settings, "CLUSTERING", {})
 
@@ -15,19 +15,16 @@ class Command(BaseCommand):
     help = "Create MarkerClusters based on Marker locations"
 
     def handle(self, *args, **options):
+        self.clear_clusters(UpdatedMarkerCluster)
         for square_size in CLUSTERING["square_size"]:
             markers = self.create_marker_clusters(square_size)
-            self.clear_marker_clusters(square_size)
             self.update_marker_clusters(markers, square_size)
-
+        self.move_clusters_into_main_model()
         self.stdout.write(self.style.SUCCESS("MarkerClusters created successfully"))
 
-    def clear_marker_clusters(self, square_size):
+    def clear_clusters(self, model):
         """Clear existing MarkerCluster data."""
-        if not square_size:
-            return False
-
-        return MarkerCluster.objects.filter(square_size=square_size).delete()
+        return model.objects.all().delete()
 
     def create_marker_clusters(self, square_size):
         """Calculate clusters for each square."""
@@ -44,11 +41,25 @@ class Command(BaseCommand):
         return marker_clusters
 
     def update_marker_clusters(self, marker_clusters, square_size):
-        """Save the clusters in the MarkerCluster table."""
+        """Save the clusters in the UpdatedMarkerCluster table."""
 
         for marker_cluster in marker_clusters:
-            MarkerCluster.objects.create(
+            UpdatedMarkerCluster.objects.create(
                 location=marker_cluster[0],
                 square_size=square_size,
                 markers_count=marker_cluster[1],
             )
+
+    def move_clusters_into_main_model(self):
+        """Clear MarkerCluster and copy data from UpdatedMarkerCluster to MarkerCluster."""
+
+        if not UpdatedMarkerCluster.objects.all().count():
+            raise ValueError("UpdatedMarkerCluster should not be empty.")
+
+        self.clear_clusters(MarkerCluster)
+        sql_query = """
+            INSERT INTO markers_markercluster
+            SELECT * FROM markers_updatedmarkercluster;
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(sql_query)
