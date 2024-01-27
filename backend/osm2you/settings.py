@@ -244,6 +244,7 @@ CLUSTERING = {
         4,
         8,
         12,
+        24,
     ]
 }
 CLUSTERING_DENCITY = 12
