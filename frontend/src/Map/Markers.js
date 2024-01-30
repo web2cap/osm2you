@@ -42,10 +42,23 @@ const Markers = ({backend_path = ''}) => {
                 return (number / 1000000).toFixed((number < 2000000)? 1 : 0) + 'M';
             }
         }
+        const getColorByCount = (count) => {
+            if (count < 100) {
+                return 'green';
+            } else if (count < 1000) {
+                return 'yellow';
+            } else if (count < 5000) {
+                return 'orange';
+            } else if (count < 20000) {
+                return 'red';
+            } else {
+                return 'purple';
+            }
+        }
         return L.ExtraMarkers.icon({
             number: createClustersNymber(number),
             icon: 'fa-number',
-            markerColor: 'green',
+            markerColor: getColorByCount(number),
             shape: 'square',
             prefix: 'fa',
         });
