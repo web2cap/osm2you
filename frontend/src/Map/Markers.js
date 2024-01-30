@@ -1,14 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 
-import { Marker, Popup, useMap } from 'react-leaflet';
-import { Link } from 'react-router-dom';
+import { useMap } from 'react-leaflet';
+
 
 
 import ClusterMarker from './ClusterMarker';
 
 import 'leaflet-extra-markers/dist/css/leaflet.extra-markers.min.css'; 
 import 'leaflet-extra-markers/dist/js/leaflet.extra-markers.min'; 
+import PointMarker from './PointMarker';
 
 
 const Markers = ({backend_path = ''}) => {
@@ -102,21 +103,7 @@ const Markers = ({backend_path = ''}) => {
             if (marker.properties.kind === 'cluster') {
                 return <ClusterMarker marker={marker} />
             } else {
-              return (
-                <Marker
-                  key={marker.id}
-                  position={[
-                    marker.geometry.coordinates[1],
-                    marker.geometry.coordinates[0],
-                  ]}
-                >
-                  <Popup>
-                    <Link to={`/markers/${marker.id}`}>
-                      <h3>{marker.properties.name}</h3>
-                    </Link>
-                  </Popup>
-                </Marker>
-              );
+              return <PointMarker marker={marker} />
             }
           })}
         </>
