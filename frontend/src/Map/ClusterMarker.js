@@ -1,4 +1,4 @@
-import { Marker, Popup, useMap } from 'react-leaflet';
+import { Marker, useMap } from 'react-leaflet';
 import L from 'leaflet'
 
 import 'leaflet-extra-markers/dist/css/leaflet.extra-markers.min.css'; 
@@ -46,7 +46,7 @@ const ClusterMarker = ({marker}) => {
         marker.geometry.coordinates[1],
         marker.geometry.coordinates[0],
     ]
-    
+
     return (
         <Marker key={marker.id}
             position={clusterCoordinates}
