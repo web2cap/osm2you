@@ -1,8 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 
-import { Marker, Popup, useMap } from 'react-leaflet';
-import { Link } from 'react-router-dom';
+import { useMap } from 'react-leaflet';
+
+
+
+import ClusterMarker from './ClusterMarker';
+
+import 'leaflet-extra-markers/dist/css/leaflet.extra-markers.min.css'; 
+import 'leaflet-extra-markers/dist/js/leaflet.extra-markers.min'; 
+import PointMarker from './PointMarker';
+
 
 const Markers = ({backend_path = ''}) => {
     const MARKERS_URL = useStoreState((state) => state.MARKERS_URL)
@@ -25,7 +33,8 @@ const Markers = ({backend_path = ''}) => {
     const debounceTimerRef = useRef(null);
 
     const map = useMap();
-
+    
+    
     // fetch markers
     useEffect(() => {
         async function fetchData() {
@@ -80,7 +89,6 @@ const Markers = ({backend_path = ''}) => {
     useEffect(() => {
         map.on('move', handleMapChange);
         map.on('zoom', handleMapChange);
-
         return () => {
             map.off('move', handleMapChange);
             map.off('zoom', handleMapChange);
@@ -91,21 +99,15 @@ const Markers = ({backend_path = ''}) => {
 
     return (
         <>
-            {
-                markers.map(marker => (
-                    <Marker
-                        key={marker.id}
-                        position={[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]}
-                    >
-                        <Popup>
-                            <Link to={`/markers/${marker.id}`}>
-                                <h3>{marker.properties.name}</h3>
-                            </Link>
-                        </Popup>
-                    </Marker>
-                ))
+          {markers.map((marker) => {
+            if (marker.properties.kind === 'cluster') {
+                return <ClusterMarker marker={marker} />
+            } else {
+              return <PointMarker marker={marker} />
             }
+          })}
         </>
-    )
-}
-export default Markers
+      );
+};
+    
+export default Markers;
