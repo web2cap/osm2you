@@ -131,17 +131,29 @@ const Markers = ({backend_path = ''}) => {
           {markers.map((marker) => {
             if (marker.properties.kind === 'cluster') {
                 const clusterTooltipContent = `${marker.properties.markers_count}`;
+                const clusterCoordinates = [
+                    marker.geometry.coordinates[1],
+                    marker.geometry.coordinates[0],
+                ]
 
                 return (
-                    <div key={marker.id}>
-                        <Marker
-                            position={[
-                                marker.geometry.coordinates[1],
-                                marker.geometry.coordinates[0],
-                            ]}
-                            icon={createClusterMarker(clusterTooltipContent)}
+              
+                        <Marker key={marker.id}
+                            position={clusterCoordinates}
+                            icon={
+                                createClusterMarker(clusterTooltipContent, clusterCoordinates)
+                            }
+                            eventHandlers={{
+                                click: () => {
+                                  map.flyTo(
+                                    clusterCoordinates,
+                                    map.getZoom() + 2,
+                                    { duration: 0.5 }
+                                  );
+                                },
+                              }}
                         />
-                    </div>
+              
                 );
             } else {
               return (
