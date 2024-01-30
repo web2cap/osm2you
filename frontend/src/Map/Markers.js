@@ -108,6 +108,6 @@ const Markers = ({backend_path = ''}) => {
           })}
         </>
       );
-    };
+};
     
-    export default Markers;
+export default Markers;
