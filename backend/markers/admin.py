@@ -7,8 +7,7 @@ from .models import Marker
 class MarkerAdmin(admin.GISModelAdmin):
     """Marker admin."""
 
-    list_display = ("name", "kind", "location", "author", "add_date")
-    list_filter = ("kind",)
+    list_display = ("name", "location", "author", "add_date")
     search_fields = (
         "name",
         "author__username",
