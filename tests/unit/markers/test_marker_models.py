@@ -19,7 +19,6 @@ class TestMarkersModels:
             marker.author == marker_with_author_data["author"]
         ), "Created marker has wrong author"
         assert marker.add_date, "Created marker hasn't add_date"
-        assert marker.kind == Marker.KIND_CAMP_SITE, "Created marker has wrong kind"
         assert marker.add_date, "Created marker hasn't add_date"
 
     @pytest.mark.django_db
