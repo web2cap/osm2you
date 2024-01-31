@@ -88,7 +88,7 @@ class MarkerSerializer(GeoFeatureModelSerializer):
         return False
 
     class Meta:
-        fields = ("id", "name", "is_yours", "kind")
+        fields = ("id", "name", "is_yours")
         read_only_fields = ("id",)
         geo_field = "location"
         model = Marker
