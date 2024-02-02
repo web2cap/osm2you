@@ -102,9 +102,19 @@ class MarkerViewSet(viewsets.ModelViewSet):
         )
 
     def perform_create(self, serializer):
-        """Add the authorized user to the author field during marker creation."""
-
+        """Add the authorized user to the author field during marker creation.
+        Add tag value with main kind for creating marker."""
         serializer.save(author=self.request.user)
+
+        main_kind_tag, created = Tag.objects.get_or_create(
+            name=MARKERS_KIND_MAIN["tag"]
+        )
+
+        TagValue.objects.update_or_create(
+            tag=main_kind_tag,
+            marker=serializer.instance,
+            defaults={"value": MARKERS_KIND_MAIN["tag_value"]},
+        )
 
     @action(methods=["get"], detail=False, url_path="user/(?P<username>[^/.]+)")
     def user(self, request, username):
