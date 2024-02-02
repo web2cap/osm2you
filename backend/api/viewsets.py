@@ -44,7 +44,8 @@ class MarkerViewSet(viewsets.ModelViewSet):
     calculated_square_size = None
 
     def get_serializer_class(self):
-        """Get the appropriate serializer class based on the action."""
+        """Get the appropriate serializer class based on the action.
+        For list action get serializer class based on zoom."""
 
         if self.action == "list" and self.square_size():
             return self.serializers.get("clusters")
