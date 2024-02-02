@@ -54,6 +54,14 @@ def marker_with_author_story(user_owner_instance, simple_story_data):
 
 
 @pytest.fixture
+def camp_site_marker_with_author_story(
+    marker_with_author_story, camp_site_tag_value_data
+):
+    marker_with_author_story.tag_value.create(**camp_site_tag_value_data)
+    return marker_with_author_story
+
+
+@pytest.fixture
 def marker_different_author_with_story_owner_story_user(
     user_instance, simple_story_data, second_story_data_user
 ):

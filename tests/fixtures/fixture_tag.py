@@ -30,3 +30,16 @@ def simple_tagǜalue_withoutmarker_data(simple_tag):
         "tag": simple_tag,
         "value": "tagvalue example",
     }
+
+
+@pytest.fixture
+def tourism_tag():
+    return Tag.objects.create(name="tourism")
+
+
+@pytest.fixture
+def camp_site_tag_value_data(tourism_tag):
+    return {
+        "tag": tourism_tag,
+        "value": "camp_site",
+    }
