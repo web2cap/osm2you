@@ -7,7 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_gis import filters
 from stories.models import Story
-from tags.models import TagValue
+from tags.models import Tag, TagValue
 from users.models import User
 
 from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly
@@ -24,6 +24,7 @@ from .serializers import (
 
 CLUSTERING = getattr(settings, "CLUSTERING", {})
 CLUSTERING_DENCITY = getattr(settings, "CLUSTERING_DENCITY", 36)
+MARKERS_KIND_MAIN = getattr(settings, "MARKERS_KIND_MAIN")
 
 
 class MarkerViewSet(viewsets.ModelViewSet):
@@ -50,12 +51,18 @@ class MarkerViewSet(viewsets.ModelViewSet):
         return self.serializers.get(self.action, self.serializers["default"])
 
     def get_queryset(self):
-        """Get the queryset for Marker objects or MarkerCluster objects based on the action."""
+        """Get the queryset for Marker objects or MarkerCluster objects based on the action.
+        List only markers with MARKERS_KIND_MAIN tag present."""
         if self.action == "retrieve":
             return self.get_retrieve_queryset()
         if self.action == "list" and self.square_size():
             return self.get_cluster_queryset()
-        return Marker.objects.all()
+
+        main_kind_tag = get_object_or_404(Tag, name=MARKERS_KIND_MAIN["tag"])
+        return Marker.objects.filter(
+            tag_value__tag=main_kind_tag,
+            tag_value__value=MARKERS_KIND_MAIN["tag_value"],
+        )
 
     def get_retrieve_queryset(self):
         """Get the queryset for Marker objects with additional related data for the 'retrieve' action."""
