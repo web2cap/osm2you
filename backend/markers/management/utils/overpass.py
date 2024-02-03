@@ -5,6 +5,7 @@ from django.conf import settings
 
 OVERPASS = getattr(settings, "OVERPASS", {})
 MARKERS_KIND_MAIN = getattr(settings, "MARKERS_KIND_MAIN", {})
+MARKERS_KIND_RELATED = getattr(settings, "MARKERS_KIND_RELATED", {})
 
 logger = logging.getLogger(__name__)
 
@@ -55,3 +56,33 @@ def overpass_camp_site(south=-90, west=-180, north=90, east=180):
         east=east,
     )
     return overpass_by_query(overpass_query)
+
+
+def overpass_related(location, radius=5000):
+    """
+    Query the Overpass API for related markers data within a specified radius.
+
+    Args:
+        location (list[float,float]): Location of main marker.
+        rqadius (int): Radius around main marker for searching related markers.
+
+    Returns:
+        str or None: Overpass API response text if successful, None otherwise.
+    """
+
+    subqueries = []
+    for category, config in MARKERS_KIND_RELATED.items():
+        for tag_name, tag_values in config["tag"].items():
+            for tag_value in tag_values:
+                subquery = OVERPASS["related"]["subquery"].format(
+                    tag_name=tag_name,
+                    tag_value=tag_value,
+                    radius=radius,
+                    lat=location[1],
+                    lon=location[0],
+                )
+                subqueries.append(subquery)
+
+    full_query = OVERPASS["related"]["wrap"].format(subqueries="".join(subqueries))
+    print(full_query)
+    return overpass_by_query(full_query)
