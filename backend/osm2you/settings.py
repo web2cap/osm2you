@@ -317,7 +317,7 @@ OVERPASS = {
     "url": "https://overpass-api.de/api/interpreter",
     "main": """node[{tag}]({south},{west},{north},{east});out;""",
     "related": {
-        "wrap": """[out:json];({subqueries});out center;""",
+        "wrap": """({subqueries});out center;""",
         "subquery": """node["{tag_name}"="{tag_value}"](around:{radius},{lat},{lon});""",
     },
 }
