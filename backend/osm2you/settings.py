@@ -315,7 +315,11 @@ MARKERS_KIND_RELATED = MARKERS_KIND_RELATED = {
 
 OVERPASS = {
     "url": "https://overpass-api.de/api/interpreter",
-    "camp_site": """node[tourism=camp_site]({south},{west},{north},{east});out;""",
+    "main": """node[{tag}]({south},{west},{north},{east});out;""",
+    "related": {
+        "wrap": """[out:json];({subqueries});out center;""",
+        "subquery": """node["{tag_name}"="{tag_value}"](around:{radius},{lat},{lon});""",
+    },
 }
 
 
