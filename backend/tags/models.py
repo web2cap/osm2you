@@ -83,3 +83,39 @@ class KindGroup(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Kind(models.Model):
+    tag = models.ForeignKey(
+        Tag,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name="kind_tag",
+        verbose_name="Kind tag",
+        help_text="Choice tag for describe kind",
+    )
+    kind_group = models.ForeignKey(
+        KindGroup,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name="kind_tag",
+        verbose_name="Kind Group",
+        help_text="Specify kind group",
+    )
+    value = models.CharField(max_length=255, null=False, blank=False)
+
+    class Meta:
+        ordering = ("-tag", "-value")
+        verbose_name = "Marker kind"
+        verbose_name_plural = "Markers kinds"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["tag", "value"],
+                name="unique_kind_tag",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.tag.name}={self.value}"
