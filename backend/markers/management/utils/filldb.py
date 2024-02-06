@@ -2,6 +2,7 @@ import logging
 
 from django.contrib.gis.geos import Point
 from markers.models import Marker
+from markers.tasks import run_scrap_markers_related
 from tags.models import Tag, TagValue
 
 logger = logging.getLogger(__name__)
@@ -71,6 +72,7 @@ def update_nodes(nodes):
                     name=node.get("name"), location=location, osm_id=node.get("id")
                 )
                 stat["markers_add"] += 1
+                run_scrap_markers_related.delay(marker.id)
             # Tag
             for tag_name, tag_value in node["tags"].items():
                 tag_queryset = Tag.objects.filter(name=tag_name)
