@@ -311,6 +311,7 @@ MARKERS_KIND_RELATED = MARKERS_KIND_RELATED = {
         "name": "Accommodation",
     },
 }
+MARKERS_RELATED_IN_RADIUS = 5000
 
 
 OVERPASS = {

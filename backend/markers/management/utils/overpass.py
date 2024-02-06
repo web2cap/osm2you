@@ -6,6 +6,7 @@ from django.conf import settings
 OVERPASS = getattr(settings, "OVERPASS", {})
 MARKERS_KIND_MAIN = getattr(settings, "MARKERS_KIND_MAIN", {})
 MARKERS_KIND_RELATED = getattr(settings, "MARKERS_KIND_RELATED", {})
+MARKERS_RELATED_IN_RADIUS = getattr(settings, "MARKERS_RELATED_IN_RADIUS", 5000)
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +59,7 @@ def overpass_camp_site(south=-90, west=-180, north=90, east=180):
     return overpass_by_query(overpass_query)
 
 
-def overpass_related(location, radius=5000):
+def overpass_related(location, radius=MARKERS_RELATED_IN_RADIUS):
     """
     Query the Overpass API for related markers data within a specified radius.
 
