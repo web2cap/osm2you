@@ -70,3 +70,11 @@ class TagValue(CreatedModel):
 
     def __str__(self):
         return self.tag.name
+
+
+class KindGroup(models.Model):
+    name = models.CharField(max_length=128, null=False, blank=False, unique=True)
+    descriptive_name = models.CharField(max_length=128, null=True, blank=False)
+
+    def __str__(self):
+        return self.name

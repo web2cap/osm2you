@@ -26,11 +26,6 @@ class Marker(models.Model):
         return str(self.name)
 
 
-class MarkerKindGroup(models.Model):
-    name = models.CharField(max_length=128, null=False, blank=False)
-    descriptive_name = models.CharField(max_length=128, null=True, blank=False)
-
-
 class MarkerClusterMixin(models.Model):
     """Mixin for common fields in MarkerCluster and UpdatedMarkerCluster."""
 
