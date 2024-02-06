@@ -4,7 +4,7 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
 from markers.models import Marker
-from markers.tasks import run_scrapdata
+from markers.tasks import run_scrap_markers_main
 
 logger = logging.getLogger(__name__)
 
@@ -17,5 +17,5 @@ class Command(BaseCommand):
         """
         if not Marker.objects.all().exists():
             call_command("loaddata", "fixtures/tag.json")
-            run_scrapdata.delay()
+            run_scrap_markers_main.delay()
             logger.info("Preparing for first start of app complete.")

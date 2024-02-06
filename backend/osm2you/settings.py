@@ -353,9 +353,9 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_BEAT_SCHEDULE = {
-    "run_scrapdata": {
+    "run_scrap_markers_main": {
         # Run every night at 2 AM
-        "task": "markers.tasks.run_scrapdata",
+        "task": "markers.tasks.run_scrap_markers_main",
         "schedule": crontab(minute=0, hour=2),
     },
 }
