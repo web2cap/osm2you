@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404
 from markers.models import Marker, MarkerCluster
+from markers.tasks import run_scrap_markers_related
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -116,6 +117,16 @@ class MarkerViewSet(viewsets.ModelViewSet):
             marker=serializer.instance,
             defaults={"value": MARKERS_KIND_MAIN["tag_value"]},
         )
+        run_scrap_markers_related.delay(serializer.instance.id)
+
+    def perform_update(self, serializer):
+        old_marker = get_object_or_404(Marker, pk=serializer.instance.pk)
+
+        serializer.save()
+
+        new_location = serializer.validated_data.get("location")
+        if new_location and old_marker.location != new_location:
+            run_scrap_markers_related.delay(serializer.instance.id)
 
     @action(methods=["get"], detail=False, url_path="user/(?P<username>[^/.]+)")
     def user(self, request, username):
