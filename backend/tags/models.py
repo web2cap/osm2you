@@ -136,6 +136,7 @@ class MarkerKind(models.Model):
         on_delete=models.CASCADE,
         blank=False,
         null=False,
+        unique=True,
         related_name="kind",
         verbose_name="Marker",
         help_text="Choice marker",
@@ -144,12 +145,6 @@ class MarkerKind(models.Model):
     class Meta:
         verbose_name = "Marker kind value"
         verbose_name_plural = "Markers kind value"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["kind", "marker"],
-                name="unique_kind_marker_value",
-            )
-        ]
 
     def __str__(self):
         return f"{self.marker.name} [{self.kind}]"
