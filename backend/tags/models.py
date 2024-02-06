@@ -76,5 +76,10 @@ class KindGroup(models.Model):
     name = models.CharField(max_length=128, null=False, blank=False, unique=True)
     descriptive_name = models.CharField(max_length=128, null=True, blank=False)
 
+    class Meta:
+        ordering = ("-name",)
+        verbose_name = "Kind group"
+        verbose_name_plural = "Kinds groups"
+
     def __str__(self):
         return self.name
