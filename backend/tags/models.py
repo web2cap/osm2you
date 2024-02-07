@@ -91,11 +91,11 @@ class Kind(models.Model):
     """Unique kinds in tag=value format, with classification by kind groups.
     Every kind has kind_class main or related."""
 
-    CLASS_MAIN = "main"
-    CLASS_RELATED = "related"
+    KIND_CLASS_MAIN = "main"
+    KIND_CLASS_RELATED = "related"
     KIND_CLASS_CHOICES = (
-        (CLASS_MAIN, "main"),
-        (CLASS_RELATED, "related"),
+        (KIND_CLASS_MAIN, "main"),
+        (KIND_CLASS_RELATED, "related"),
     )
 
     kind_group = models.ForeignKey(
@@ -121,6 +121,7 @@ class Kind(models.Model):
         choices=KIND_CLASS_CHOICES,
         blank=False,
         null=False,
+        default=KIND_CLASS_RELATED,
         verbose_name="Kind class",
         help_text="Choice class for this kind",
     )
