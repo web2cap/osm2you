@@ -73,6 +73,8 @@ class TagValue(CreatedModel):
 
 
 class KindGroup(models.Model):
+    """Group to generalize the kind of markers."""
+
     name = models.CharField(max_length=128, null=False, blank=False, unique=True)
     descriptive_name = models.CharField(max_length=128, null=True, blank=False)
 
@@ -86,6 +88,25 @@ class KindGroup(models.Model):
 
 
 class Kind(models.Model):
+    """Unique kinds in tag=value format, with classification by kind groups.
+    Every kind has kind_class main or related."""
+
+    CLASS_MAIN = "main"
+    CLASS_RELATED = "related"
+    KIND_CLASS_CHOICES = (
+        (CLASS_MAIN, "main"),
+        (CLASS_RELATED, "related"),
+    )
+
+    kind_group = models.ForeignKey(
+        KindGroup,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name="kind_tag",
+        verbose_name="Kind Group",
+        help_text="Specify kind group",
+    )
     tag = models.ForeignKey(
         Tag,
         on_delete=models.CASCADE,
@@ -95,14 +116,13 @@ class Kind(models.Model):
         verbose_name="Kind tag",
         help_text="Choice tag for describe kind",
     )
-    kind_group = models.ForeignKey(
-        KindGroup,
-        on_delete=models.CASCADE,
+    kind_class = models.CharField(
+        max_length=32,
+        choices=KIND_CLASS_CHOICES,
         blank=False,
         null=False,
-        related_name="kind_tag",
-        verbose_name="Kind Group",
-        help_text="Specify kind group",
+        verbose_name="Kind class",
+        help_text="Choice class for this kind",
     )
     value = models.CharField(max_length=255, null=False, blank=False)
 
