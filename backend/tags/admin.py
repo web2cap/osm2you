@@ -14,9 +14,9 @@ class KindGroupAdmin(admin.ModelAdmin):
 
 
 class KindAdmin(admin.ModelAdmin):
-    list_display = ("tag", "value", "kind_group")
+    list_display = ("tag", "value", "kind_group", "kind_class")
     search_fields = ("tag", "value")
-    list_filter = ("kind_group",)
+    list_filter = ("kind_group", "kind_class")
 
 
 admin.site.register(Tag, TagAdmin)
