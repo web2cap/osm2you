@@ -2,10 +2,10 @@ import logging
 
 import requests
 from django.conf import settings
+from tags.models import Kind
 
 OVERPASS = getattr(settings, "OVERPASS", {})
 MARKERS_KIND_MAIN = getattr(settings, "MARKERS_KIND_MAIN", {})
-MARKERS_KIND_RELATED = getattr(settings, "MARKERS_KIND_RELATED", {})
 MARKERS_RELATED_IN_RADIUS = getattr(settings, "MARKERS_RELATED_IN_RADIUS", 5000)
 
 logger = logging.getLogger(__name__)
@@ -70,20 +70,20 @@ def overpass_related(location, radius=MARKERS_RELATED_IN_RADIUS):
     Returns:
         str or None: Overpass API response text if successful, None otherwise.
     """
+    kinds = Kind.objects.all()
+    if not kinds.exists():
+        return False
 
     subqueries = []
-    for category, config in MARKERS_KIND_RELATED.items():
-        for tag_name, tag_values in config["tag"].items():
-            for tag_value in tag_values:
-                subquery = OVERPASS["related"]["subquery"].format(
-                    tag_name=tag_name,
-                    tag_value=tag_value,
-                    radius=radius,
-                    lat=location[1],
-                    lon=location[0],
-                )
-                subqueries.append(subquery)
+    for kind in kinds:
+        subquery = OVERPASS["related"]["subquery"].format(
+            tag_name=kind.tag,
+            tag_value=kind.value,
+            radius=radius,
+            lat=location[1],
+            lon=location[0],
+        )
+        subqueries.append(subquery)
 
     full_query = OVERPASS["related"]["wrap"].format(subqueries="".join(subqueries))
-    print(full_query)
     return overpass_by_query(full_query)
