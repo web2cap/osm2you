@@ -125,6 +125,13 @@ class Kind(models.Model):
         verbose_name="Kind class",
         help_text="Choice class for this kind",
     )
+    priority = models.SmallIntegerField(
+        blank=False,
+        null=False,
+        default=2,
+        verbose_name="Kind priority",
+        help_text="Fill priority for this kind property",
+    )
     value = models.CharField(max_length=255, null=False, blank=False)
 
     class Meta:
