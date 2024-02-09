@@ -28,6 +28,7 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 DEBUG = os.getenv("ST_DEBUG", "False") == "True"
+DEBUG_SQL = os.getenv("ST_DEBUG_SQL", "False") == "True"
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -201,7 +202,7 @@ LOGGING_LOGGERS = {
         "level": "DEBUG",
     },
 }
-if DEBUG is True:
+if DEBUG_SQL is True:
     LOGGING_LOGGERS["django.db.backends"] = {
         "handlers": ["console"],
         "level": "DEBUG",
