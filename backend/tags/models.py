@@ -159,12 +159,11 @@ class MarkerKind(models.Model):
         verbose_name="Marker Kind Value",
         help_text="Choice kind value for marker",
     )
-    marker = models.ForeignKey(
+    marker = models.OneToOneField(
         Marker,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
-        unique=True,
         related_name="kind",
         verbose_name="Marker",
         help_text="Choice marker",
