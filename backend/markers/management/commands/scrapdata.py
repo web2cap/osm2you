@@ -33,7 +33,7 @@ class Command(BaseCommand):
                 xml_data = overpass_camp_site()
             elif scenario == "related":
                 if not id:
-                    raise ("Radius is required for 'related' scenario.")
+                    raise ("Main marker id is required for 'related' scenario.")
                 marker = Marker.objects.get(id=id)
                 xml_data = overpass_related(marker.location)
             else:
