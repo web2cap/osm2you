@@ -238,7 +238,10 @@ MARKERS_RELATED_IN_RADIUS = 5000
 
 OVERPASS = {
     "url": "https://overpass-api.de/api/interpreter",
-    "main": """node[{tag}]({south},{west},{north},{east});out;""",
+    "main": {
+        "wrap": """({subqueries});out;""",
+        "subquery": """node["{tag_name}"="{tag_value}"]({south},{west},{north},{east});""",
+    },
     "related": {
         "wrap": """({subqueries});out center;""",
         "subquery": """node["{tag_name}"="{tag_value}"](around:{radius},{lat},{lon});""",

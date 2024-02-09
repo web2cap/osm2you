@@ -49,14 +49,24 @@ def overpass_camp_site(south=-90, west=-180, north=90, east=180):
         - The bounding box is defined by the parameters (south, west, north, east).
         - The Overpass API URL and query template are fetched from the Django settings.
     """
-    overpass_query = OVERPASS["main"].format(
-        tag=f"{MARKERS_KIND_MAIN['tag']}={MARKERS_KIND_MAIN['tag_value']}",
-        south=south,
-        west=west,
-        north=north,
-        east=east,
-    )
-    return overpass_by_query(overpass_query)
+    kinds = Kind.objects.filter(kind_class=Kind.KIND_CLASS_MAIN)
+    if not kinds.exists():
+        return False
+
+    subqueries = []
+    for kind in kinds:
+        subquery = OVERPASS["main"]["subquery"].format(
+            tag_name=kind.tag,
+            tag_value=kind.value,
+            south=south,
+            west=west,
+            north=north,
+            east=east,
+        )
+        subqueries.append(subquery)
+
+    full_query = OVERPASS["main"]["wrap"].format(subqueries="".join(subqueries))
+    return overpass_by_query(full_query)
 
 
 def overpass_related(location, radius=MARKERS_RELATED_IN_RADIUS):
@@ -70,7 +80,7 @@ def overpass_related(location, radius=MARKERS_RELATED_IN_RADIUS):
     Returns:
         str or None: Overpass API response text if successful, None otherwise.
     """
-    kinds = Kind.objects.all()
+    kinds = Kind.objects.filter(kind_class=Kind.KIND_CLASS_RELATED)
     if not kinds.exists():
         return False
 
