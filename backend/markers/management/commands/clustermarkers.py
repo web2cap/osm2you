@@ -3,12 +3,12 @@ import logging
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import connection
-from tags.models import Tag
+from tags.models import Kind
 
 from markers.models import MarkerCluster, UpdatedMarkerCluster
 
 CLUSTERING = getattr(settings, "CLUSTERING", {})
-MARKERS_KIND_MAIN = getattr(settings, "MARKERS_KIND_MAIN")
+
 
 logger = logging.getLogger(__name__)
 
@@ -31,12 +31,12 @@ class Command(BaseCommand):
     def create_marker_clusters(self, square_size):
         """Calculate clusters for each square."""
 
-        tourism_tag = Tag.objects.get(name=MARKERS_KIND_MAIN["tag"])
         sql_query = f"""
             SELECT ST_Centroid(ST_Collect(location)) as squared_location, COUNT(m.id) as marker_count
             FROM markers_marker as m
-            LEFT JOIN tags_tagvalue tt on tt.marker_id = m.id and tt.tag_id = {tourism_tag.id}
-            WHERE tt.value = '{MARKERS_KIND_MAIN["tag_value"]}'
+            LEFT JOIN tags_markerkind tm ON tm.marker_id = m.id 
+            LEFT JOIN tags_kind tk on tk.id = tm.kind_id  
+            WHERE tk.kind_class  = '{Kind.KIND_CLASS_MAIN}'
             GROUP BY ST_SnapToGrid(location, {square_size});
         """
 
