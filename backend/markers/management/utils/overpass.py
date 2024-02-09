@@ -5,7 +5,6 @@ from django.conf import settings
 from tags.models import Kind
 
 OVERPASS = getattr(settings, "OVERPASS", {})
-MARKERS_KIND_MAIN = getattr(settings, "MARKERS_KIND_MAIN", {})
 MARKERS_RELATED_IN_RADIUS = getattr(settings, "MARKERS_RELATED_IN_RADIUS", 5000)
 
 logger = logging.getLogger(__name__)

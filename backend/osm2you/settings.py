@@ -232,7 +232,6 @@ LOGGING = {
     "loggers": LOGGING_LOGGERS,
 }
 
-MARKERS_KIND_MAIN = {"tag": "tourism", "tag_value": "camp_site"}
 MARKERS_RELATED_IN_RADIUS = 5000
 
 
