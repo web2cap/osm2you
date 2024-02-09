@@ -1,14 +1,11 @@
-from django.conf import settings
 from djoser.serializers import UserCreateSerializer
 from markers.models import Marker, MarkerCluster
 from rest_framework import serializers
 from rest_framework.serializers import ReadOnlyField
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from stories.models import Story
-from tags.models import Kind
+from tags.models import MarkerKind
 from users.models import User
-
-MARKERS_KIND_MAIN = getattr(settings, "MARKERS_KIND_MAIN")
 
 
 class CustomUserShortSerializer(UserCreateSerializer):
@@ -110,29 +107,29 @@ class MarkerInstanceSerializer(MarkerSerializer):
         return {tag.tag.name: tag.value for tag in tags}
 
     def get_kind(self, obj):
-        """If the main kind tag is present with the specified value, return main kind tag value.
-        Else if one of kind for related markers present with the specified value, return kind_group.
-        Else return None."""
-
-        if any(
-            tag.tag.name == MARKERS_KIND_MAIN["tag"]
-            and tag.value in MARKERS_KIND_MAIN["tag_value"]
-            for tag in obj.tag_value.all()
-        ):
-            return MARKERS_KIND_MAIN["tag_value"]
-
-        for kind in Kind.objects.all():
-            if any(
-                tag.tag.name == kind.tag and tag.value in kind.value
-                for tag in obj.tag_value.all()
-            ):
-                return kind.kind_group
-
-        return None
+        try:
+            marker_kind = obj.kind
+            return f"{marker_kind.kind.tag.name}={marker_kind.kind.value}"
+        except MarkerKind.DoesNotExist:
+            return None
 
     class Meta:
-        fields = ("id", "name", "is_yours", "stories", "tags", "kind", "add_date")
-        read_only_fields = ("id", "stories", "tags", "kind", "add_date")
+        fields = (
+            "id",
+            "name",
+            "is_yours",
+            "stories",
+            "tags",
+            "kind",
+            "add_date",
+        )
+        read_only_fields = (
+            "id",
+            "stories",
+            "tags",
+            "kind",
+            "add_date",
+        )
         geo_field = "location"
         model = Marker
 
