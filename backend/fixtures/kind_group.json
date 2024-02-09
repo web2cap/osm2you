@@ -1,0 +1,90 @@
+[
+{
+    "model": "tags.kindgroup",
+    "pk": 19,
+    "fields": {
+        "name": "transportation",
+        "descriptive_name": "Transportation"
+    }
+},
+{
+    "model": "tags.kindgroup",
+    "pk": 20,
+    "fields": {
+        "name": "shopping_supplies",
+        "descriptive_name": "Shopping and Supplies"
+    }
+},
+{
+    "model": "tags.kindgroup",
+    "pk": 21,
+    "fields": {
+        "name": "services",
+        "descriptive_name": "Services"
+    }
+},
+{
+    "model": "tags.kindgroup",
+    "pk": 22,
+    "fields": {
+        "name": "food_dining",
+        "descriptive_name": "Food and Dining"
+    }
+},
+{
+    "model": "tags.kindgroup",
+    "pk": 23,
+    "fields": {
+        "name": "recreation_entertainment",
+        "descriptive_name": "Recreation and Entertainment"
+    }
+},
+{
+    "model": "tags.kindgroup",
+    "pk": 24,
+    "fields": {
+        "name": "natural_resources",
+        "descriptive_name": "Natural Resources"
+    }
+},
+{
+    "model": "tags.kindgroup",
+    "pk": 25,
+    "fields": {
+        "name": "safety_emergency",
+        "descriptive_name": "Safety and Emergency"
+    }
+},
+{
+    "model": "tags.kindgroup",
+    "pk": 26,
+    "fields": {
+        "name": "communication",
+        "descriptive_name": "Communication"
+    }
+},
+{
+    "model": "tags.kindgroup",
+    "pk": 27,
+    "fields": {
+        "name": "educational_facilities",
+        "descriptive_name": "Educational Facilities"
+    }
+},
+{
+    "model": "tags.kindgroup",
+    "pk": 28,
+    "fields": {
+        "name": "accommodation",
+        "descriptive_name": "Accommodation"
+    }
+},
+{
+    "model": "tags.kindgroup",
+    "pk": 29,
+    "fields": {
+        "name": "camp_site",
+        "descriptive_name": "Camping sites"
+    }
+}
+]
