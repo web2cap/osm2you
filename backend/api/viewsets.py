@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_gis import filters
 from stories.models import Story
-from tags.models import Tag, TagValue
+from tags.models import Kind, MarkerKind, TagValue
 from users.models import User
 
 from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly
@@ -25,7 +25,6 @@ from .serializers import (
 
 CLUSTERING = getattr(settings, "CLUSTERING", {})
 CLUSTERING_DENCITY = getattr(settings, "CLUSTERING_DENCITY", 36)
-MARKERS_KIND_MAIN = getattr(settings, "MARKERS_KIND_MAIN")
 
 
 class MarkerViewSet(viewsets.ModelViewSet):
@@ -54,17 +53,13 @@ class MarkerViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Get the queryset for Marker objects or MarkerCluster objects based on the action.
-        List only markers with MARKERS_KIND_MAIN tag present."""
+        List only markers with main kind klass."""
         if self.action == "retrieve":
             return self.get_retrieve_queryset()
         if self.action == "list" and self.square_size():
             return self.get_cluster_queryset()
 
-        main_kind_tag = get_object_or_404(Tag, name=MARKERS_KIND_MAIN["tag"])
-        return Marker.objects.filter(
-            tag_value__tag=main_kind_tag,
-            tag_value__value=MARKERS_KIND_MAIN["tag_value"],
-        )
+        return Marker.objects.filter(kind__kind__kind_class=Kind.KIND_CLASS_MAIN)
 
     def get_retrieve_queryset(self):
         """Get the queryset for Marker objects with additional related data for the 'retrieve' action."""
@@ -105,23 +100,26 @@ class MarkerViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Add the authorized user to the author field during marker creation.
-        Add tag value with main kind for creating marker."""
+        Add tag value with main kind for creating marker.
+        After creation initialize scrap_markers_related task for the marker."""
+
         serializer.save(author=self.request.user)
 
-        main_kind_tag, created = Tag.objects.get_or_create(
-            name=MARKERS_KIND_MAIN["tag"]
+        MarkerKind.objects.update_or_create(
+            marker=serializer.instance,
+            defaults={
+                "kind": Kind.objects.filter(kind_class=Kind.KIND_CLASS_MAIN)
+                .order_by("priority ")
+                .first()
+            },
         )
 
-        TagValue.objects.update_or_create(
-            tag=main_kind_tag,
-            marker=serializer.instance,
-            defaults={"value": MARKERS_KIND_MAIN["tag_value"]},
-        )
         run_scrap_markers_related.delay(serializer.instance.id)
 
     def perform_update(self, serializer):
-        old_marker = get_object_or_404(Marker, pk=serializer.instance.pk)
+        """If location changed, initialize scrap_markers_related task for the marker."""
 
+        old_marker = get_object_or_404(Marker, pk=serializer.instance.pk)
         serializer.save()
 
         new_location = serializer.validated_data.get("location")
