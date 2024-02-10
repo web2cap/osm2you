@@ -95,12 +95,32 @@ class MarkerSerializer(GeoFeatureModelSerializer):
         model = Marker
 
 
+class MarkerRelatedSerializer(MarkerSerializer):
+    """Marker GeoJSON serializer with kind field."""
+
+    kind = serializers.SerializerMethodField()
+
+    def get_kind(self, obj):
+        try:
+            marker_kind = obj.kind
+            return f"{marker_kind.kind.tag.name}={marker_kind.kind.value}"
+        except MarkerKind.DoesNotExist:
+            return None
+
+    class Meta:
+        fields = ("id", "name", "is_yours", "kind")
+        read_only_fields = ("id", "kind")
+        geo_field = "location"
+        model = Marker
+
+
 class MarkerInstanceSerializer(MarkerSerializer):
     """Extend MarkerSerializer,  add marker stories and tags with values lists."""
 
     stories = StorySerializerDisplay(many=True, read_only=True)
     tags = serializers.SerializerMethodField()
     kind = serializers.SerializerMethodField()
+    related = serializers.SerializerMethodField()
 
     def get_tags(self, obj):
         tags = obj.tag_value.all()
@@ -113,6 +133,10 @@ class MarkerInstanceSerializer(MarkerSerializer):
         except MarkerKind.DoesNotExist:
             return None
 
+    def get_related(self, obj):
+        related_markers_data = self.context.get("related_markers")
+        return related_markers_data
+
     class Meta:
         fields = (
             "id",
@@ -121,6 +145,7 @@ class MarkerInstanceSerializer(MarkerSerializer):
             "stories",
             "tags",
             "kind",
+            "related",
             "add_date",
         )
         read_only_fields = (
@@ -128,6 +153,7 @@ class MarkerInstanceSerializer(MarkerSerializer):
             "stories",
             "tags",
             "kind",
+            "related",
             "add_date",
         )
         geo_field = "location"

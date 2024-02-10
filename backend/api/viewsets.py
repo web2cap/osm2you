@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.gis.db.models.functions import Distance
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404
 from markers.models import Marker, MarkerCluster
@@ -16,6 +17,7 @@ from .serializers import (
     CustomUserInfoSerializer,
     MarkerClusterSerializer,
     MarkerInstanceSerializer,
+    MarkerRelatedSerializer,
     MarkerSerializer,
     MarkerUserSerializer,
     StorySerializer,
@@ -25,6 +27,7 @@ from .serializers import (
 
 CLUSTERING = getattr(settings, "CLUSTERING", {})
 CLUSTERING_DENCITY = getattr(settings, "CLUSTERING_DENCITY", 36)
+MARKERS_RELATED_IN_RADIUS = getattr(settings, "MARKERS_RELATED_IN_RADIUS", 5000)
 
 
 class MarkerViewSet(viewsets.ModelViewSet):
@@ -50,6 +53,14 @@ class MarkerViewSet(viewsets.ModelViewSet):
         if self.action == "list" and self.square_size():
             return self.serializers.get("clusters")
         return self.serializers.get(self.action, self.serializers["default"])
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        if self.action == "retrieve":
+            context["related_markers"] = self.get_related_markers_data(
+                self.get_object()
+            )
+        return context
 
     def get_queryset(self):
         """Get the queryset for Marker objects or MarkerCluster objects based on the action.
@@ -96,6 +107,23 @@ class MarkerViewSet(viewsets.ModelViewSet):
                     queryset=Story.objects.filter(author=user),
                 )
             )
+        )
+
+    def get_related_markers_data(self, marker):
+        radius_km = MARKERS_RELATED_IN_RADIUS / 1000
+        related_markers = self.get_related_markers_queryset(marker, radius_km)
+        return MarkerRelatedSerializer(related_markers, many=True).data
+
+    def get_related_markers_queryset(self, marker, radius_km):
+        bbox = marker.location.buffer(radius_km).envelope
+        return (
+            Marker.objects.filter(
+                location__intersects=bbox, kind__kind__kind_class=Kind.KIND_CLASS_MAIN
+            )
+            .exclude(id=marker.id)
+            .annotate(distance=Distance("location", marker.location))
+            .order_by("distance")
+            .select_related("kind__kind")
         )
 
     def perform_create(self, serializer):
