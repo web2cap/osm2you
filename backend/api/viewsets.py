@@ -117,9 +117,7 @@ class MarkerViewSet(viewsets.ModelViewSet):
     def get_related_markers_queryset(self, marker, radius_km):
         bbox = marker.location.buffer(radius_km).envelope
         return (
-            Marker.objects.filter(
-                location__intersects=bbox, kind__kind__kind_class=Kind.KIND_CLASS_MAIN
-            )
+            Marker.objects.filter(location__intersects=bbox)
             .exclude(id=marker.id)
             .annotate(distance=Distance("location", marker.location))
             .order_by("distance")
