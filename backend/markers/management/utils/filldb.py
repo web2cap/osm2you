@@ -4,7 +4,7 @@ from django.contrib.gis.geos import Point
 from django.db.models import F, OuterRef, Subquery
 from markers.models import Marker
 from markers.tasks import run_scrap_markers_related
-from tags.models import Kind, Tag, TagValue
+from tags.models import Kind, MarkerKind, Tag, TagValue
 
 logger = logging.getLogger(__name__)
 
@@ -117,8 +117,8 @@ def update_nodes(nodes):
                 .filter(matching_tag_value__isnull=False)
                 .first()
             )
-            if kind and not marker.kind.all().exists():
-                marker.kind.create(kind=kind)
+            if kind and not MarkerKind.objects.filter(marker=marker).exists():
+                MarkerKind.objects.create(marker=marker, kind=kind)
 
         except Exception as e:
             logger.exception(f"update_nodes {e}\n On node: {node}")

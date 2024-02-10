@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.gis import admin
-from tags.models import Kind
+from tags.models import Kind, MarkerKind
 
 from .models import Marker
 
@@ -40,8 +40,9 @@ class MarkerAdmin(admin.GISModelAdmin):
 
     def get_kind_display(self, obj):
         """Display the kind value in the admin list."""
-        if obj.kind.exists():
-            return ", ".join(str(kind) for kind in obj.kind.all())
+        marker_kind = MarkerKind.objects.filter(marker=obj)
+        if marker_kind.exists():
+            return marker_kind.first().kind
         return " - "
 
     get_kind_display.short_description = "Kind"
