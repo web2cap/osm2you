@@ -52,34 +52,42 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: "3.10"
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python3-pip
-        pip install --upgrade pip
-        sudo apt-get install -y libgdal-dev
-        pip install poetry
-        mkdir log
-        cd backend/
-        poetry config virtualenvs.create false
-        poetry install
-    - name: Test with pytest
-      env:
-        ST_SECRET_KEY: +r@zjp=kc@qh#=ov6^vyvx0kb7g=11(*_^a3@%6en$-9_kr_)j
-        DB_NAME: postgres
-        DB_USER: postgres
-        DB_PASSWORD: postgres
-        DB_HOST: localhost
-        DB_PORT: 5432
-        GDAL_LIBRARY_PATH: /usr/lib/libgdal.so
-      run: |
-        pytest --reuse-db
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip install --upgrade pip
+          sudo apt-get install -y libgdal-dev
+          pip install poetry
+          mkdir log
+          cd backend/
+          poetry config virtualenvs.create false
+          poetry install
+      - name: Test with pytest
+        env:
+          ST_SECRET_KEY: +r@zjp=kc@qh#=ov6^vyvx0kb7g=11(*_^a3@%6en$-9_kr_)j
+          DB_NAME: postgres
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
+          DB_PORT: 5432
+          REDIS_INDEX: 0
+          REDIS_USER: redis
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          GDAL_LIBRARY_PATH: /usr/lib/libgdal.so
+        run: |
+          pytest --reuse-db
 
   build_push_backend:
     name: Build and push to GitHub Container Registry
