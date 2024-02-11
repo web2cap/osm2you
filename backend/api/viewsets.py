@@ -23,6 +23,7 @@ from .serializers import (
     StorySerializer,
     StorySerializerDisplay,
     StorySerializerText,
+    TagSerializer,
 )
 
 CLUSTERING = getattr(settings, "CLUSTERING", {})
@@ -253,3 +254,11 @@ class KindViewSet(viewsets.ModelViewSet):
     queryset = Kind.objects.select_related("kind_group").prefetch_related("tag")
     permission_classes = (ListOnly,)
     serializer_class = KindSerializer
+
+
+class TagViewSet(viewsets.ModelViewSet):
+    """Kind group view set."""
+
+    queryset = Tag.objects.all()
+    permission_classes = (ListOnly,)
+    serializer_class = TagSerializer

@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ReadOnlyField
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from stories.models import Story
-from tags.models import Kind, MarkerKind
+from tags.models import Kind, MarkerKind, Tag
 from users.models import User
 
 
@@ -196,3 +196,13 @@ class KindSerializer(serializers.ModelSerializer):
     class Meta:
         model = Kind
         fields = ("tag", "tag_display_name", "value", "color", "icon", "kind")
+
+
+class TagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Tag
+        fields = (
+            "name",
+            "display_name",
+        )
