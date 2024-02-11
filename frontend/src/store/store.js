@@ -16,7 +16,8 @@ export default createStore({
     }),
     // backend api
     backend: axios.create({
-        baseURL: ''
+        // baseURL: '' // for prod
+        baseURL: 'http://localhost:8000' // for local debug
     }),
     setBackendHeader: action((state) => {
         state.backend.defaults.headers.common['Authorization'] = `Bearer ${state.accessToken}`
@@ -81,4 +82,6 @@ export default createStore({
     setEditingStory: action((state, payload) => {
         state.editingStory = payload
     }),
+    //kinds
+    KINDS_URL: '/api/v1/kinds/',
 })

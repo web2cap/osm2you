@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { useStoreState, useStoreActions } from 'easy-peasy';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer } from 'react-leaflet';
 
 import Missing from "../Template/Missing"
 import './MarkerInstance.css'
@@ -10,6 +10,8 @@ import AddStory from "../Story/AddStory";
 import Stories from "../Story/Stories";
 import StatusMessage from "../StatusMessage/StatusMessage";
 import FormatDate from "../common/FormatDate";
+import MainMarker from "./MainMarker";
+import RelatedMarkers from "./RelatedMarkers";
 
 const MarkerInstance = () => {
     const { id } = useParams()
@@ -17,6 +19,7 @@ const MarkerInstance = () => {
     const [errMissing, setErrMissing] = useState(false)
 
     const MARKERS_URL = useStoreState((state) => state.MARKERS_URL)
+    const KINDS_URL = useStoreState((state) => state.KINDS_URL)
     const backend = useStoreState((state) => state.backend);
 
     const setErrMsg = useStoreActions((actions) => actions.setErrMsg)
@@ -39,6 +42,7 @@ const MarkerInstance = () => {
     const [editMode, setEditMode] = useState(false)
     const [editName, setEditName] = useState('')
 
+    const [kinds, setKinds] = useState([]);
 
     const navigate = useNavigate()
 
@@ -129,7 +133,24 @@ const MarkerInstance = () => {
         fetchMarker(id)
         setEditMode(false)
     }
-
+    // fetch kinds
+    useEffect(() => {
+        async function fetchKinds() {
+            try {
+                const response = await backend.get(KINDS_URL);
+                if (response.status !== 200) {
+                    throw new Error("Failed to fetch kinds");
+                }
+                setKinds(response.data);
+            } catch (err) {
+                setErrMsg(`Error fetching kinds: ${err}`)
+                setErrMissing(true)
+                console.error("Error fetching kinds:", err);
+            }
+        }
+    
+        fetchKinds();
+    }, []);
     return (
         <main>
             <StatusMessage />
@@ -142,11 +163,11 @@ const MarkerInstance = () => {
 
                             {editMode
                                 ? <AddMarkerPoint />
-                                : <Marker position={[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]}>
-                                    <Popup>
-                                        {marker.properties.name}
-                                    </Popup>
-                                </Marker>
+                                : <>
+                                    <MainMarker marker={marker} />
+                                    <RelatedMarkers markers={marker.properties.related.features} kinds={kinds} /> 
+                                    
+                                </>
                             }
 
                         </MapContainer>
@@ -192,23 +213,16 @@ const MarkerInstance = () => {
                             </>
                         }
                         {addingStory && <AddStory />}
-                        <p className="tags-list">
-                            <ul>
+                        
+                            <ul className="tags-list">
                                 {Object.entries(marker.properties.tags).map(([key, value]) => (
                                     <li key={key}>
                                         <strong>{key}: </strong>{value}
                                     </li>
                                 ))}
                             </ul>
-                        </p>
+                        
                         <Stories stories_list={marker.properties.stories}  />
-                        <ul className="related-markers">
-                            {/* marker.relatedMarkers.map(relatedMarker => (
-                                <li key={relatedMarker.id}>
-                                    <Link to={`/marker/${relatedMarker.id}`} className="related-marker-link">{relatedMarker.name}</Link>
-                                </li>
-                            )) */}
-                        </ul>
                     </div>
                 </div>
             }
