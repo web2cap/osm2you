@@ -1,6 +1,8 @@
 import { createStore, action } from "easy-peasy";
 import axios from 'axios';
 
+const backendURL = process.env.REACT_APP_BACKEND_URL || '';
+
 export default createStore({
     // GENERAL
     DEBUG: true,
@@ -16,8 +18,7 @@ export default createStore({
     }),
     // backend api
     backend: axios.create({
-        // baseURL: '' // for prod
-        baseURL: 'http://localhost:8000' // for local debug
+        baseURL: backendURL
     }),
     setBackendHeader: action((state) => {
         state.backend.defaults.headers.common['Authorization'] = `Bearer ${state.accessToken}`
