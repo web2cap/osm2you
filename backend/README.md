@@ -15,6 +15,7 @@ alter role DB_USER with encrypted password 'DB_PASSWORD';
 - Create a .env file in the backend directory, following this example:
 ```
     ST_DEBUG="True"
+    ST_DEBUG_SQL="True"
     ST_SECRET_KEY="**************************************************"
 
     DB_NAME="osm2you"
