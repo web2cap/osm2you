@@ -250,6 +250,6 @@ class StoryViewSet(viewsets.ModelViewSet):
 class KindViewSet(viewsets.ModelViewSet):
     """Kind group view set."""
 
-    queryset = Kind.objects.all()
+    queryset = Kind.objects.select_related("kind_group").prefetch_related("tag")
     permission_classes = (ListOnly,)
     serializer_class = KindSerializer
