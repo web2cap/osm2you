@@ -3,10 +3,12 @@ import logging
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import connection
+from tags.models import Kind
 
 from markers.models import MarkerCluster, UpdatedMarkerCluster
 
 CLUSTERING = getattr(settings, "CLUSTERING", {})
+
 
 logger = logging.getLogger(__name__)
 
@@ -30,8 +32,11 @@ class Command(BaseCommand):
         """Calculate clusters for each square."""
 
         sql_query = f"""
-            SELECT ST_Centroid(ST_Collect(location)) as squared_location, COUNT(id) as marker_count
-            FROM markers_marker
+            SELECT ST_Centroid(ST_Collect(location)) as squared_location, COUNT(m.id) as marker_count
+            FROM markers_marker as m
+            LEFT JOIN tags_markerkind tm ON tm.marker_id = m.id 
+            LEFT JOIN tags_kind tk on tk.id = tm.kind_id  
+            WHERE tk.kind_class  = '{Kind.KIND_CLASS_MAIN}'
             GROUP BY ST_SnapToGrid(location, {square_size});
         """
 

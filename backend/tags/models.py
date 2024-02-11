@@ -70,3 +70,108 @@ class TagValue(CreatedModel):
 
     def __str__(self):
         return self.tag.name
+
+
+class KindGroup(models.Model):
+    """Group to generalize the kind of markers."""
+
+    name = models.CharField(max_length=128, null=False, blank=False, unique=True)
+    descriptive_name = models.CharField(max_length=128, null=True, blank=False)
+
+    class Meta:
+        ordering = ("-name",)
+        verbose_name = "Kind group"
+        verbose_name_plural = "Kinds groups"
+
+    def __str__(self):
+        return self.name
+
+
+class Kind(models.Model):
+    """Unique kinds in tag=value format, with classification by kind groups.
+    Every kind has kind_class main or related."""
+
+    KIND_CLASS_MAIN = "main"
+    KIND_CLASS_RELATED = "related"
+    KIND_CLASS_CHOICES = (
+        (KIND_CLASS_MAIN, "main"),
+        (KIND_CLASS_RELATED, "related"),
+    )
+
+    kind_group = models.ForeignKey(
+        KindGroup,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name="kind_tag",
+        verbose_name="Kind Group",
+        help_text="Specify kind group",
+    )
+    tag = models.ForeignKey(
+        Tag,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name="kind_tag",
+        verbose_name="Kind tag",
+        help_text="Choice tag for describe kind",
+    )
+    kind_class = models.CharField(
+        max_length=32,
+        choices=KIND_CLASS_CHOICES,
+        blank=False,
+        null=False,
+        default=KIND_CLASS_RELATED,
+        verbose_name="Kind class",
+        help_text="Choice class for this kind",
+    )
+    priority = models.SmallIntegerField(
+        blank=False,
+        null=False,
+        default=2,
+        verbose_name="Kind priority",
+        help_text="Fill priority for this kind property",
+    )
+    value = models.CharField(max_length=255, null=False, blank=False)
+
+    class Meta:
+        ordering = ("-tag", "-value")
+        verbose_name = "Marker kind"
+        verbose_name_plural = "Markers kinds"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["tag", "value"],
+                name="unique_kind_tag",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.tag.name}={self.value}"
+
+
+class MarkerKind(models.Model):
+    kind = models.ForeignKey(
+        Kind,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name="kind_value",
+        verbose_name="Marker Kind Value",
+        help_text="Choice kind value for marker",
+    )
+    marker = models.OneToOneField(
+        Marker,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name="kind",
+        verbose_name="Marker",
+        help_text="Choice marker",
+    )
+
+    class Meta:
+        verbose_name = "Marker kind value"
+        verbose_name_plural = "Markers kind value"
+
+    def __str__(self):
+        return f"{self.marker.name} [{self.kind}]"

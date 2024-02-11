@@ -2,12 +2,13 @@ from django.conf import settings
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404
 from markers.models import Marker, MarkerCluster
+from markers.tasks import run_scrap_markers_related
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_gis import filters
 from stories.models import Story
-from tags.models import TagValue
+from tags.models import Kind, MarkerKind, Tag, TagValue
 from users.models import User
 
 from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly
@@ -15,6 +16,7 @@ from .serializers import (
     CustomUserInfoSerializer,
     MarkerClusterSerializer,
     MarkerInstanceSerializer,
+    MarkerRelatedSerializer,
     MarkerSerializer,
     MarkerUserSerializer,
     StorySerializer,
@@ -24,6 +26,7 @@ from .serializers import (
 
 CLUSTERING = getattr(settings, "CLUSTERING", {})
 CLUSTERING_DENCITY = getattr(settings, "CLUSTERING_DENCITY", 36)
+MARKERS_RELATED_IN_RADIUS = getattr(settings, "MARKERS_RELATED_IN_RADIUS", 5000)
 
 
 class MarkerViewSet(viewsets.ModelViewSet):
@@ -43,19 +46,37 @@ class MarkerViewSet(viewsets.ModelViewSet):
     calculated_square_size = None
 
     def get_serializer_class(self):
-        """Get the appropriate serializer class based on the action."""
+        """Get the appropriate serializer class based on the action.
+        For list action get serializer class based on zoom."""
 
         if self.action == "list" and self.square_size():
             return self.serializers.get("clusters")
         return self.serializers.get(self.action, self.serializers["default"])
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        if self.action == "retrieve":
+            context["related_markers"] = self.get_related_markers_data(
+                self.get_object()
+            )
+        return context
+
     def get_queryset(self):
-        """Get the queryset for Marker objects or MarkerCluster objects based on the action."""
+        """Get the queryset for Marker objects or MarkerCluster objects based on the action.
+        List only markers with main kind klass."""
+
         if self.action == "retrieve":
             return self.get_retrieve_queryset()
-        if self.action == "list" and self.square_size():
-            return self.get_cluster_queryset()
+        if self.action == "list":
+            if self.square_size():
+                return self.get_cluster_queryset()
+            return self.get_list_queryset()
         return Marker.objects.all()
+
+    def get_list_queryset(self):
+        """Get the queryset for Marker objects with main kind class only for the 'retrieve' action."""
+
+        return Marker.objects.filter(kind__kind__kind_class=Kind.KIND_CLASS_MAIN)
 
     def get_retrieve_queryset(self):
         """Get the queryset for Marker objects with additional related data for the 'retrieve' action."""
@@ -94,10 +115,59 @@ class MarkerViewSet(viewsets.ModelViewSet):
             )
         )
 
+    def get_related_markers_data(self, marker):
+        """Get related markers data for a given marker within a specified radius."""
+
+        related_markers = self.get_related_markers_queryset(
+            marker, MARKERS_RELATED_IN_RADIUS
+        )
+        return MarkerRelatedSerializer(related_markers, many=True).data
+
+    def get_related_markers_queryset(self, marker, radius):
+        """
+        Get the queryset for related markers within a specified radius from a given marker.
+        Each related marker includes additional information about its kind."""
+
+        return (
+            Marker.objects.filter(location__distance_lte=(marker.location, radius))
+            .exclude(id=marker.id)
+            .select_related("kind__kind")
+            .prefetch_related(
+                Prefetch(
+                    "kind__kind__tag",
+                    queryset=Tag.objects.only("name"),
+                    to_attr="kind__kind",
+                )
+            )
+        )
+
     def perform_create(self, serializer):
-        """Add the authorized user to the author field during marker creation."""
+        """Add the authorized user to the author field during marker creation.
+        Add tag value with main kind for creating marker.
+        After creation initialize scrap_markers_related task for the marker."""
 
         serializer.save(author=self.request.user)
+
+        MarkerKind.objects.update_or_create(
+            marker=serializer.instance,
+            defaults={
+                "kind": Kind.objects.filter(kind_class=Kind.KIND_CLASS_MAIN)
+                .order_by("priority")
+                .first()
+            },
+        )
+
+        run_scrap_markers_related.delay(serializer.instance.id)
+
+    def perform_update(self, serializer):
+        """If location changed, initialize scrap_markers_related task for the marker."""
+
+        old_marker = get_object_or_404(Marker, pk=serializer.instance.pk)
+        serializer.save()
+
+        new_location = serializer.validated_data.get("location")
+        if new_location and old_marker.location != new_location:
+            run_scrap_markers_related.delay(serializer.instance.id)
 
     @action(methods=["get"], detail=False, url_path="user/(?P<username>[^/.]+)")
     def user(self, request, username):

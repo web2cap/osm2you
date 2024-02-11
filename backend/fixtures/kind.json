@@ -1,0 +1,420 @@
+[
+{
+    "model": "tags.kind",
+    "pk": 65,
+    "fields": {
+        "kind_group": 19,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "bus_station"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 66,
+    "fields": {
+        "kind_group": 19,
+        "tag": 765,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "station"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 67,
+    "fields": {
+        "kind_group": 19,
+        "tag": 464,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "yes"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 68,
+    "fields": {
+        "kind_group": 19,
+        "tag": 9,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "information"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 69,
+    "fields": {
+        "kind_group": 20,
+        "tag": 229,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "supermarket"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 70,
+    "fields": {
+        "kind_group": 20,
+        "tag": 229,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "outdoor"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 71,
+    "fields": {
+        "kind_group": 20,
+        "tag": 229,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "camping"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 72,
+    "fields": {
+        "kind_group": 20,
+        "tag": 229,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "convenience"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 73,
+    "fields": {
+        "kind_group": 20,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "pharmacy"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 74,
+    "fields": {
+        "kind_group": 21,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "hospital"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 75,
+    "fields": {
+        "kind_group": 21,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "clinic"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 76,
+    "fields": {
+        "kind_group": 21,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "toilets"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 77,
+    "fields": {
+        "kind_group": 21,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "atm"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 78,
+    "fields": {
+        "kind_group": 21,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "post_office"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 79,
+    "fields": {
+        "kind_group": 21,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "mobile_phone"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 80,
+    "fields": {
+        "kind_group": 22,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "restaurant"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 81,
+    "fields": {
+        "kind_group": 22,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "cafe"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 82,
+    "fields": {
+        "kind_group": 22,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "fast_food"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 83,
+    "fields": {
+        "kind_group": 23,
+        "tag": 116,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "park"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 84,
+    "fields": {
+        "kind_group": 23,
+        "tag": 116,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "recreation_ground"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 85,
+    "fields": {
+        "kind_group": 23,
+        "tag": 9,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "attraction"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 86,
+    "fields": {
+        "kind_group": 23,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "cinema"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 87,
+    "fields": {
+        "kind_group": 24,
+        "tag": 166,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "spring"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 88,
+    "fields": {
+        "kind_group": 24,
+        "tag": 281,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "river"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 89,
+    "fields": {
+        "kind_group": 24,
+        "tag": 9,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "picnic_site"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 90,
+    "fields": {
+        "kind_group": 25,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "police"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 91,
+    "fields": {
+        "kind_group": 25,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "fire_station"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 92,
+    "fields": {
+        "kind_group": 25,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "emergency_phone"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 93,
+    "fields": {
+        "kind_group": 25,
+        "tag": 1115,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "assembly_point"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 94,
+    "fields": {
+        "kind_group": 26,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "wifi"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 95,
+    "fields": {
+        "kind_group": 26,
+        "tag": 137,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "charging_station"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 97,
+    "fields": {
+        "kind_group": 27,
+        "tag": 9,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "visitor_centre"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 98,
+    "fields": {
+        "kind_group": 27,
+        "tag": 9,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "museum"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 99,
+    "fields": {
+        "kind_group": 28,
+        "tag": 9,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "hotel"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 100,
+    "fields": {
+        "kind_group": 28,
+        "tag": 9,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "motel"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 101,
+    "fields": {
+        "kind_group": 28,
+        "tag": 9,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "lodge"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 102,
+    "fields": {
+        "kind_group": 28,
+        "tag": 9,
+        "kind_class": "related",
+        "priority": 2,
+        "value": "hostel"
+    }
+},
+{
+    "model": "tags.kind",
+    "pk": 104,
+    "fields": {
+        "kind_group": 29,
+        "tag": 9,
+        "kind_class": "main",
+        "priority": 0,
+        "value": "camp_site"
+    }
+}
+]

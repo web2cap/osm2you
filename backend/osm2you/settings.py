@@ -28,6 +28,7 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 DEBUG = os.getenv("ST_DEBUG", "False") == "True"
+DEBUG_SQL = os.getenv("ST_DEBUG_SQL", "False") == "True"
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -201,7 +202,7 @@ LOGGING_LOGGERS = {
         "level": "DEBUG",
     },
 }
-if DEBUG is True:
+if DEBUG_SQL is True:
     LOGGING_LOGGERS["django.db.backends"] = {
         "handlers": ["console"],
         "level": "DEBUG",
@@ -232,9 +233,19 @@ LOGGING = {
     "loggers": LOGGING_LOGGERS,
 }
 
+MARKERS_RELATED_IN_RADIUS = 5000
+
+
 OVERPASS = {
     "url": "https://overpass-api.de/api/interpreter",
-    "camp_site": """node[tourism=camp_site]({south},{west},{north},{east});out;""",
+    "main": {
+        "wrap": """({subqueries});out;""",
+        "subquery": """node["{tag_name}"="{tag_value}"]({south},{west},{north},{east});""",
+    },
+    "related": {
+        "wrap": """({subqueries});out center;""",
+        "subquery": """node["{tag_name}"="{tag_value}"](around:{radius},{lat},{lon});""",
+    },
 }
 
 
@@ -268,9 +279,9 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_BEAT_SCHEDULE = {
-    "run_scrapdata": {
+    "run_scrap_markers_main": {
         # Run every night at 2 AM
-        "task": "markers.tasks.run_scrapdata",
+        "task": "markers.tasks.run_scrap_markers_main",
         "schedule": crontab(minute=0, hour=2),
     },
 }
