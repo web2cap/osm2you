@@ -3,8 +3,7 @@ name: main_test_push
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+
 
 jobs:
   changed_files:
