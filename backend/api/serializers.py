@@ -183,8 +183,12 @@ class MarkerClusterSerializer(GeoFeatureModelSerializer):
         model = MarkerCluster
 
 
-class KindGroupSerializer(serializers.ModelSerializer):
+class KindSerializer(serializers.ModelSerializer):
+    color = serializers.CharField(source="kind_group.color", read_only=True)
+    icon = serializers.CharField(source="kind_group.icon", read_only=True)
+    tag = serializers.CharField(source="tag.name", read_only=True)
+    tag_display_name = serializers.CharField(source="tag.display_name", read_only=True)
 
     class Meta:
-        fields = ("name", "descriptive_name", "icon", "color")
-        model = KindGroup
+        model = Kind
+        fields = ("tag", "tag_display_name", "value", "color", "icon")
