@@ -145,7 +145,7 @@ class MarkerViewSet(viewsets.ModelViewSet):
             marker=serializer.instance,
             defaults={
                 "kind": Kind.objects.filter(kind_class=Kind.KIND_CLASS_MAIN)
-                .order_by("priority ")
+                .order_by("priority")
                 .first()
             },
         )
