@@ -73,7 +73,9 @@ class TestMarkerViewset:
         ), "No marker author in marker list queryset"
 
     @pytest.mark.django_db
-    def test_perform_create(self, marker_viewset, owner_request, simple_marker_data):
+    def test_perform_create(
+        self, marker_viewset, owner_request, simple_marker_data, main_kind
+    ):
         """Test marker perform create, that add author from request.user."""
         marker_viewset.request = owner_request
         marker_serializer = MarkerSerializer(data=simple_marker_data)

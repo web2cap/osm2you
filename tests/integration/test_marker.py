@@ -304,7 +304,9 @@ class TestMarker:
         check_response(response, 400, ["location"])
 
     @pytest.mark.django_db()
-    def test_marker_create_valid_no_name(self, user_owner_client, simple_marker_json):
+    def test_marker_create_valid_no_name(
+        self, user_owner_client, simple_marker_json, main_kind
+    ):
         simple_marker_json.pop("name")
         response = user_owner_client.post(
             self.URL_MARKERS, data=simple_marker_json, format="json"
@@ -323,7 +325,9 @@ class TestMarker:
         ), "Name in response data doesn't equal None"
 
     @pytest.mark.django_db()
-    def test_marker_create_valid(self, user_owner_client, simple_marker_json):
+    def test_marker_create_valid(
+        self, user_owner_client, simple_marker_json, main_kind
+    ):
         response = user_owner_client.post(
             self.URL_MARKERS, data=simple_marker_json, format="json"
         )
