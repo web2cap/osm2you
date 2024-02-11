@@ -64,10 +64,17 @@ class MarkerViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Get the queryset for Marker objects or MarkerCluster objects based on the action.
         List only markers with main kind klass."""
+
         if self.action == "retrieve":
             return self.get_retrieve_queryset()
-        if self.action == "list" and self.square_size():
-            return self.get_cluster_queryset()
+        if self.action == "list":
+            if self.square_size():
+                return self.get_cluster_queryset()
+            return self.get_list_queryset()
+        return Marker.objects.all()
+
+    def get_list_queryset(self):
+        """Get the queryset for Marker objects with main kind class only for the 'retrieve' action."""
 
         return Marker.objects.filter(kind__kind__kind_class=Kind.KIND_CLASS_MAIN)
 
