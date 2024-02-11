@@ -12,7 +12,7 @@ const PointMarker = ({marker}) => {
     >
         <Popup>
           <Link to={`/markers/${marker.id}`}>
-            <h3>{marker.properties.name}</h3>
+            <h4>{marker.properties.name ? marker.properties.name : <i>unnamed marker</i>}</h4>
           </Link>
         </Popup>
     </Marker>

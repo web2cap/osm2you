@@ -36,7 +36,7 @@ const RelatedMarker = ({ marker, kinds }) => {
     >
         <Popup>
           <Link to={`/markers/${marker.id}`}>
-            <h3>{marker.properties.name}</h3>
+            {marker.properties.name ? <h5>{marker.properties.name}</h5> : <i>unnamed marker</i>}
           </Link>
         </Popup>
     </Marker>
