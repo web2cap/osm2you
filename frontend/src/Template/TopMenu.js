@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Navbar, Nav } from 'react-bootstrap';
 import { useStoreState, useStoreActions } from 'easy-peasy'
 
@@ -12,6 +12,8 @@ function TopMenu() {
     const showAddingMarker = useStoreState((state) => state.showAddingMarker)
     const addingMarker = useStoreState((state) => state.addingMarker)
     const setAddingMarker = useStoreActions((actions) => actions.setAddingMarker)
+    
+    const location = useLocation()
     return (
         <Navbar bg="light" expand="lg">
             <Navbar.Brand>
@@ -22,7 +24,7 @@ function TopMenu() {
                     </Link>
                 </Nav>
             </Navbar.Brand>
-            {addingMarker && <AddMarkerForm />}
+            {addingMarker && location.pathname == "/" && <AddMarkerForm />}
             {!addingMarker && <>
                 <Navbar.Toggle aria-controls="top-menu" />
                 <Navbar.Collapse id="top-menu">
@@ -30,7 +32,7 @@ function TopMenu() {
                         {user ?
                             (
                                 <>
-                                    {showAddingMarker && <Link
+                                    {showAddingMarker && location.pathname == "/" &&  <Link
                                         className='nav-link'
                                         onClick={() => { setAddingMarker(true) }}
                                     >Add place</Link>
