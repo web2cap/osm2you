@@ -23,6 +23,8 @@ const MarkerInstance = () => {
     const TAGS_URL = useStoreState((state) => state.TAGS_URL)
     const backend = useStoreState((state) => state.backend);
 
+    const user = useStoreState((state) => state.user)
+
     const setErrMsg = useStoreActions((actions) => actions.setErrMsg)
 
     const addingMarkerPosition = useStoreState((state) => state.addingMarkerPosition)
@@ -223,7 +225,7 @@ const MarkerInstance = () => {
                             : <>
                                 <h1 className="marker-name">{marker.properties.name}</h1>
                                 <p className="marker-date">Added: {FormatDate(marker.properties.add_date)}</p>
-                                {!addingStory && !editingStory && <div className="button-group">
+                                {!addingStory && !editingStory && user && <div className="button-group">
                                     <button
                                         onClick={handleEditMode}
                                     >Edit</button>
