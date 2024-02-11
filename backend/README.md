@@ -24,6 +24,11 @@ alter role DB_USER with encrypted password 'DB_PASSWORD';
     DB_HOST="osm_db"
     DB_PORT=5432
     DB_TEST_NAME="test_osm2you"
+
+    REDIS_INDEX=0
+    REDIS_USER="redis"
+    REDIS_HOST="localhost"
+    REDIS_PORT=6379
 ```
 
 - Install requirements:
@@ -47,4 +52,9 @@ poetry run python manage.py runserver
 - Create superuser (optional):
 ```
 poetry run python manage.py createsuperuser  
+```
+- For creating markers you also need Redis and celery:
+```
+poetry run python celery -A osm2you worker --loglevel=info
+poetry run python celery -A osm2you beat -l INFO  
 ```
