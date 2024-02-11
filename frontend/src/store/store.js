@@ -84,4 +84,6 @@ export default createStore({
     }),
     //kinds
     KINDS_URL: '/api/v1/kinds/',
+    //kinds
+    TAGS_URL: '/api/v1/tags/',
 })

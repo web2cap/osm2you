@@ -20,6 +20,7 @@ const MarkerInstance = () => {
 
     const MARKERS_URL = useStoreState((state) => state.MARKERS_URL)
     const KINDS_URL = useStoreState((state) => state.KINDS_URL)
+    const TAGS_URL = useStoreState((state) => state.TAGS_URL)
     const backend = useStoreState((state) => state.backend);
 
     const setErrMsg = useStoreActions((actions) => actions.setErrMsg)
@@ -43,6 +44,7 @@ const MarkerInstance = () => {
     const [editName, setEditName] = useState('')
 
     const [kinds, setKinds] = useState([]);
+    const [tags, setTags] = useState([]);
 
     const navigate = useNavigate()
 
@@ -151,6 +153,30 @@ const MarkerInstance = () => {
     
         fetchKinds();
     }, []);
+
+    // fetch tags
+    useEffect(() => {
+        async function fetchTags() {
+            try {
+                const response = await backend.get(TAGS_URL);
+                if (response.status !== 200) {
+                    throw new Error("Failed to fetch tags");
+                }
+                setTags(response.data);
+            } catch (err) {
+                setErrMsg(`Error fetching kinds: ${err}`)
+                setErrMissing(true)
+                console.error("Error fetching kinds:", err);
+            }
+        }
+    
+        fetchTags();
+    }, []);
+    const findTag = (name) => {
+        const foundTag =  tags.find((tag) => tag.name === name)
+        return foundTag?.display_name ? foundTag.display_name : foundTag.name
+    };
+
     return (
         <main>
             <StatusMessage />
@@ -214,13 +240,14 @@ const MarkerInstance = () => {
                         }
                         {addingStory && <AddStory />}
                         
-                            <ul className="tags-list">
+                            {tags.length && <ul className="tags-list">
                                 {Object.entries(marker.properties.tags).map(([key, value]) => (
                                     <li key={key}>
-                                        <strong>{key}: </strong>{value}
+                                        <strong>{findTag(key)}: </strong>{value}
                                     </li>
                                 ))}
                             </ul>
+                        }
                         
                         <Stories stories_list={marker.properties.stories}  />
                     </div>
