@@ -14,7 +14,7 @@ from users.models import User
 from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly, ListOnly
 from .serializers import (
     CustomUserInfoSerializer,
-    KindGroupSerializer,
+    KindSerializer,
     MarkerClusterSerializer,
     MarkerInstanceSerializer,
     MarkerRelatedSerializer,
@@ -247,9 +247,9 @@ class StoryViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-class KindGroupViewSet(viewsets.ModelViewSet):
+class KindViewSet(viewsets.ModelViewSet):
     """Kind group view set."""
 
-    queryset = KindGroup.objects.all()
+    queryset = Kind.objects.all()
     permission_classes = (ListOnly,)
-    serializer_class = KindGroupSerializer
+    serializer_class = KindSerializer
