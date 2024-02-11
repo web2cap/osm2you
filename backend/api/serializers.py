@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ReadOnlyField
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from stories.models import Story
-from tags.models import Kind, KindGroup, MarkerKind
+from tags.models import Kind, MarkerKind
 from users.models import User
 
 

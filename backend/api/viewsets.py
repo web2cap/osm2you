@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_gis import filters
 from stories.models import Story
-from tags.models import Kind, KindGroup, MarkerKind, Tag, TagValue
+from tags.models import Kind, MarkerKind, Tag, TagValue
 from users.models import User
 
 from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly, ListOnly
