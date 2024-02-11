@@ -34,10 +34,6 @@ function App() {
   }, [accessToken])
 
 
-  useEffect(() => {
-    // print user
-    if (DEBUG) console.log(user)
-  }, [user])
 
   
 
