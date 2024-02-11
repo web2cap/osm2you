@@ -18,7 +18,7 @@ const MainMarker = ({marker}) => {
     return (
         <Marker position={[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]} icon={icon}>
             <Popup>
-                {marker.properties.name}
+            {marker.properties.name ? <h3>{marker.properties.name}</h3> : <i>unnamed marker</i>}
             </Popup>
         </Marker>
     )
