@@ -8,12 +8,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_gis import filters
 from stories.models import Story
-from tags.models import Kind, MarkerKind, Tag, TagValue
+from tags.models import Kind, KindGroup, MarkerKind, Tag, TagValue
 from users.models import User
 
-from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly
+from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly, ListOnly
 from .serializers import (
     CustomUserInfoSerializer,
+    KindGroupSerializer,
     MarkerClusterSerializer,
     MarkerInstanceSerializer,
     MarkerRelatedSerializer,
@@ -244,3 +245,11 @@ class StoryViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+class KindGroupViewSet(viewsets.ModelViewSet):
+    """Kind group view set."""
+
+    queryset = KindGroup.objects.all()
+    permission_classes = (ListOnly,)
+    serializer_class = KindGroupSerializer
