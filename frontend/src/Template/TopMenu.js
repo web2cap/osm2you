@@ -37,7 +37,12 @@ function TopMenu() {
                                         onClick={() => { setAddingMarker(true) }}
                                     >Add place</Link>
                                     }
-                                    <Link to="/user/" className='nav-link'>Hi, {user.first_name}</Link>
+                                    <Link 
+                                        to={`/markers/user/${user.username}/`}
+                                        className='nav-link'
+                                    >
+                                        Hi, {user.first_name ? user.first_name : user.username}
+                                    </Link>
                                     <Link to="/user/logout" className='nav-link'>Logout</Link>
                                 </>
                             ) : (
