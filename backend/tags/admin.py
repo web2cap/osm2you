@@ -9,7 +9,7 @@ class TagAdmin(admin.ModelAdmin):
 
 
 class KindGroupAdmin(admin.ModelAdmin):
-    list_display = ("name", "descriptive_name")
+    list_display = ("name", "descriptive_name", "color", "icon")
     search_fields = ("name", "descriptive_name")
 
 
