@@ -4,7 +4,7 @@ from rest_framework import routers
 from rest_framework.permissions import AllowAny
 
 from .api_info import api_info
-from .viewsets import KindViewSet, MarkerViewSet, StoryViewSet
+from .viewsets import KindViewSet, MarkerViewSet, StoryViewSet, TagViewSet
 
 app_name = "api"
 
@@ -12,6 +12,7 @@ router = routers.DefaultRouter()
 router.register("markers", MarkerViewSet, basename="markers")
 router.register("stories", StoryViewSet, basename="stories")
 router.register("kinds", KindViewSet, basename="kinds")
+router.register("tags", TagViewSet, basename="tags")
 
 schema_view = get_schema_view(
     api_info,
