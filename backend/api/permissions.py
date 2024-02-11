@@ -46,3 +46,8 @@ class AuthorAdminOrInstanceOnly(permissions.BasePermission):
         return (view.action == "retrieve") or (
             obj.author == request.user or request.user.is_superuser
         )
+
+
+class ListOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return view.action == "list"

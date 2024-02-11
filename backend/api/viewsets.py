@@ -11,9 +11,10 @@ from stories.models import Story
 from tags.models import Kind, MarkerKind, Tag, TagValue
 from users.models import User
 
-from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly
+from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly, ListOnly
 from .serializers import (
     CustomUserInfoSerializer,
+    KindSerializer,
     MarkerClusterSerializer,
     MarkerInstanceSerializer,
     MarkerRelatedSerializer,
@@ -244,3 +245,11 @@ class StoryViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+class KindViewSet(viewsets.ModelViewSet):
+    """Kind group view set."""
+
+    queryset = Kind.objects.select_related("kind_group").prefetch_related("tag")
+    permission_classes = (ListOnly,)
+    serializer_class = KindSerializer

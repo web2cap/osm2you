@@ -213,7 +213,15 @@ const MarkerInstance = () => {
                             </>
                         }
                         {addingStory && <AddStory />}
-                        <p className="description"></p>
+                        <p className="tags-list">
+                            <ul>
+                                {Object.entries(marker.properties.tags).map(([key, value]) => (
+                                    <li key={key}>
+                                        <strong>{key}: </strong>{value}
+                                    </li>
+                                ))}
+                            </ul>
+                        </p>
                         <Stories stories_list={marker.properties.stories}  />
                     </div>
                 </div>
