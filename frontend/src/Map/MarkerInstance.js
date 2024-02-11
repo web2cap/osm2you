@@ -10,6 +10,7 @@ import AddStory from "../Story/AddStory";
 import Stories from "../Story/Stories";
 import StatusMessage from "../StatusMessage/StatusMessage";
 import FormatDate from "../common/FormatDate";
+import RelatedMarkers from "./RelatedMarkers";
 
 const MarkerInstance = () => {
     const { id } = useParams()
@@ -129,6 +130,7 @@ const MarkerInstance = () => {
         fetchMarker(id)
         setEditMode(false)
     }
+    console.log(marker)
 
     return (
         <main>
@@ -142,11 +144,15 @@ const MarkerInstance = () => {
 
                             {editMode
                                 ? <AddMarkerPoint />
-                                : <Marker position={[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]}>
-                                    <Popup>
-                                        {marker.properties.name}
-                                    </Popup>
-                                </Marker>
+                                : <>
+                                    <Marker position={[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]}>
+                                        <Popup>
+                                            {marker.properties.name}
+                                        </Popup>
+                                    </Marker>
+                                    { <RelatedMarkers markers={marker.properties.related.features} /> 
+                                    }
+                                </>
                             }
 
                         </MapContainer>
@@ -194,13 +200,6 @@ const MarkerInstance = () => {
                         {addingStory && <AddStory />}
                         <p className="description"></p>
                         <Stories stories_list={marker.properties.stories}  />
-                        <ul className="related-markers">
-                            {/* marker.relatedMarkers.map(relatedMarker => (
-                                <li key={relatedMarker.id}>
-                                    <Link to={`/marker/${relatedMarker.id}`} className="related-marker-link">{relatedMarker.name}</Link>
-                                </li>
-                            )) */}
-                        </ul>
                     </div>
                 </div>
             }
