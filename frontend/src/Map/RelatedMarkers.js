@@ -7,7 +7,7 @@ const RelatedMarkers = ({markers}) => {
   return (
     <>
     {markers.map((marker) => {
-        return <RelatedMarker marker={marker} />
+        return <RelatedMarker marker={marker} key={marker.id}/>
     })}
   </>
   )
