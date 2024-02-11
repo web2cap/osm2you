@@ -2,12 +2,12 @@ import React from 'react'
 
 import RelatedMarker from './RelatedMarker';
 
-const RelatedMarkers = ({markers}) => {
+const RelatedMarkers = ({markers, kinds}) => {
 
   return (
     <>
     {markers.map((marker) => {
-        return <RelatedMarker marker={marker} key={marker.id}/>
+        return <RelatedMarker marker={marker} kinds={kinds} key={marker.id}/>
     })}
   </>
   )

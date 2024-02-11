@@ -82,4 +82,6 @@ export default createStore({
     setEditingStory: action((state, payload) => {
         state.editingStory = payload
     }),
+    //kinds
+    KINDS_URL: '/api/v1/kinds/',
 })

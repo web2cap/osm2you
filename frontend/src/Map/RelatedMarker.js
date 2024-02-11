@@ -2,7 +2,10 @@
 import { Link } from 'react-router-dom';
 import { Marker, Popup } from 'react-leaflet';
 
-const RelatedMarker = ({marker}) => {
+const RelatedMarker = ({marker, kinds}) => {
+
+
+
   return (
     <Marker
         key={marker.id}

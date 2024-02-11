@@ -19,6 +19,7 @@ const MarkerInstance = () => {
     const [errMissing, setErrMissing] = useState(false)
 
     const MARKERS_URL = useStoreState((state) => state.MARKERS_URL)
+    const KINDS_URL = useStoreState((state) => state.KINDS_URL)
     const backend = useStoreState((state) => state.backend);
 
     const setErrMsg = useStoreActions((actions) => actions.setErrMsg)
@@ -41,6 +42,7 @@ const MarkerInstance = () => {
     const [editMode, setEditMode] = useState(false)
     const [editName, setEditName] = useState('')
 
+    const [kinds, setKinds] = useState([]);
 
     const navigate = useNavigate()
 
@@ -131,7 +133,24 @@ const MarkerInstance = () => {
         fetchMarker(id)
         setEditMode(false)
     }
-
+    // fetch kinds
+    useEffect(() => {
+        async function fetchKinds() {
+            try {
+                const response = await backend.get(KINDS_URL);
+                if (response.status !== 200) {
+                    throw new Error("Failed to fetch kinds");
+                }
+                setKinds(response.data);
+            } catch (err) {
+                setErrMsg(`Error fetching kinds: ${err}`)
+                setErrMissing(true)
+                console.error("Error fetching kinds:", err);
+            }
+        }
+    
+        fetchKinds();
+    }, []);
     return (
         <main>
             <StatusMessage />
@@ -146,7 +165,7 @@ const MarkerInstance = () => {
                                 ? <AddMarkerPoint />
                                 : <>
                                     <MainMarker marker={marker} />
-                                    <RelatedMarkers markers={marker.properties.related.features} /> 
+                                    <RelatedMarkers markers={marker.properties.related.features} kinds={kinds} /> 
                                     
                                 </>
                             }
