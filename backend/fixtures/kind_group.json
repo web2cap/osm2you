@@ -4,7 +4,9 @@
     "pk": 19,
     "fields": {
         "name": "transportation",
-        "descriptive_name": "Transportation"
+        "descriptive_name": "Transportation",
+        "icon": "fa-bus",
+        "color": "blue"
     }
 },
 {
@@ -12,7 +14,9 @@
     "pk": 20,
     "fields": {
         "name": "shopping_supplies",
-        "descriptive_name": "Shopping and Supplies"
+        "descriptive_name": "Shopping and Supplies",
+        "icon": "fa-shopping-cart",
+        "color": "green"
     }
 },
 {
@@ -20,7 +24,9 @@
     "pk": 21,
     "fields": {
         "name": "services",
-        "descriptive_name": "Services"
+        "descriptive_name": "Services",
+        "icon": "fa-wrench",
+        "color": "orange"
     }
 },
 {
@@ -28,7 +34,9 @@
     "pk": 22,
     "fields": {
         "name": "food_dining",
-        "descriptive_name": "Food and Dining"
+        "descriptive_name": "Food and Dining",
+        "icon": "fa-shopping-bag",
+        "color": "red"
     }
 },
 {
@@ -36,7 +44,9 @@
     "pk": 23,
     "fields": {
         "name": "recreation_entertainment",
-        "descriptive_name": "Recreation and Entertainment"
+        "descriptive_name": "Recreation and Entertainment",
+        "icon": "fa-futbol",
+        "color": "green"
     }
 },
 {
@@ -44,7 +54,9 @@
     "pk": 24,
     "fields": {
         "name": "natural_resources",
-        "descriptive_name": "Natural Resources"
+        "descriptive_name": "Natural Resources",
+        "icon": "fa-tree",
+        "color": "green"
     }
 },
 {
@@ -52,7 +64,9 @@
     "pk": 25,
     "fields": {
         "name": "safety_emergency",
-        "descriptive_name": "Safety and Emergency"
+        "descriptive_name": "Safety and Emergency",
+        "icon": "fa-ambulance",
+        "color": "red"
     }
 },
 {
@@ -60,7 +74,9 @@
     "pk": 26,
     "fields": {
         "name": "communication",
-        "descriptive_name": "Communication"
+        "descriptive_name": "Communication",
+        "icon": "fa-comment",
+        "color": "blue"
     }
 },
 {
@@ -68,7 +84,9 @@
     "pk": 27,
     "fields": {
         "name": "educational_facilities",
-        "descriptive_name": "Educational Facilities"
+        "descriptive_name": "Educational Facilities",
+        "icon": "fa-school",
+        "color": "orange"
     }
 },
 {
@@ -76,7 +94,9 @@
     "pk": 28,
     "fields": {
         "name": "accommodation",
-        "descriptive_name": "Accommodation"
+        "descriptive_name": "Accommodation",
+        "icon": "fa-users",
+        "color": "purple"
     }
 },
 {
@@ -84,7 +104,9 @@
     "pk": 29,
     "fields": {
         "name": "camp_site",
-        "descriptive_name": "Camping sites"
+        "descriptive_name": "Camping sites",
+        "icon": "fa-tree",
+        "color": "green"
     }
 }
 ]
