@@ -3,8 +3,11 @@ from drf_yasg.views import get_schema_view
 from rest_framework import routers
 from rest_framework.permissions import AllowAny
 
+from api.viewsets.markers import MarkerViewSet
+from api.viewsets.stories import StoryViewSet
+from api.viewsets.tags import KindViewSet, TagViewSet
+
 from .api_info import api_info
-from .viewsets import KindViewSet, MarkerViewSet, StoryViewSet, TagViewSet
 
 app_name = "api"
 

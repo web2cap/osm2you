@@ -6,12 +6,12 @@ from core.tasks import run_scrap_markers_related
 from django.conf import settings
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 from rest_framework_gis import filters
 
-from api.permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly, ListOnly
+from api.permissions import AuthorAdminOrReadOnly
 from api.serializers.markers import (
     MarkerClusterSerializer,
     MarkerInstanceSerializer,
@@ -19,12 +19,6 @@ from api.serializers.markers import (
     MarkerSerializer,
     MarkerUserSerializer,
 )
-from api.serializers.stories import (
-    StorySerializer,
-    StorySerializerDisplay,
-    StorySerializerText,
-)
-from api.serializers.tags import KindSerializer, TagSerializer
 from api.serializers.users import CustomUserInfoSerializer
 
 CLUSTERING = getattr(settings, "CLUSTERING", {})
@@ -32,7 +26,7 @@ CLUSTERING_DENCITY = getattr(settings, "CLUSTERING_DENCITY", 36)
 MARKERS_RELATED_IN_RADIUS = getattr(settings, "MARKERS_RELATED_IN_RADIUS", 5000)
 
 
-class MarkerViewSet(viewsets.ModelViewSet):
+class MarkerViewSet(ModelViewSet):
     """ViewSet for handling Marker objects, including clustering logic."""
 
     permission_classes = (AuthorAdminOrReadOnly,)
@@ -228,38 +222,3 @@ class MarkerViewSet(viewsets.ModelViewSet):
             len(CLUSTERING["square_size"]) - 1
         ]
         return self.calculated_square_size
-
-
-class StoryViewSet(viewsets.ModelViewSet):
-    """Story view set."""
-
-    queryset = Story.objects.select_related("author").all()
-    permission_classes = (AuthorAdminOrInstanceOnly,)
-    serializers = {
-        "list": StorySerializerDisplay,
-        "retrieve": StorySerializerDisplay,
-        "partial_update": StorySerializerText,
-        "default": StorySerializer,
-    }
-
-    def get_serializer_class(self):
-        return self.serializers.get(self.action, self.serializers["default"])
-
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
-
-
-class KindViewSet(viewsets.ModelViewSet):
-    """Kind group view set."""
-
-    queryset = Kind.objects.select_related("kind_group").prefetch_related("tag")
-    permission_classes = (ListOnly,)
-    serializer_class = KindSerializer
-
-
-class TagViewSet(viewsets.ModelViewSet):
-    """Kind group view set."""
-
-    queryset = Tag.objects.all()
-    permission_classes = (ListOnly,)
-    serializer_class = TagSerializer
