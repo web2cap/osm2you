@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     "core",
     # "django_celery_beat",
     # "markers",
-    # "tags",
     # "stories",
     # "api",
     # "drf_yasg",
