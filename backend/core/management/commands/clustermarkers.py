@@ -33,9 +33,9 @@ class Command(BaseCommand):
 
         sql_query = f"""
             SELECT ST_Centroid(ST_Collect(location)) as squared_location, COUNT(m.id) as marker_count
-            FROM markers_marker as m
-            LEFT JOIN tags_markerkind tm ON tm.marker_id = m.id 
-            LEFT JOIN tags_kind tk on tk.id = tm.kind_id  
+            FROM core_marker as m
+            LEFT JOIN core_markerkind tm ON tm.marker_id = m.id 
+            LEFT JOIN core_kind tk on tk.id = tm.kind_id  
             WHERE tk.kind_class  = '{Kind.KIND_CLASS_MAIN}'
             GROUP BY ST_SnapToGrid(location, {square_size});
         """
@@ -63,8 +63,8 @@ class Command(BaseCommand):
 
         self.clear_clusters(MarkerCluster)
         sql_query = """
-            INSERT INTO markers_markercluster
-            SELECT * FROM markers_updatedmarkercluster;
+            INSERT INTO core_markercluster
+            SELECT * FROM core_updatedmarkercluster;
         """
         with connection.cursor() as cursor:
             cursor.execute(sql_query)
