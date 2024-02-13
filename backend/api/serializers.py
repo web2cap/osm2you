@@ -1,11 +1,11 @@
+from core.models.markers import Marker, MarkerCluster
+from core.models.stories import Story
+from core.models.tags import Kind, MarkerKind, Tag
+from core.models.users import User
 from djoser.serializers import UserCreateSerializer
-from markers.models import Marker, MarkerCluster
 from rest_framework import serializers
 from rest_framework.serializers import ReadOnlyField
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from stories.models import Story
-from tags.models import Kind, MarkerKind, Tag
-from users.models import User
 
 
 class CustomUserShortSerializer(UserCreateSerializer):

@@ -1,15 +1,15 @@
+from core.models.markers import Marker, MarkerCluster
+from core.models.stories import Story
+from core.models.tags import Kind, MarkerKind, Tag, TagValue
+from core.models.users import User
+from core.tasks import run_scrap_markers_related
 from django.conf import settings
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404
-from markers.models import Marker, MarkerCluster
-from markers.tasks import run_scrap_markers_related
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_gis import filters
-from stories.models import Story
-from tags.models import Kind, MarkerKind, Tag, TagValue
-from users.models import User
 
 from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly, ListOnly
 from .serializers import (
