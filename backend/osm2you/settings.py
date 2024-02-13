@@ -54,10 +54,10 @@ INSTALLED_APPS = [
     "djoser",
     "rest_framework_simplejwt",
     "rest_framework.authtoken",
-    "core",
     "django_celery_beat",
-    # "api",
-    # "drf_yasg",
+    "core",
+    "api",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
