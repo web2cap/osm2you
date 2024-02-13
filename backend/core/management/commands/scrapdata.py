@@ -3,10 +3,10 @@ import sys
 
 from django.core.management.base import BaseCommand
 
-from core.management.utils.filldb import update_nodes
-from core.management.utils.overpass import overpass_camp_site, overpass_related
-from core.management.utils.scrap import scrap_nodes
 from core.models.markers import Marker
+from core.utils.filldb import update_nodes
+from core.utils.overpass import overpass_camp_site, overpass_related
+from core.utils.scrap import scrap_nodes
 
 logger = logging.getLogger(__name__)
 
