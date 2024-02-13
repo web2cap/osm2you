@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "rest_framework.authtoken",
     "core",
-    # "django_celery_beat",
+    "django_celery_beat",
     # "api",
     # "drf_yasg",
 ]
