@@ -1,6 +1,6 @@
 [
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 65,
     "fields": {
         "kind_group": 19,
@@ -11,7 +11,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 66,
     "fields": {
         "kind_group": 19,
@@ -22,7 +22,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 67,
     "fields": {
         "kind_group": 19,
@@ -33,7 +33,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 68,
     "fields": {
         "kind_group": 19,
@@ -44,7 +44,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 69,
     "fields": {
         "kind_group": 20,
@@ -55,7 +55,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 70,
     "fields": {
         "kind_group": 20,
@@ -66,7 +66,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 71,
     "fields": {
         "kind_group": 20,
@@ -77,7 +77,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 72,
     "fields": {
         "kind_group": 20,
@@ -88,7 +88,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 73,
     "fields": {
         "kind_group": 20,
@@ -99,7 +99,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 74,
     "fields": {
         "kind_group": 21,
@@ -110,7 +110,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 75,
     "fields": {
         "kind_group": 21,
@@ -121,7 +121,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 76,
     "fields": {
         "kind_group": 21,
@@ -132,7 +132,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 77,
     "fields": {
         "kind_group": 21,
@@ -143,7 +143,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 78,
     "fields": {
         "kind_group": 21,
@@ -154,7 +154,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 79,
     "fields": {
         "kind_group": 21,
@@ -165,7 +165,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 80,
     "fields": {
         "kind_group": 22,
@@ -176,7 +176,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 81,
     "fields": {
         "kind_group": 22,
@@ -187,7 +187,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 82,
     "fields": {
         "kind_group": 22,
@@ -198,7 +198,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 83,
     "fields": {
         "kind_group": 23,
@@ -209,7 +209,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 84,
     "fields": {
         "kind_group": 23,
@@ -220,7 +220,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 85,
     "fields": {
         "kind_group": 23,
@@ -231,7 +231,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 86,
     "fields": {
         "kind_group": 23,
@@ -242,7 +242,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 87,
     "fields": {
         "kind_group": 24,
@@ -253,7 +253,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 88,
     "fields": {
         "kind_group": 24,
@@ -264,7 +264,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 89,
     "fields": {
         "kind_group": 24,
@@ -275,7 +275,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 90,
     "fields": {
         "kind_group": 25,
@@ -286,7 +286,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 91,
     "fields": {
         "kind_group": 25,
@@ -297,7 +297,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 92,
     "fields": {
         "kind_group": 25,
@@ -307,19 +307,9 @@
         "value": "emergency_phone"
     }
 },
+
 {
-    "model": "tags.kind",
-    "pk": 93,
-    "fields": {
-        "kind_group": 25,
-        "tag": 1115,
-        "kind_class": "related",
-        "priority": 2,
-        "value": "assembly_point"
-    }
-},
-{
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 94,
     "fields": {
         "kind_group": 26,
@@ -330,7 +320,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 95,
     "fields": {
         "kind_group": 26,
@@ -341,7 +331,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 97,
     "fields": {
         "kind_group": 27,
@@ -352,7 +342,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 98,
     "fields": {
         "kind_group": 27,
@@ -363,7 +353,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 99,
     "fields": {
         "kind_group": 28,
@@ -374,7 +364,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 100,
     "fields": {
         "kind_group": 28,
@@ -385,7 +375,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 101,
     "fields": {
         "kind_group": 28,
@@ -396,7 +386,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 102,
     "fields": {
         "kind_group": 28,
@@ -407,7 +397,7 @@
     }
 },
 {
-    "model": "tags.kind",
+    "model": "core.kind",
     "pk": 104,
     "fields": {
         "kind_group": 29,
