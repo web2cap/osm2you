@@ -1,5 +1,9 @@
+from .tags import KindAdmin, KindGroupAdmin, TagAdmin
 from .users import CustomUserAdmin
 
 __all__ = [
-    "CustomUserAdmin",
+    KindAdmin,
+    KindGroupAdmin,
+    TagAdmin,
+    CustomUserAdmin,
 ]
