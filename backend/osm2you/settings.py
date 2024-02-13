@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "app",
     # "django_celery_beat",
-    # "users",
     # "markers",
     # "tags",
     # "stories",
