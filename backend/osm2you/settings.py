@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     "djoser",
     "rest_framework_simplejwt",
     "rest_framework.authtoken",
-    "app",
+    "core",
     # "django_celery_beat",
     # "markers",
     # "tags",
@@ -109,7 +109,7 @@ DATABASES = {
     },
 }
 
-AUTH_USER_MODEL = "app.User"
+AUTH_USER_MODEL = "core.User"
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
