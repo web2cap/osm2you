@@ -9,36 +9,20 @@ from corsheaders.defaults import default_headers
 BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv.load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
-SECRET_KEY = os.getenv(
-    "ST_SECRET_KEY",
-)
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost",
-    "http://localhost:3000",
-    "https://osm.w2c.net.eu.org",
-]
-
-
-CORS_ALLOW_HEADERS = list(default_headers) + [
-    "access-control-allow-origin",
-]
-
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-]
-
+# DJAQNGO
 DEBUG = os.getenv("ST_DEBUG", "False") == "True"
 DEBUG_SQL = os.getenv("ST_DEBUG_SQL", "False") == "True"
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "osm.w2c.net.eu.org",
-]
+SECRET_KEY = os.getenv("ST_SECRET_KEY")
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
+CSRF_TRUSTED_ORIGINS = ["http://localhost", "https://osm.w2c.net.eu.org"]
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS.append("http://localhost:3000")
+    CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
+CORS_ALLOW_HEADERS = list(default_headers) + ["access-control-allow-origin"]
+ALLOWED_HOSTS = os.getenv("ST_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+INTERNAL_IPS = ["127.0.0.1"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -73,23 +57,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "osm2you.urls"
 
-TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [TEMPLATES_DIR],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
-]
-
 WSGI_APPLICATION = "osm2you.wsgi.application"
 
 DATABASES = {
@@ -105,6 +72,7 @@ DATABASES = {
         },
     },
 }
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "core.User"
 AUTH_PASSWORD_VALIDATORS = [
@@ -122,6 +90,35 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [TEMPLATES_DIR],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
+
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+# DRF
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -130,7 +127,6 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.AllowAny",
     ],
 }
-
 
 DJOSER = {
     "SERIALIZERS": {
@@ -154,7 +150,6 @@ DJOSER = {
     "HIDE_USERS": True,
 }
 
-
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "AUTH_HEADER_TYPES": ("Bearer",),
@@ -166,28 +161,7 @@ SWAGGER_SETTINGS = {
     }
 }
 
-
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
-
-USE_I18N = True
-
-USE_TZ = True
-
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
-
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
-
+# LOGGING
 LOGGING_FILE_PATH = os.path.join(BASE_DIR, "log/django.log")
 LOGGING_LOGGERS = {
     "django": {
@@ -230,8 +204,8 @@ LOGGING = {
     "loggers": LOGGING_LOGGERS,
 }
 
+# CORE APP
 MARKERS_RELATED_IN_RADIUS = 5000
-
 
 OVERPASS = {
     "url": "https://overpass-api.de/api/interpreter",
@@ -245,7 +219,6 @@ OVERPASS = {
     },
 }
 
-
 CLUSTERING = {
     "square_size": [
         1,
@@ -257,11 +230,11 @@ CLUSTERING = {
 }
 CLUSTERING_DENCITY = 12
 
-
 if CLUSTERING["square_size"] != sorted(CLUSTERING["square_size"]):
     raise ValueError("CLUSTERING['square_size'] must be in ascending order.")
 
 
+# CELERY
 CELERY_BROKER_URL = (
     f"{os.getenv('REDIS_USER')}://{os.getenv('REDIS_HOST')}:"
     f"{os.getenv('REDIS_PORT')}/{os.getenv('REDIS_INDEX')}"
