@@ -11,20 +11,21 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_gis import filters
 
-from .permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly, ListOnly
-from .serializers import (
-    CustomUserInfoSerializer,
-    KindSerializer,
+from api.permissions import AuthorAdminOrInstanceOnly, AuthorAdminOrReadOnly, ListOnly
+from api.serializers.markers import (
     MarkerClusterSerializer,
     MarkerInstanceSerializer,
     MarkerRelatedSerializer,
     MarkerSerializer,
     MarkerUserSerializer,
+)
+from api.serializers.stories import (
     StorySerializer,
     StorySerializerDisplay,
     StorySerializerText,
-    TagSerializer,
 )
+from api.serializers.tags import KindSerializer, TagSerializer
+from api.serializers.users import CustomUserInfoSerializer
 
 CLUSTERING = getattr(settings, "CLUSTERING", {})
 CLUSTERING_DENCITY = getattr(settings, "CLUSTERING_DENCITY", 36)
