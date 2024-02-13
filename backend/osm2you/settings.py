@@ -54,13 +54,14 @@ INSTALLED_APPS = [
     "djoser",
     "rest_framework_simplejwt",
     "rest_framework.authtoken",
-    "django_celery_beat",
-    "users",
-    "markers",
-    "tags",
-    "stories",
-    "api",
-    "drf_yasg",
+    "app",
+    # "django_celery_beat",
+    # "users",
+    # "markers",
+    # "tags",
+    # "stories",
+    # "api",
+    # "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -109,7 +110,7 @@ DATABASES = {
     },
 }
 
-AUTH_USER_MODEL = "users.User"
+# AUTH_USER_MODEL = "users.User"
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
