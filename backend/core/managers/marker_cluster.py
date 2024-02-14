@@ -10,11 +10,10 @@ logger = logging.getLogger(__name__)
 class MarkerClusterManager:
     @staticmethod
     def update_clusters():
-        """
-        These actions wrapped in the one transaction.
-        Clears temporary table. Calculates new clusters and store them in temporary table.
-        Clears production clusters table. Moves clusters from temporary table to production.
-        Commits transaction.
+        """Wraps the operations of updating marker clusters in a single transaction.
+        It calls methods from MarkerClusterService to clear temporary marker clusters.
+        Then create new clusters, clear production clusters, move clusters from temporary to production.
+        It logs any errors that occur during the process.
         """
         try:
             with transaction.atomic():

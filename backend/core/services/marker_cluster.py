@@ -8,6 +8,9 @@ CLUSTERING = getattr(settings, "CLUSTERING", {})
 
 
 class MarkerClusterService:
+    """Handles the creation, copying, and clearing of marker clusters.
+    It provides methods for creating and clearing clusters, copying clusters into the main model.
+    """
 
     @staticmethod
     def create_clusters():

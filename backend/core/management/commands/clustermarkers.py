@@ -4,7 +4,7 @@ from core.managers.marker_cluster import MarkerClusterManager
 
 
 class Command(BaseCommand):
-    help = "Update MarkerClusters based on Marker locations"
+    help = "Update MarkerClusters based on Marker locations."
 
     def handle(self, *args, **options):
         status, code = MarkerClusterManager.update_clusters()
