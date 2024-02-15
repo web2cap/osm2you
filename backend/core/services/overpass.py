@@ -30,7 +30,8 @@ class OverpassService:
             logger.error(f"Overpass API response status code: {response.status_code}")
             return None
 
-    def overpass_camp_site(self, south=-90, west=-180, north=90, east=180):
+    @staticmethod
+    def overpass_main_kind_nodes(self, south=-90, west=-180, north=90, east=180):
         kinds = KindService.get_main_kinds()
         if not kinds.exists():
             return None
@@ -50,7 +51,8 @@ class OverpassService:
         full_query = self.main_subquery_wrap.format(subqueries="".join(subqueries))
         return self._overpass_by_query(full_query)
 
-    def overpass_related(self, location, radius=MARKERS_RELATED_IN_RADIUS):
+    @staticmethod
+    def overpass_related_nodes(self, location, radius=MARKERS_RELATED_IN_RADIUS):
         kinds = KindService.get_related_kinds()
         if not kinds.exists():
             return None
