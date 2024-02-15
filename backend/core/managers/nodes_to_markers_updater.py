@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class NodesToMarkersUpdaterManager:
 
-    @classmethod
+    @staticmethod
     def update_markers(nodes):
         """
         Update or create markers, tags, and tag values in the database based on the provided nodes.
