@@ -19,3 +19,10 @@ class MarkerService:
             marker.osm_id = marker_data["osm_id"]
         marker.save()
         return marker
+
+    @staticmethod
+    def get_by_id(marker_id):
+        try:
+            return Marker.objects.get(id=marker_id)
+        except Exception as e:
+            return False
