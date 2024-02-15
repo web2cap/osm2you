@@ -46,8 +46,8 @@ class NodesToMarkersUpdaterManager:
             "tags_values_add": 0,
             "kinds_add": 0,
         }
-        try:
-            for node in nodes:
+        for node in nodes:
+            try:
                 with transaction.atomic():
                     # marker
                     coordinates = {"lat": node["lat"], "lon": node["lon"]}
@@ -98,11 +98,12 @@ class NodesToMarkersUpdaterManager:
                     _, created = KindService.set_marker_kind(marker)
                     if created:
                         stat["kinds_add"] += 1
-        except IntegrityError as e:
-            logger.exception(f"IntegrityError occurred while updating nodes: {e}")
-            raise
-        except Exception as e:
-            logger.exception(f"Error occurred while updating nodes: {e}")
-            raise
+            except IntegrityError as e:
+                logger.exception(f"IntegrityError occurred while updating nodes: {e}")
+                continue
+            except Exception as e:
+                logger.exception(f"Error occurred while updating nodes: {e}")
+                continue
 
+        logger.info(f"Updating markers from nodes finished, with result: {stat}")
         return stat
