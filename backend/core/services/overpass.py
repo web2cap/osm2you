@@ -12,33 +12,16 @@ MARKERS_RELATED_IN_RADIUS = getattr(settings, "MARKERS_RELATED_IN_RADIUS", 5000)
 
 
 class OverpassService:
-    def __init__(self):
-        self.overpass_url = OVERPASS.get("url")
-        self.main_subquery_wrap = OVERPASS.get("main", {}).get("wrap")
-        self.main_subquery_template = OVERPASS.get("main", {}).get("subquery")
-        self.related_subquery_wrap = OVERPASS.get("related", {}).get("wrap")
-        self.related_subquery_template = OVERPASS.get("related", {}).get("subquery")
-
-    def _overpass_by_query(self, overpass_query):
-        try:
-            response = requests.get(self.overpass_url, params={"data": overpass_query})
-            if response.status_code == 200:
-                return response.text
-        except Exception as e:
-            logger.error(f"Overpass API error: {e}")
-        else:
-            logger.error(f"Overpass API response status code: {response.status_code}")
-            return None
 
     @staticmethod
-    def overpass_main_kind_nodes(self, south=-90, west=-180, north=90, east=180):
+    def overpass_main_kind_nodes(south=-90, west=-180, north=90, east=180):
         kinds = KindService.get_main_kinds()
         if not kinds.exists():
             return None
 
         subqueries = []
         for kind in kinds:
-            subquery = self.main_subquery_template.format(
+            subquery = OVERPASS["main"]["subquery"].format(
                 tag_name=kind.tag,
                 tag_value=kind.value,
                 south=south,
@@ -48,18 +31,18 @@ class OverpassService:
             )
             subqueries.append(subquery)
 
-        full_query = self.main_subquery_wrap.format(subqueries="".join(subqueries))
-        return self._overpass_by_query(full_query)
+        full_query = OVERPASS["main"]["wrap"].format(subqueries="".join(subqueries))
+        return OverpassService._overpass_by_query(full_query)
 
     @staticmethod
-    def overpass_related_nodes(self, location, radius=MARKERS_RELATED_IN_RADIUS):
+    def overpass_related_nodes(location, radius=MARKERS_RELATED_IN_RADIUS):
         kinds = KindService.get_related_kinds()
         if not kinds.exists():
             return None
 
         subqueries = []
         for kind in kinds:
-            subquery = self.related_subquery_template.format(
+            subquery = OVERPASS["related"]["subquery"].format(
                 tag_name=kind.tag,
                 tag_value=kind.value,
                 radius=radius,
@@ -68,5 +51,19 @@ class OverpassService:
             )
             subqueries.append(subquery)
 
-        full_query = self.related_subquery_wrap.format(subqueries="".join(subqueries))
-        return self._overpass_by_query(full_query)
+        full_query = OVERPASS["related"]["wrap"].format(subqueries="".join(subqueries))
+        return OverpassService._overpass_by_query(full_query)
+
+    @staticmethod
+    def _overpass_by_query(overpass_query):
+        try:
+            response = requests.get(OVERPASS["url"], params={"data": overpass_query})
+            if response.status_code == 200:
+                return response.text
+            else:
+                logger.error(
+                    f"Overpass API response status code: {response.status_code}"
+                )
+                raise f"Fail with response status code: {response.status_code}"
+        except Exception as e:
+            logger.error(f"Overpass API error: {e}")
