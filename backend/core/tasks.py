@@ -13,10 +13,10 @@ def run_clustermarkers():
 
 @shared_task
 def run_scrap_markers_main():
-    call_command("scrapdata", "main")
+    call_command("scrapemarkers", "main")
     run_clustermarkers.delay()
 
 
 @shared_task
 def run_scrap_markers_related(marker_id):
-    call_command("scrapdata", "related", id=marker_id)
+    call_command("scrapemarkers", "related", id=marker_id)
