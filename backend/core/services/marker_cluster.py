@@ -8,9 +8,15 @@ CLUSTERING = getattr(settings, "CLUSTERING", {})
 
 
 class MarkerClusterService:
-    """Handles the creation, copying, and clearing of marker clusters.
+    """Handles the retrive,  creation, copying, and clearing of marker clusters.
     It provides methods for creating and clearing clusters, copying clusters into the main model.
     """
+
+    @staticmethod
+    def get_clusters_by_size(square_size):
+        if not square_size:
+            raise ValueError("Specify square_size for retrive")
+        return MarkerCluster.objects.filter(square_size=square_size)
 
     @staticmethod
     def create_clusters():
