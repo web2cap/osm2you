@@ -1,13 +1,11 @@
-from core.models.markers import Marker, MarkerCluster
-from core.models.stories import Story
-from core.models.tags import Kind, MarkerKind, TagValue
-from core.models.users import User
 from core.services.bbox_square import BboxSquare
+from core.services.kinds import KindService
+from core.services.marker_cluster import MarkerClusterService
+from core.services.markers import MarkerService
 from core.services.related_markers import RelatedMarkers
+from core.services.users import UserService
 from core.tasks import run_scrap_markers_related
 from django.conf import settings
-from django.db.models import Prefetch, Q
-from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -70,51 +68,29 @@ class MarkerViewSet(ModelViewSet):
             if self.bbox_square_service.get_show_clusters():
                 return self.get_cluster_queryset()
             return self.get_list_queryset()
-        return Marker.objects.all()
+        return self.get_all_queryset()
+
+    def get_all_queryset(self):
+        return MarkerService.get_markers_all()
 
     def get_list_queryset(self):
-        """Get the queryset for Marker objects with main kind class only for the 'retrieve' action."""
-
-        return Marker.objects.filter(kind__kind__kind_class=Kind.KIND_CLASS_MAIN)
+        """Get the queryset for Marker objects with main kind class only for the 'list' action."""
+        return MarkerService.get_markers_main_kind()
 
     def get_retrieve_queryset(self):
         """Get the queryset for Marker objects with additional related data for the 'retrieve' action."""
-
-        return Marker.objects.select_related("author").prefetch_related(
-            Prefetch(
-                "stories",
-                queryset=Story.objects.select_related("author"),
-            ),
-            "stories__author",
-            Prefetch(
-                "tag_value",
-                queryset=TagValue.objects.select_related("tag"),
-            ),
-            "tag_value__tag",
-        )
+        return MarkerService.get_markers_with_stories_tags()
 
     def get_cluster_queryset(self):
         """Get the queryset for MarkerCluster objects based on the current square size."""
 
-        return MarkerCluster.objects.filter(
-            square_size=self.bbox_square_service.get_square_size()
+        return MarkerClusterService.get_clusters_by_size(
+            self.bbox_square_service.get_square_size()
         )
 
     def get_user_markers_queryset(self, user):
         """Get the queryset for markers associated with a specific user and their stories."""
-
-        return (
-            Marker.objects.filter(
-                Q(stories__isnull=False, stories__author=user) | Q(author=user)
-            )
-            .distinct()
-            .prefetch_related(
-                Prefetch(
-                    "stories",
-                    queryset=Story.objects.filter(author=user),
-                )
-            )
-        )
+        return MarkerService.get_users_markers_stories(user)
 
     def perform_create(self, serializer):
         """Add the authorized user to the author field during marker creation.
@@ -122,24 +98,14 @@ class MarkerViewSet(ModelViewSet):
         After creation initialize scrap_markers_related task for the marker."""
 
         serializer.save(author=self.request.user)
-
-        MarkerKind.objects.update_or_create(
-            marker=serializer.instance,
-            defaults={
-                "kind": Kind.objects.filter(kind_class=Kind.KIND_CLASS_MAIN)
-                .order_by("priority")
-                .first()
-            },
-        )
-
+        KindService.set_marker_main_kind(marker=serializer.instance)
         run_scrap_markers_related.delay(serializer.instance.id)
 
     def perform_update(self, serializer):
         """If location changed, initialize scrap_markers_related task for the marker."""
 
-        old_marker = get_object_or_404(Marker, pk=serializer.instance.pk)
+        old_marker = MarkerService.get_by_id(serializer.instance.pk)
         serializer.save()
-
         new_location = serializer.validated_data.get("location")
         if new_location and old_marker.location != new_location:
             run_scrap_markers_related.delay(serializer.instance.id)
@@ -149,7 +115,7 @@ class MarkerViewSet(ModelViewSet):
         """Check if a username exists, get the user, and add user info to the response.
         Add markers with users stories and users markers."""
 
-        user = get_object_or_404(User, username=username)
+        user = UserService.get_by_username(username)
         user_data = {"user": CustomUserInfoSerializer(user).data}
 
         markers_queryset = self.filter_queryset(self.get_user_markers_queryset(user))
