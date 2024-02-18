@@ -5,7 +5,6 @@ CLUSTERING_DENCITY = getattr(settings, "CLUSTERING_DENCITY", 36)
 
 
 class BboxSquare:
-
     def __init__(self, in_bbox=None):
         self._bbox_area = self._get_bbox_area(in_bbox)
         self._calculated_square_size = self._calculate_square_size()

@@ -12,7 +12,6 @@ MARKERS_RELATED_IN_RADIUS = getattr(settings, "MARKERS_RELATED_IN_RADIUS", 5000)
 
 
 class OverpassService:
-
     @staticmethod
     def overpass_main_kind_nodes(south=-90, west=-180, north=90, east=180):
         kinds = KindService.get_main_kinds()

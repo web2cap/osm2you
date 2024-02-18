@@ -4,7 +4,6 @@ from core.models.tags import Kind, MarkerKind, TagValue
 
 
 class KindService:
-
     @staticmethod
     def get_main_priority_kind():
         """Retrieves main kind with highest pririty."""

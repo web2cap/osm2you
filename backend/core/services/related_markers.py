@@ -9,7 +9,6 @@ MARKERS_RELATED_IN_RADIUS = getattr(settings, "MARKERS_RELATED_IN_RADIUS", 5000)
 
 
 class RelatedMarkers:
-
     @staticmethod
     def _get_related_markers_queryset(marker, radius):
         """

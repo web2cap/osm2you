@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 
 class NodesToMarkersUpdaterManager:
-
     @staticmethod
     def update_markers(nodes):
         """
@@ -80,10 +79,11 @@ class NodesToMarkersUpdaterManager:
                         else:
                             stat["tags_use"] += 1
 
-                        marker_tag_value, created = (
-                            TagService.update_or_create_tag_value(
-                                tag, tag_value, marker
-                            )
+                        (
+                            marker_tag_value,
+                            created,
+                        ) = TagService.update_or_create_tag_value(
+                            tag, tag_value, marker
                         )
                         if (
                             not created
