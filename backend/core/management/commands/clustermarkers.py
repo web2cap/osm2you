@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from core.managers.marker_cluster import MarkerClusterManager
+from core.managers.marker_clusters import MarkerClusterManager
 
 
 class Command(BaseCommand):

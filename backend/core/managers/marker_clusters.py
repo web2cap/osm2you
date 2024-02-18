@@ -2,7 +2,7 @@ import logging
 
 from django.db import transaction
 
-from core.services.marker_cluster import MarkerClusterService
+from core.services.marker_clusters import MarkerClusterService
 
 logger = logging.getLogger(__name__)
 

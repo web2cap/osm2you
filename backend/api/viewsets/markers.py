@@ -1,6 +1,6 @@
 from core.services.bbox_square import BboxSquare
 from core.services.kinds import KindService
-from core.services.marker_cluster import MarkerClusterService
+from core.services.marker_clusters import MarkerClusterService
 from core.services.markers import MarkerService
 from core.services.related_markers import RelatedMarkers
 from core.services.users import UserService
