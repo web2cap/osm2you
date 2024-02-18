@@ -6,7 +6,6 @@ from core.models.markers import Marker
 class MarkerService:
     @staticmethod
     def get_or_create_marker(coordinates, marker_data):
-
         location = MarkerService._get_location_from_coordinates(coordinates)
         marker, created = Marker.objects.get_or_create(location=location, **marker_data)
         return marker, created
@@ -24,8 +23,8 @@ class MarkerService:
     def get_by_id(marker_id):
         try:
             return Marker.objects.get(id=marker_id)
-        except Exception as e:
-            return False
+        except Marker.DoesNotExist:
+            return None
 
     @staticmethod
     def get_by_coordinates(coordinates):
@@ -33,8 +32,8 @@ class MarkerService:
             return Marker.objects.get(
                 location=MarkerService._get_location_from_coordinates(coordinates)
             )
-        except Exception as e:
-            return False
+        except Marker.DoesNotExist:
+            return None
 
     @staticmethod
     def _get_location_from_coordinates(coordinates):
