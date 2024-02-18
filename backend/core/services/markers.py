@@ -1,6 +1,9 @@
 from django.contrib.gis.geos import Point
+from django.db.models import Prefetch, Q
 
 from core.models.markers import Marker
+from core.models.stories import Story
+from core.models.tags import Kind, TagValue
 
 
 class MarkerService:
@@ -34,6 +37,47 @@ class MarkerService:
             )
         except Marker.DoesNotExist:
             return None
+
+    @staticmethod
+    def get_markers_all():
+        return Marker.objects.all()
+
+    @staticmethod
+    def get_markers_main_kind():
+        return Marker.objects.filter(kind__kind__kind_class=Kind.KIND_CLASS_MAIN)
+
+    @staticmethod
+    def get_markers_with_stories_tags():
+        return Marker.objects.select_related("author").prefetch_related(
+            Prefetch(
+                "stories",
+                queryset=Story.objects.select_related("author"),
+            ),
+            "stories__author",
+            Prefetch(
+                "tag_value",
+                queryset=TagValue.objects.select_related("tag"),
+            ),
+            "tag_value__tag",
+        )
+
+    @staticmethod
+    def get_users_markers_stories(user):
+        """Get the queryset for markers associated with a specific user and their stories."""
+        if not user:
+            raise ValueError("No user for gettingß users markers.ß")
+        return (
+            Marker.objects.filter(
+                Q(stories__isnull=False, stories__author=user) | Q(author=user)
+            )
+            .distinct()
+            .prefetch_related(
+                Prefetch(
+                    "stories",
+                    queryset=Story.objects.filter(author=user),
+                )
+            )
+        )
 
     @staticmethod
     def _get_location_from_coordinates(coordinates):
