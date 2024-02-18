@@ -55,20 +55,22 @@ class NodesToMarkersUpdaterManager:
                         "name": node["name"],
                         "osm_id": node["id"],
                     }
-                    marker, created = MarkerService.get_or_create_marker(
-                        coordinates, marker_data
-                    )
-                    if created:
-                        stat["markers_add"] += 1
-                        run_scrap_markers_related.delay(marker.id)
-
-                    elif (not marker.name and "name" in marker_data) or (
-                        not marker.osm_id and "name" in marker_data
-                    ):
-                        if "name" in marker_data and marker.name:
-                            marker_data.pop("name")
-                        marker = MarkerService.update_marker(marker, marker_data)
-                        stat["markers_upd"] += 1
+                    marker = MarkerService.get_by_coordinates(coordinates)
+                    if marker:
+                        if (not marker.name and "name" in marker_data) or (
+                            not marker.osm_id and "name" in marker_data
+                        ):
+                            if "name" in marker_data and marker.name:
+                                marker_data.pop("name")
+                            marker = MarkerService.update_marker(marker, marker_data)
+                            stat["markers_upd"] += 1
+                    else:
+                        marker, created = MarkerService.get_or_create_marker(
+                            coordinates, marker_data
+                        )
+                        if created:
+                            stat["markers_add"] += 1
+                            run_scrap_markers_related.delay(marker.id)
 
                     # marker tags
                     for tag_name, tag_value in node["tags"].items():

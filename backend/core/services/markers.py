@@ -7,7 +7,7 @@ class MarkerService:
     @staticmethod
     def get_or_create_marker(coordinates, marker_data):
 
-        location = Point(float(coordinates["lon"]), float(coordinates["lat"]))
+        location = MarkerService._get_location_from_coordinates(coordinates)
         marker, created = Marker.objects.get_or_create(location=location, **marker_data)
         return marker, created
 
@@ -26,3 +26,16 @@ class MarkerService:
             return Marker.objects.get(id=marker_id)
         except Exception as e:
             return False
+
+    @staticmethod
+    def get_by_coordinates(coordinates):
+        try:
+            return Marker.objects.get(
+                location=MarkerService._get_location_from_coordinates(coordinates)
+            )
+        except Exception as e:
+            return False
+
+    @staticmethod
+    def _get_location_from_coordinates(coordinates):
+        return Point(float(coordinates["lon"]), float(coordinates["lat"]))
