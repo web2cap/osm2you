@@ -62,6 +62,13 @@ class KindService:
             return MarkerKind.objects.create(marker=marker, kind=new_kind), True
 
     @staticmethod
+    def set_marker_main_kind(marker):
+        MarkerKind.objects.update_or_create(
+            marker=marker,
+            defaults={"kind": KindService.get_main_priority_kind()},
+        )
+
+    @staticmethod
     def _get_kinds_by_class(kind_class):
         """Retrieves kinds by class."""
 
