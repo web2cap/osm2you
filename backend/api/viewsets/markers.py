@@ -28,9 +28,9 @@ MARKERS_RELATED_IN_RADIUS = getattr(settings, "MARKERS_RELATED_IN_RADIUS", 5000)
 class MarkerViewSet(ModelViewSet):
     """ViewSet for handling Marker objects, including clustering logic."""
 
-    def __init__(self, **kwargs):
-        self.bbox_square_service = BboxSquare(self.request.query_params.get("in_bbox"))
-        super().__init__(**kwargs)
+    def initial(self, request, *args, **kwargs):
+        self.bbox_square_service = BboxSquare(request.query_params.get("in_bbox"))
+        super().initial(request, *args, **kwargs)
 
     permission_classes = (AuthorAdminOrReadOnly,)
     bbox_filter_field = "location"
@@ -47,7 +47,7 @@ class MarkerViewSet(ModelViewSet):
         """Get the appropriate serializer class based on the action.
         For list action get serializer class based on zoom."""
 
-        if self.action == "list" and self.bbox_square_service.get_square_size():
+        if self.action == "list" and self.bbox_square_service.get_show_clusters():
             return self.serializers.get("clusters")
         return self.serializers.get(self.action, self.serializers["default"])
 
@@ -66,7 +66,7 @@ class MarkerViewSet(ModelViewSet):
         if self.action == "retrieve":
             return self.get_retrieve_queryset()
         if self.action == "list":
-            if self.bbox_square_service.get_square_size():
+            if self.bbox_square_service.get_show_clusters():
                 return self.get_cluster_queryset()
             return self.get_list_queryset()
         return Marker.objects.all()

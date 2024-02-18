@@ -29,7 +29,7 @@ class BboxSquare:
             dif_lon = 180
         return dif_lon * dif_lat
 
-    def _calculate_square_size(self, in_bbox):
+    def _calculate_square_size(self):
         if self._bbox_area < CLUSTERING["square_size"][0] ** 2 * CLUSTERING_DENCITY:
             return False
 
@@ -39,7 +39,7 @@ class BboxSquare:
 
         return CLUSTERING["square_size"][len(CLUSTERING["square_size"]) - 1]
 
-    def get_square_size(self, in_bbox):
+    def get_square_size(self):
         """Returns the calculated square_size level based on CLUSTERING_DENCITY and bounding box area.
 
         Returns:
@@ -47,3 +47,8 @@ class BboxSquare:
         """
 
         return self._calculated_square_size
+
+    def get_show_clusters(self):
+        if self._calculated_square_size:
+            return True
+        return False
