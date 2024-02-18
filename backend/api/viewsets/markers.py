@@ -2,6 +2,7 @@ from core.models.markers import Marker, MarkerCluster
 from core.models.stories import Story
 from core.models.tags import Kind, MarkerKind, Tag, TagValue
 from core.models.users import User
+from core.services.bbox_square import BboxSquare
 from core.tasks import run_scrap_markers_related
 from django.conf import settings
 from django.db.models import Prefetch, Q
@@ -21,13 +22,15 @@ from api.serializers.markers import (
 )
 from api.serializers.users import CustomUserInfoSerializer
 
-CLUSTERING = getattr(settings, "CLUSTERING", {})
-CLUSTERING_DENCITY = getattr(settings, "CLUSTERING_DENCITY", 36)
 MARKERS_RELATED_IN_RADIUS = getattr(settings, "MARKERS_RELATED_IN_RADIUS", 5000)
 
 
 class MarkerViewSet(ModelViewSet):
     """ViewSet for handling Marker objects, including clustering logic."""
+
+    def __init__(self, **kwargs):
+        self.bbox_square_service = BboxSquare(self.request.query_params.get("in_bbox"))
+        super().__init__(**kwargs)
 
     permission_classes = (AuthorAdminOrReadOnly,)
     bbox_filter_field = "location"
@@ -40,13 +43,11 @@ class MarkerViewSet(ModelViewSet):
         "default": MarkerSerializer,
     }
 
-    calculated_square_size = None
-
     def get_serializer_class(self):
         """Get the appropriate serializer class based on the action.
         For list action get serializer class based on zoom."""
 
-        if self.action == "list" and self.square_size():
+        if self.action == "list" and self.bbox_square_service.get_square_size():
             return self.serializers.get("clusters")
         return self.serializers.get(self.action, self.serializers["default"])
 
@@ -65,7 +66,7 @@ class MarkerViewSet(ModelViewSet):
         if self.action == "retrieve":
             return self.get_retrieve_queryset()
         if self.action == "list":
-            if self.square_size():
+            if self.bbox_square_service.get_square_size():
                 return self.get_cluster_queryset()
             return self.get_list_queryset()
         return Marker.objects.all()
@@ -94,7 +95,9 @@ class MarkerViewSet(ModelViewSet):
     def get_cluster_queryset(self):
         """Get the queryset for MarkerCluster objects based on the current square size."""
 
-        return MarkerCluster.objects.filter(square_size=self.square_size())
+        return MarkerCluster.objects.filter(
+            square_size=self.bbox_square_service.get_square_size()
+        )
 
     def get_user_markers_queryset(self, user):
         """Get the queryset for markers associated with a specific user and their stories."""
@@ -178,47 +181,3 @@ class MarkerViewSet(ModelViewSet):
         markers_data = self.get_serializer(markers_queryset, many=True).data
 
         return Response(user_data | markers_data)
-
-    def get_bbox_area(self):
-        """Calculate and return the area of the bounding box specified in the request parameters.
-
-        Returns:
-            float: The area of the bounding box.
-        """
-
-        bbox = self.request.query_params.get("in_bbox")
-        if not bbox:
-            return 360 * 180
-
-        min_lon, min_lat, max_lon, max_lat = map(float, bbox.split(","))
-        dif_lon = max_lon - min_lon
-        if dif_lon > 360:
-            dif_lon = 360
-        dif_lat = max_lat - min_lat
-        if dif_lat > 180:
-            dif_lon = 180
-        return dif_lon * dif_lat
-
-    def square_size(self):
-        """Calculate and return the square_size level based on CLUSTERING_DENCITY and bounding box area.
-
-        Returns:
-            int or False: The calculated square_size level, or False if the zoom is too large.
-        """
-        if self.calculated_square_size:  # If square_size computed before
-            return self.calculated_square_size
-
-        bbox_area = self.get_bbox_area()
-        if bbox_area < CLUSTERING["square_size"][0] ** 2 * CLUSTERING_DENCITY:
-            self.calculated_square_size = False
-            return False
-
-        for i in range(1, len(CLUSTERING["square_size"])):
-            if bbox_area < CLUSTERING["square_size"][i] ** 2 * CLUSTERING_DENCITY:
-                self.calculated_square_size = CLUSTERING["square_size"][i - 1]
-                return self.calculated_square_size
-
-        self.calculated_square_size = CLUSTERING["square_size"][
-            len(CLUSTERING["square_size"]) - 1
-        ]
-        return self.calculated_square_size
