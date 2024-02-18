@@ -1,8 +1,9 @@
 from core.models.markers import Marker, MarkerCluster
 from core.models.stories import Story
-from core.models.tags import Kind, MarkerKind, Tag, TagValue
+from core.models.tags import Kind, MarkerKind, TagValue
 from core.models.users import User
 from core.services.bbox_square import BboxSquare
+from core.services.related_markers import RelatedMarkers
 from core.tasks import run_scrap_markers_related
 from django.conf import settings
 from django.db.models import Prefetch, Q
@@ -16,7 +17,6 @@ from api.permissions import AuthorAdminOrReadOnly
 from api.serializers.markers import (
     MarkerClusterSerializer,
     MarkerInstanceSerializer,
-    MarkerRelatedSerializer,
     MarkerSerializer,
     MarkerUserSerializer,
 )
@@ -52,11 +52,12 @@ class MarkerViewSet(ModelViewSet):
         return self.serializers.get(self.action, self.serializers["default"])
 
     def get_serializer_context(self):
+        """Includes related markers data for marker into context."""
+
         context = super().get_serializer_context()
         if self.action == "retrieve":
-            context["related_markers"] = self.get_related_markers_data(
-                self.get_object()
-            )
+            marker = self.get_object()
+            context["related_markers"] = RelatedMarkers.get_related_markers_data(marker)
         return context
 
     def get_queryset(self):
@@ -111,32 +112,6 @@ class MarkerViewSet(ModelViewSet):
                 Prefetch(
                     "stories",
                     queryset=Story.objects.filter(author=user),
-                )
-            )
-        )
-
-    def get_related_markers_data(self, marker):
-        """Get related markers data for a given marker within a specified radius."""
-
-        related_markers = self.get_related_markers_queryset(
-            marker, MARKERS_RELATED_IN_RADIUS
-        )
-        return MarkerRelatedSerializer(related_markers, many=True).data
-
-    def get_related_markers_queryset(self, marker, radius):
-        """
-        Get the queryset for related markers within a specified radius from a given marker.
-        Each related marker includes additional information about its kind."""
-
-        return (
-            Marker.objects.filter(location__distance_lte=(marker.location, radius))
-            .exclude(id=marker.id)
-            .select_related("kind__kind")
-            .prefetch_related(
-                Prefetch(
-                    "kind__kind__tag",
-                    queryset=Tag.objects.only("name"),
-                    to_attr="kind__kind",
                 )
             )
         )
