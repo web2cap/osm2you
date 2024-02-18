@@ -39,6 +39,6 @@ class MarkerMainerScenarioManager:
         marker = MarkerService.get_by_id(marker_id)
         if not marker:
             raise ValueError(f"Error getting marker with id={marker_id}")
-        xml_data = OverpassService.overpass_related_nodes(marker)
+        xml_data = OverpassService.overpass_related_nodes(marker.location)
         nodes = ScrapService.scrap_nodes(xml_data)
         return NodesToMarkersUpdaterManager.update_markers(nodes)
