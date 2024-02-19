@@ -37,6 +37,6 @@ class Command(BaseCommand):
 
     def scrape_markers(self):
         """Create task for scrape markers if they don't exist in the database."""
-        if not MarkerService.get_markers_all().exists()
+        if not MarkerService.get_markers_all().exists():
             run_scrap_markers_main.delay()
             logger.info("Task for scraping markers scheduled for first start of app.")
