@@ -25,6 +25,10 @@ class KindService:
         return KindService._get_kinds_by_class(Kind.KIND_CLASS_RELATED)
 
     @staticmethod
+    def get_kinds_all():
+        return Kind.objects.all()
+
+    @staticmethod
     def _get_suitable_kind_for_marker(marker):
         """Choose a most suitable kind by tags."""
 

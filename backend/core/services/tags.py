@@ -15,3 +15,7 @@ class TagService:
             marker=marker, tag=tag, defaults={"value": tag_value}
         )
         return marker_tag_value, created
+
+    @staticmethod
+    def get_tags_all():
+        return Tag.objects.all()
