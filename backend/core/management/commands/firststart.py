@@ -3,8 +3,9 @@ import logging
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
+from core.models.kinds import Kind
 from core.models.markers import Marker
-from core.models.tags import Kind, Tag
+from core.models.tags import Tag
 from core.tasks import run_scrap_markers_main
 
 logger = logging.getLogger(__name__)
@@ -29,6 +30,7 @@ class Command(BaseCommand):
 
     def load_kinds(self):
         """Load kinds if they don't exist in the database."""
+        # TODO: service
         if not Kind.objects.exists():
             call_command("loaddata", "fixtures/kind_group.json")
             call_command("loaddata", "fixtures/kind.json")

@@ -1,6 +1,7 @@
 from django.db.models import F, OuterRef, Subquery
 
-from core.models.tags import Kind, MarkerKind, TagValue
+from core.models.kinds import Kind, MarkerKind
+from core.models.tags import TagValue
 
 
 class KindService:

@@ -1,9 +1,10 @@
 from django.contrib.gis.geos import Point
 from django.db.models import Prefetch, Q
 
+from core.models.kinds import Kind
 from core.models.markers import Marker
 from core.models.stories import Story
-from core.models.tags import Kind, TagValue
+from core.models.tags import TagValue
 
 
 class MarkerService:

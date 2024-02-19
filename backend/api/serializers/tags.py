@@ -1,4 +1,5 @@
-from core.models.tags import Kind, Tag
+from core.models.kinds import Kind
+from core.models.tags import Tag
 from rest_framework import serializers
 
 

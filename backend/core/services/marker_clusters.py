@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.db import connection
 
+from core.models.kinds import Kind
 from core.models.markers import MarkerCluster, UpdatedMarkerCluster
-from core.models.tags import Kind
 
 CLUSTERING = getattr(settings, "CLUSTERING", {})
 

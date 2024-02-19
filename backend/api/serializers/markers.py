@@ -1,5 +1,5 @@
+from core.models.kinds import MarkerKind
 from core.models.markers import Marker, MarkerCluster
-from core.models.tags import MarkerKind
 from rest_framework import serializers
 from rest_framework.serializers import ReadOnlyField
 from rest_framework_gis.serializers import GeoFeatureModelSerializer

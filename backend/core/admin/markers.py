@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.gis import admin
 
+from core.models.kinds import Kind, MarkerKind
 from core.models.markers import Marker
-from core.models.tags import Kind, MarkerKind
 
 
 class MarkerForm(forms.ModelForm):
