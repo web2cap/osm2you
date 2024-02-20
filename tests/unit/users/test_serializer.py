@@ -1,6 +1,5 @@
 import pytest
-
-from users.serializers import UserCreateCustomSerializer, UserCustomSerializer
+from api.serializers.users import CustomUserCreateSerializer, CustomUserFullSerializer
 
 
 class TestUsersSerializer:
@@ -8,7 +7,7 @@ class TestUsersSerializer:
     def test_user_create_custom_serializer_valid(self, full_create_user_data):
         """Check serialization with valid user data."""
 
-        serializer = UserCreateCustomSerializer(data=full_create_user_data)
+        serializer = CustomUserCreateSerializer(data=full_create_user_data)
         assert (
             serializer.is_valid()
         ), f"Error serialize user with valid data {serializer.errors}"
@@ -19,7 +18,7 @@ class TestUsersSerializer:
     ):
         """Check that serializator is not valid with invalid user data."""
 
-        serializer = UserCreateCustomSerializer(
+        serializer = CustomUserCreateSerializer(
             data=full_create_user_data_without_email
         )
         assert not serializer.is_valid(), "User serialized withot email."
@@ -28,7 +27,7 @@ class TestUsersSerializer:
     def test_user_custom_serializer_no_email(self, full_create_user_data):
         """Check that email not present in dataafter serialization."""
 
-        serializer = UserCustomSerializer(full_create_user_data)
+        serializer = CustomUserFullSerializer(full_create_user_data)
         data = serializer.data
         assert "email" not in data, "Email must be read-only"
 
@@ -48,7 +47,7 @@ class TestUsersSerializer:
     def test_user_custom_serializer_data(self, must_present, full_create_user_data):
         """Check that data valid after serialization."""
 
-        serializer = UserCustomSerializer(full_create_user_data)
+        serializer = CustomUserFullSerializer(full_create_user_data)
         data = serializer.data
         assert (
             must_present in data

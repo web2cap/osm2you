@@ -1,6 +1,5 @@
 import pytest
-
-from users.admin import CustomUserChangeForm, CustomUserCreationForm
+from core.forms.users import CustomUserChangeForm, CustomUserCreationForm
 
 
 class TestUsersAdminForms:
