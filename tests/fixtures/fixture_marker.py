@@ -1,7 +1,7 @@
 import pytest
-from api.viewsets import MarkerViewSet
+from api.viewsets.markers import MarkerViewSet
+from core.models.markers import Marker
 from django.contrib.gis.geos import Point
-from markers.models import Marker
 
 
 @pytest.fixture
