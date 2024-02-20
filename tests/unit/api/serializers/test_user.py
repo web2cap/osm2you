@@ -7,8 +7,7 @@ from api.serializers.users import (
 )
 
 
-class TestUsersSerializer:
-    # CustomUserCreateSerializer
+class TestCustomUserCreateSerializer:
     @pytest.mark.django_db
     def test_custom_user_create_serializer_valid(self, full_create_user_data):
         """Check serialization with valid user data."""
@@ -29,7 +28,8 @@ class TestUsersSerializer:
         )
         assert not serializer.is_valid(), "User serialized withot email."
 
-    # CustomUserFullSerializer
+
+class TestCustomUserFullSerializer:
     @pytest.mark.django_db
     def test_custom_user_full_serializer_no_email(self, full_create_user_data):
         """Check that email not present in dataafter serialization."""
@@ -65,7 +65,8 @@ class TestUsersSerializer:
             data[must_present] == full_create_user_data[must_present]
         ), f"Wrong {must_present} after serialization"
 
-    # CustomUserShortSerializer
+
+class TestCustomUserShortSerializer:
     @pytest.mark.django_db
     def test_custom_user_short_serializer_valid(self, user_instance):
         """Check serialization with valid user data."""
@@ -123,7 +124,8 @@ class TestUsersSerializer:
             must_not_present not in serializer.data
         ), f"Field {must_not_present} should not present in valid data."
 
-    # CustomUserInfoSerializer
+
+class TestCustomUserInfoSerializer:
     @pytest.mark.django_db
     def test_custom_user_info_serializer_valid(self, user_instance):
         """Check serialization with valid user data."""
