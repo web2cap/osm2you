@@ -1,6 +1,5 @@
+from core.models.stories import Story
 from django.contrib.gis import admin
-
-from stories.models import Story
 
 
 class TestStoryAdmin:
