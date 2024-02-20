@@ -1,5 +1,5 @@
+from core.models.tags import Tag
 from django.contrib.gis import admin
-from tags.models import Tag
 
 
 class TestTagAdmin:
