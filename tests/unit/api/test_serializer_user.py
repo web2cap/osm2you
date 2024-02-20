@@ -1,6 +1,5 @@
 import pytest
-
-from api.serializers import CustomUserShortSerializer
+from api.serializers.users import CustomUserShortSerializer
 
 
 class TestApiSerializer:

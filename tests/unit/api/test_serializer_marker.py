@@ -1,6 +1,6 @@
 import pytest
 from abc_serializer_marker_test import AbstractTestMarkerSerializer
-from api.serializers import (
+from api.serializers.markers import (
     MarkerInstanceSerializer,
     MarkerSerializer,
     MarkerUserSerializer,

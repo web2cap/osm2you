@@ -1,6 +1,10 @@
 import pytest
 from abc_serializer_test import AbstractTestSerializer
-from api.serializers import StorySerializer, StorySerializerDisplay, StorySerializerText
+from api.serializers.stories import (
+    StorySerializer,
+    StorySerializerDisplay,
+    StorySerializerText,
+)
 
 
 @pytest.fixture

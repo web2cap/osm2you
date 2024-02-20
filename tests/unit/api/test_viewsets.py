@@ -1,10 +1,10 @@
 import pytest
-from api.serializers import (
+from api.serializers.markers import (
     MarkerInstanceSerializer,
     MarkerSerializer,
     MarkerUserSerializer,
 )
-from markers.models import Marker
+from core.models.markers import Marker
 
 
 class TestMarkerViewset:

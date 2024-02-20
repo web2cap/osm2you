@@ -8,12 +8,13 @@ class TestAPISettings:
     @pytest.mark.parametrize(
         "app",
         [
-            "users",
             "rest_framework",
+            "rest_framework_gis",
             "djoser",
             "rest_framework_simplejwt",
             "rest_framework.authtoken",
             "api",
+            "drf_yasg",
         ],
     )
     def test_installedapps_settings(self, app):
@@ -26,9 +27,7 @@ class TestAPISettings:
     def test_auth_user_model_settings(self):
         """Check that AUTH_USER_MODEL seted."""
 
-        assert (
-            settings.AUTH_USER_MODEL == "users.User"
-        ), "Check AUTH_USER_MODEL settings"
+        assert settings.AUTH_USER_MODEL == "core.User", "Check AUTH_USER_MODEL settings"
 
     def test_rest_framework_settings(self):
         """Check REST_FRAMEWORK settings."""
@@ -53,15 +52,15 @@ class TestAPISettings:
             (settings.DJOSER, "SERIALIZERS"),
             (
                 settings.DJOSER["SERIALIZERS"]["user_create"],
-                "users.serializers.UserCreateCustomSerializer",
+                "api.serializers.users.CustomUserCreateSerializer",
             ),
             (
                 settings.DJOSER["SERIALIZERS"]["user"],
-                "users.serializers.UserCustomSerializer",
+                "api.serializers.users.CustomUserFullSerializer",
             ),
             (
                 settings.DJOSER["SERIALIZERS"]["current_user"],
-                "users.serializers.UserCustomSerializer",
+                "api.serializers.users.CustomUserFullSerializer",
             ),
             (settings.DJOSER, "PERMISSIONS"),
             (

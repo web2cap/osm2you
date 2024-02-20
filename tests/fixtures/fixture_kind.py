@@ -1,5 +1,5 @@
 import pytest
-from tags.models import Kind, KindGroup
+from core.models.kinds import Kind, KindGroup
 
 
 @pytest.fixture
