@@ -123,3 +123,37 @@ class TestOsm2youSettings:
         assert (
             "drf_yasg" in settings.INSTALLED_APPS
         ), "Check that drf_yasg includet to INSTALLED_APPS"
+
+    def test_celery_settings(self):
+        assert hasattr(
+            settings, "CELERY_BROKER_URL"
+        ), """Check that CELERY_BROKER_URL settings filled."""
+        assert hasattr(
+            settings, "CELERY_RESULT_BACKEND"
+        ), """Check that CELERY_RESULT_BACKEND settings filled."""
+        assert hasattr(
+            settings, "CELERY_ACCEPT_CONTENT"
+        ), """Check that CELERY_ACCEPT_CONTENT settings filled."""
+        assert hasattr(
+            settings, "CELERY_TASK_SERIALIZER"
+        ), """Check that CELERY_TASK_SERIALIZER settings filled."""
+        assert hasattr(
+            settings, "CELERY_RESULT_SERIALIZER"
+        ), """Check that CELERY_RESULT_SERIALIZER settings filled."""
+        assert hasattr(
+            settings, "CELERY_TIMEZONE"
+        ), """Check that CELERY_TIMEZONE settings filled."""
+        assert (
+            settings.CELERY_TIMEZONE == settings.TIME_ZONE
+        ), """Check that CELERY_TIMEZONE eqal TIME_ZONE setting."""
+
+        assert hasattr(
+            settings, "CELERY_BEAT_SCHEDULER"
+        ), """Check that CELERY_BEAT_SCHEDULER settings filled."""
+        assert hasattr(
+            settings, "CELERY_BEAT_SCHEDULE"
+        ), """Check that CELERY_BEAT_SCHEDULE settings filled."""
+
+        assert (
+            "django_celery_beat" in settings.INSTALLED_APPS
+        ), "Check that django_celery_beat includet to INSTALLED_APPS"
