@@ -1,7 +1,9 @@
 import pytest
-from users.models import User
+from django.contrib.auth import get_user_model
 
 from .common import check_response
+
+User = get_user_model()
 
 
 class TestUser:
@@ -94,8 +96,8 @@ class TestUser:
         ]
         check_response(response, 200, required_fields)
         for field in response.data.keys():
-            assert (
-                response.data[field] == getattr(user_instance, field)
+            assert response.data[field] == getattr(
+                user_instance, field
             ), f"The response data[{field}] doesn't match the client user data `{field}`."
 
     # ME PUT
