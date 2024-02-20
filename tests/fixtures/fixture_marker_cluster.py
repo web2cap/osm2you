@@ -1,6 +1,6 @@
 import pytest
+from core.models.markers import MarkerCluster
 from django.contrib.gis.geos import Point
-from markers.models import MarkerCluster
 
 
 @pytest.fixture

@@ -1,8 +1,7 @@
 import pytest
+from core.admin.markers import MarkerAdmin
+from core.models.markers import Marker
 from django.contrib.gis import admin
-
-from markers.admin import MarkerAdmin
-from markers.models import Marker
 
 
 class TestMarkerAdmin:

@@ -48,6 +48,6 @@ pytest_plugins = [
     "tests.fixtures.fixture_marker",
     "tests.fixtures.fixture_story",
     "tests.fixtures.fixture_tag",
-    # "tests.fixtures.fixture_marker_cluster",
+    "tests.fixtures.fixture_marker_cluster",
     # "tests.fixtures.fixture_kind",
 ]

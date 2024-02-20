@@ -1,6 +1,6 @@
 import pytest
+from core.models.markers import Marker
 from django.db.utils import IntegrityError
-from markers.models import Marker
 
 
 class TestMarkersModels:
