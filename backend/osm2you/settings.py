@@ -9,7 +9,7 @@ from corsheaders.defaults import default_headers
 BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv.load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
-# DJAQNGO
+# DJANGO
 DEBUG = os.getenv("ST_DEBUG", "False") == "True"
 DEBUG_SQL = os.getenv("ST_DEBUG_SQL", "False") == "True"
 
@@ -246,7 +246,7 @@ CELERY_RESULT_BACKEND = (
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
-CELERY_TIMEZONE = "UTC"
+CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_BEAT_SCHEDULE = {
     "run_scrap_markers_main": {
