@@ -1,5 +1,6 @@
 import pytest
 from api.serializers.markers import (
+    MarkerClusterSerializer,
     MarkerInstanceSerializer,
     MarkerSerializer,
     MarkerUserSerializer,
@@ -10,21 +11,23 @@ from core.models.markers import Marker
 class TestMarkerViewset:
     """Tests marker viewset."""
 
-    @pytest.mark.skip("Todo markers with clustering tests")
     @pytest.mark.django_db
     def test_get_serializer_class(
         self,
-        marker_viewset_instance_list,
+        marker_viewset_instance_list_large_zoom,
+        marker_viewset_instance_list_small_zoom,
         marker_viewset_instance_retrieve,
         marker_viewset_instance_user,
     ):
-        """Test that for list action viewset use MarkerSerializer.
+        """Test that for list action viewset and large zoom use MarkerClusterSerializer.
+        For list action viewset and small zoom use MarkerSerializer.
         For action retrieve viewset use MarkerInstanceSerializer.
         For action user viewset use MarkerUserSerializer."""
 
         assert (
-            marker_viewset_instance_list.get_serializer_class() == MarkerSerializer
-        ), "For list action viewset should use MarkerSerializer"
+            marker_viewset_instance_list_large_zoom.get_serializer_class()
+            == MarkerSerializer
+        ), "For list action viewset with large zoom should use MarkerSerializer"
         assert (
             marker_viewset_instance_retrieve.get_serializer_class()
             == MarkerInstanceSerializer
@@ -33,6 +36,11 @@ class TestMarkerViewset:
             marker_viewset_instance_user.get_serializer_class() == MarkerUserSerializer
         ), "For user action viewset should use MarkerUserSerializer"
 
+        assert (
+            marker_viewset_instance_list_small_zoom.get_serializer_class()
+            == MarkerClusterSerializer
+        ), "For list action with small zoom viewset should use MarkerClusterSerializer"
+
     @pytest.mark.django_db
     def test_get_queryset_retrieve(
         self,
@@ -40,6 +48,7 @@ class TestMarkerViewset:
         marker_with_author_story,
         user_owner_instance,
         simple_story_data,
+        simple_tagǜalue_withoutmarker_data,
     ):
         """Test are marker, marker author, stories, stories author present in queryset.
         If action is retrieve."""
@@ -56,21 +65,15 @@ class TestMarkerViewset:
         assert (
             queryset.first().stories.first().author == user_owner_instance
         ), "No stories author marker in retrieve queryset"
-
-    @pytest.mark.skip("Todo markers with clustering tests")
-    @pytest.mark.django_db
-    def test_get_queryset_list(
-        self,
-        marker_viewset_instance_list,
-        marker_with_author_story,
-        user_owner_instance,
-    ):
-        """Test are marker, marker author present in list queryset."""
-        queryset = marker_viewset_instance_list.get_queryset()
-        assert marker_with_author_story in queryset, "No marker in marker list queryset"
+        marker_with_author_story.tag_value.create(**simple_tagǜalue_withoutmarker_data)
         assert (
-            queryset.first().author == user_owner_instance
-        ), "No marker author in marker list queryset"
+            queryset.first().tag_value.first().tag
+            == simple_tagǜalue_withoutmarker_data["tag"]
+        )
+        assert (
+            queryset.first().tag_value.first().value
+            == simple_tagǜalue_withoutmarker_data["value"]
+        )
 
     @pytest.mark.django_db
     def test_perform_create(

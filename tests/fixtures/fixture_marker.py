@@ -1,7 +1,12 @@
 import pytest
 from api.viewsets.markers import MarkerViewSet
 from core.models.markers import Marker
+from core.services.bbox_square import BboxSquare
+from django.conf import settings
 from django.contrib.gis.geos import Point
+
+CLUSTERING = getattr(settings, "CLUSTERING", {})
+CLUSTERING_DENCITY = getattr(settings, "CLUSTERING_DENCITY", 36)
 
 
 @pytest.fixture
@@ -93,6 +98,44 @@ def marker_viewset():
 def marker_viewset_instance_list():
     marker_viewset = MarkerViewSet()
     marker_viewset.action = "list"
+    return marker_viewset
+
+
+@pytest.fixture
+def marker_with_author_story_bbox(marker_with_author_story):
+    """Calculates bbox with large zoom around marker_with_author_story."""
+    indent = CLUSTERING["square_size"][0] / 2
+    in_bbox = ",".join(
+        map(
+            str,
+            (
+                marker_with_author_story.location.x - indent,
+                marker_with_author_story.location.y - indent,
+                marker_with_author_story.location.x + indent,
+                marker_with_author_story.location.y
+                + indent
+                + (CLUSTERING_DENCITY * 0.9),
+            ),
+        )
+    )
+    print(in_bbox)
+    return in_bbox
+
+
+@pytest.fixture
+def marker_viewset_instance_list_large_zoom(marker_with_author_story_bbox):
+    marker_viewset = MarkerViewSet()
+    marker_viewset.action = "list"
+
+    marker_viewset.bbox_square_service = BboxSquare(marker_with_author_story_bbox)
+    return marker_viewset
+
+
+@pytest.fixture
+def marker_viewset_instance_list_small_zoom():
+    marker_viewset = MarkerViewSet()
+    marker_viewset.action = "list"
+    marker_viewset.bbox_square_service = BboxSquare()
     return marker_viewset
 
 
