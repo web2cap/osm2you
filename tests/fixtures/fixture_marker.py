@@ -118,7 +118,6 @@ def marker_with_author_story_bbox(marker_with_author_story):
             ),
         )
     )
-    print(in_bbox)
     return in_bbox
 
 
