@@ -63,7 +63,7 @@ class UpdatedMarkerCluster(MarkerClusterMixin):
 class RelatedMarkerScrap(models.Model):
     """To create a task for batch scraping of related markers."""
 
-    marker_id = models.OneToOneField(
+    marker = models.OneToOneField(
         Marker,
         on_delete=models.CASCADE,
         blank=False,
