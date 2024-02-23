@@ -7,6 +7,8 @@ class DenyAll(permissions.BasePermission):
 
 
 class CurrentUserGetPut(permissions.BasePermission):
+    """GET and PUT for own entry in User."""
+
     def has_permission(self, request, view):
         allow_methods = ("GET", "PUT")
         return request.user.is_authenticated and request.method in allow_methods
@@ -49,5 +51,7 @@ class AuthorAdminOrInstanceOnly(permissions.BasePermission):
 
 
 class ListOnly(permissions.BasePermission):
+    """Only list"""
+
     def has_permission(self, request, view):
         return view.action == "list"

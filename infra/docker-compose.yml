@@ -24,7 +24,7 @@ services:
     build:
       context: ../backend
     restart: always
-    command: celery -A osm2you worker --loglevel=info
+    command: celery -A osm2you worker --loglevel=info 2>&1 | tee -a log/osm_celery_worker.log
     depends_on:
       - osm_db
       - osm_redis
@@ -35,7 +35,7 @@ services:
     build:
       context: ../backend
     restart: always
-    command: celery -A osm2you beat -l INFO
+    command: celery -A osm2you beat -l INFO 2>&1 | tee -a log/osm_celery_beat.log
     depends_on:
       - osm_db
       - osm_redis
@@ -54,7 +54,7 @@ services:
       - osm_celery_beat
     env_file:
       - ./.env
-    command: /scripts/startback.sh
+    command: /scripts/startback.sh 2>&1 | tee -a log/osm_back.log
 
   osm_nginx:
     image: nginx:latest
@@ -72,14 +72,13 @@ services:
     build:
       context: ../backend
     restart: always
-    command: /scripts/startflower.sh
+    command: /scripts/startflower.sh 2>&1 | tee -a log/osm_flower.log
     ports:
       - 5555:5555
     depends_on:
       - osm_celery_beat
     env_file:
       - ./.env
-
 
 volumes:
   osm_static_value:

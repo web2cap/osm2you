@@ -1,6 +1,6 @@
 import pytest
+from core.models.tags import Tag
 from django.db.utils import IntegrityError
-from tags.models import Tag
 
 
 class TestTagModels:

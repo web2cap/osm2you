@@ -1,6 +1,6 @@
 [
 {
-    "model": "tags.kindgroup",
+    "model": "core.kindgroup",
     "pk": 19,
     "fields": {
         "name": "transportation",
@@ -10,7 +10,7 @@
     }
 },
 {
-    "model": "tags.kindgroup",
+    "model": "core.kindgroup",
     "pk": 20,
     "fields": {
         "name": "shopping_supplies",
@@ -20,7 +20,7 @@
     }
 },
 {
-    "model": "tags.kindgroup",
+    "model": "core.kindgroup",
     "pk": 21,
     "fields": {
         "name": "services",
@@ -30,7 +30,7 @@
     }
 },
 {
-    "model": "tags.kindgroup",
+    "model": "core.kindgroup",
     "pk": 22,
     "fields": {
         "name": "food_dining",
@@ -40,7 +40,7 @@
     }
 },
 {
-    "model": "tags.kindgroup",
+    "model": "core.kindgroup",
     "pk": 23,
     "fields": {
         "name": "recreation_entertainment",
@@ -50,7 +50,7 @@
     }
 },
 {
-    "model": "tags.kindgroup",
+    "model": "core.kindgroup",
     "pk": 24,
     "fields": {
         "name": "natural_resources",
@@ -60,7 +60,7 @@
     }
 },
 {
-    "model": "tags.kindgroup",
+    "model": "core.kindgroup",
     "pk": 25,
     "fields": {
         "name": "safety_emergency",
@@ -70,7 +70,7 @@
     }
 },
 {
-    "model": "tags.kindgroup",
+    "model": "core.kindgroup",
     "pk": 26,
     "fields": {
         "name": "communication",
@@ -80,7 +80,7 @@
     }
 },
 {
-    "model": "tags.kindgroup",
+    "model": "core.kindgroup",
     "pk": 27,
     "fields": {
         "name": "educational_facilities",
@@ -90,7 +90,7 @@
     }
 },
 {
-    "model": "tags.kindgroup",
+    "model": "core.kindgroup",
     "pk": 28,
     "fields": {
         "name": "accommodation",
@@ -100,7 +100,7 @@
     }
 },
 {
-    "model": "tags.kindgroup",
+    "model": "core.kindgroup",
     "pk": 29,
     "fields": {
         "name": "camp_site",

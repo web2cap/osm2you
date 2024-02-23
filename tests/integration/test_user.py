@@ -1,7 +1,9 @@
 import pytest
-from users.models import User
+from django.contrib.auth import get_user_model
 
 from .common import check_response
+
+User = get_user_model()
 
 
 class TestUser:

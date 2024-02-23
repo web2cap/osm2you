@@ -1,5 +1,5 @@
 import pytest
-from tags.models import Tag
+from core.models.tags import Tag
 
 
 @pytest.fixture

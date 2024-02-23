@@ -1,6 +1,6 @@
 import pytest
-from api.viewsets import StoryViewSet
-from stories.models import Story
+from api.viewsets.stories import StoryViewSet
+from core.models.stories import Story
 
 
 @pytest.fixture

@@ -1,7 +1,8 @@
 import pytest
+from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
 
-from users.models import User
+User = get_user_model()
 
 
 class TestUsersModels:

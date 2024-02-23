@@ -1,7 +1,6 @@
 import pytest
+from core.models.stories import Story
 from django.db.utils import IntegrityError
-
-from stories.models import Story
 
 
 class TestStoriesModels:
