@@ -6,7 +6,7 @@ from django.db.utils import IntegrityError
 from core.services.kinds import KindService
 from core.services.markers import MarkerService
 from core.services.related_markes_scrap import RelatedMarkerScrapService
-from core.services.tags import TagService, TagStoreService
+from core.services.tags import TagStoreService, TagValueStoreService
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +16,8 @@ class NodesToMarkersUpdaterManager:
     def update_markers(nodes):
         """
         Update or create markers, tags, and tag values in the database based on the provided nodes.
+        Try to set kind for marker.
+        Calculate statistic of changes.
 
         Args:
             nodes (list): A list of dictionaries representing nodes with information about markers, tags, and tag values.
@@ -59,7 +61,7 @@ class NodesToMarkersUpdaterManager:
                     marker = MarkerService.get_by_coordinates(coordinates)
                     if marker:
                         if (not marker.name and "name" in marker_data) or (
-                            not marker.osm_id and "name" in marker_data
+                            not marker.osm_id and "osm_id" in marker_data
                         ):
                             if "name" in marker_data and marker.name:
                                 marker_data.pop("name")
@@ -74,29 +76,19 @@ class NodesToMarkersUpdaterManager:
                             RelatedMarkerScrapService.create(marker)
 
                     # marker tags
+                    tag_value_store = TagValueStoreService(marker)
                     for tag_name, tag_value in node["tags"].items():
                         tag, created = tag_store.get_or_create_tag(tag_name)
                         if created:
                             stat["tags_add"] += 1
                         else:
                             stat["tags_use"] += 1
-                        # marker tags values
-                        (
-                            marker_tag_value,
-                            created,
-                        ) = TagService.update_or_create_tag_value(
-                            tag, tag_value, marker
-                        )
-                        if (
-                            not created
-                            and tag_value
-                            and marker_tag_value.value != tag_value
-                        ):
-                            marker_tag_value.value = tag_value
-                            marker_tag_value.save()
-                            stat["tags_values_upd"] += 1
-                        elif created:
-                            stat["tags_values_add"] += 1
+
+                        tag_value_store.check_tag_value(tag, tag_value)
+
+                    tags_values_add, tags_values_upd = tag_value_store.commit_values()
+                    stat["tags_values_add"] += tags_values_add
+                    stat["tags_values_upd"] += tags_values_upd
 
                     # marker kind
                     _, created = KindService.set_marker_kind(marker)
