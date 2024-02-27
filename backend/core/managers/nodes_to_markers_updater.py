@@ -6,7 +6,7 @@ from django.db.utils import IntegrityError
 from core.services.kinds import KindService
 from core.services.markers import MarkerService
 from core.services.related_markes_scrap import RelatedMarkerScrapService
-from core.services.tags import TagService
+from core.services.tags import TagService, TagStoreService
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +45,8 @@ class NodesToMarkersUpdaterManager:
             "tags_values_add": 0,
             "kinds_add": 0,
         }
+        tag_store = TagStoreService()
+
         for node in nodes:
             try:
                 with transaction.atomic():
@@ -73,12 +75,12 @@ class NodesToMarkersUpdaterManager:
 
                     # marker tags
                     for tag_name, tag_value in node["tags"].items():
-                        tag, created = TagService.get_or_create_tag(tag_name)
+                        tag, created = tag_store.get_or_create_tag(tag_name)
                         if created:
                             stat["tags_add"] += 1
                         else:
                             stat["tags_use"] += 1
-
+                        # marker tags values
                         (
                             marker_tag_value,
                             created,

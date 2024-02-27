@@ -26,12 +26,12 @@ class TagStoreService:
         self.tags = {}
         tags = TagService.get_tags_all()
         for tag in tags:
-            self.tags[tag.name] = tag.id
+            self.tags[tag.name] = tag
 
     def get_or_create_tag(self, name):
         if name in self.tags:
-            return self.tags[name]
+            return self.tags[name], False
         else:
-            tag = TagService.get_or_create_tag(name)
-            self.tags[name] = tag.id
-            return tag.id
+            tag, created = TagService.get_or_create_tag(name)
+            self.tags[name] = tag
+            return tag, created
