@@ -5,8 +5,8 @@ from django.db.utils import IntegrityError
 
 from core.services.kinds import KindService
 from core.services.markers import MarkerService
+from core.services.related_markes_scrap import RelatedMarkerScrapService
 from core.services.tags import TagService
-from core.tasks import run_scrap_markers_related
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ class NodesToMarkersUpdaterManager:
                         )
                         if created:
                             stat["markers_add"] += 1
-                            run_scrap_markers_related.delay(marker.id)
+                            RelatedMarkerScrapService.create(marker)
 
                     # marker tags
                     for tag_name, tag_value in node["tags"].items():
