@@ -54,6 +54,27 @@ class OverpassService:
         return OverpassService._overpass_by_query(full_query)
 
     @staticmethod
+    def overpass_batch_related_nodes(related_markers, radius=MARKERS_RELATED_IN_RADIUS):
+        kinds = KindService.get_related_kinds()
+        if not kinds.exists():
+            return None
+
+        subqueries = []
+        for related_marker in related_markers:
+            for kind in kinds:
+                subquery = OVERPASS["related"]["subquery"].format(
+                    tag_name=kind.tag,
+                    tag_value=kind.value,
+                    radius=radius,
+                    lat=related_marker.marker.location.y,
+                    lon=related_marker.marker.location.x,
+                )
+                subqueries.append(subquery)
+
+        full_query = OVERPASS["related"]["wrap"].format(subqueries="".join(subqueries))
+        return OverpassService._overpass_by_query(full_query)
+
+    @staticmethod
     def _overpass_by_query(overpass_query):
         try:
             response = requests.get(OVERPASS["url"], params={"data": overpass_query})
