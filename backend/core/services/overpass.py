@@ -82,7 +82,7 @@ class OverpassService:
                 return response.text
             else:
                 logger.error(
-                    f"Overpass API response status code: {response.status_code}"
+                    f"Overpass API response status code: {response.status_code} with query:\n{overpass_query}"
                 )
                 raise f"Fail with response status code: {response.status_code}"
         except Exception as e:
