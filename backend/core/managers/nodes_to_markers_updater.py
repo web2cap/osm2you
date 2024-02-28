@@ -38,6 +38,9 @@ class NodesToMarkersUpdaterManager:
             dict: Report with counting of created and updated elements.
         """
 
+        if not nodes:
+            return None
+
         stat = {
             "markers_upd": 0,
             "markers_add": 0,
@@ -54,22 +57,25 @@ class NodesToMarkersUpdaterManager:
                 with transaction.atomic():
                     # marker
                     coordinates = {"lat": node["lat"], "lon": node["lon"]}
-                    marker_data = {
-                        "name": node["name"],
-                        "osm_id": node["id"],
-                    }
+                    node["name"] = (
+                        None
+                        if node["name"] is not None and len(node["name"]) == 0
+                        else node["name"]
+                    )
+                    node["id"] = int(node["id"]) if node["id"].isdigit() else None
                     marker = MarkerService.get_by_coordinates(coordinates)
                     if marker:
-                        if (not marker.name and "name" in marker_data) or (
-                            not marker.osm_id and "osm_id" in marker_data
-                        ):
-                            if "name" in marker_data and marker.name:
-                                marker_data.pop("name")
-                            marker = MarkerService.update_marker(marker, marker_data)
+                        update_data = {}
+                        if not marker.name and node["name"]:
+                            update_data["name"] = node["name"]
+                        if marker.osm_id != int(node["id"]):
+                            update_data["osm_id"] = node["id"]
+                        if len(update_data):
+                            marker = MarkerService.update_marker(marker, update_data)
                             stat["markers_upd"] += 1
                     else:
                         marker, created = MarkerService.get_or_create_marker(
-                            coordinates, marker_data
+                            coordinates, {"name": node["name"], "osm_id": node["id"]}
                         )
                         if created:
                             stat["markers_add"] += 1
