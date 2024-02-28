@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db import connection
+from django.contrib.gis.db.models.functions import SnapToGrid
 
 from core.models.markers import RelatedMarkerScrap
 
@@ -23,16 +23,13 @@ class RelatedMarkerScrapService:
 
     @staticmethod
     def get_all_squares():
-        square_size = OVERPASS["related"]["square_size"]
-        sql_query = f"""
-            SELECT cm."location", ST_SnapToGrid(location, {square_size}) grid	
-            FROM core_relatedmarkerscrap cr
-            LEFT JOIN core_marker cm ON cm.id = cr.marker_id 
-            ORDER BY grid;
-        """
-
-        with connection.cursor() as cursor:
-            cursor.execute(sql_query)
-            all_squares = cursor.fetchall()
-
-        return all_squares
+        markers = RelatedMarkerScrap.objects.select_related("marker").annotate(
+            grid=SnapToGrid("marker__location", OVERPASS["related"]["square_size"])
+        )
+        markers_by_squares = {}
+        for marker in markers:
+            gindex = f"{marker.grid.x}{marker.grid.y}"
+            if gindex not in markers_by_squares:
+                markers_by_squares[gindex] = []
+            markers_by_squares[gindex].append(marker)
+        return markers_by_squares
