@@ -1,8 +1,11 @@
 import logging
 
+from django.db import transaction
+
 from core.managers.nodes_to_markers_updater import NodesToMarkersUpdaterManager
 from core.services.markers import MarkerService
 from core.services.overpass import OverpassService
+from core.services.related_markes_scrap import RelatedMarkerScrapService
 from core.services.scrape import ScrapService
 
 logger = logging.getLogger(__name__)
@@ -15,11 +18,13 @@ class MarkerMainerCommandManager:
             if scenario == "main":
                 return MarkerMainerScenarioManager.handle_main_scenario()
             elif scenario == "related":
-                if not marker_id:
-                    raise ValueError(
-                        "Main marker id is required for 'related' scenario."
+                if marker_id:
+                    return (
+                        MarkerMainerScenarioManager.handle_related_one_marker_scenario(
+                            marker_id
+                        )
                     )
-                return MarkerMainerScenarioManager.handle_related_scenario(marker_id)
+                return MarkerMainerScenarioManager.handle_related_batch_scenario()
             else:
                 raise ValueError("Invalid scenario. Choose 'main' or 'related'.")
         except Exception as e:
@@ -35,10 +40,25 @@ class MarkerMainerScenarioManager:
         return NodesToMarkersUpdaterManager.update_markers(nodes)
 
     @staticmethod
-    def handle_related_scenario(marker_id):
+    def handle_related_one_marker_scenario(marker_id):
         marker = MarkerService.get_by_id(marker_id)
         if not marker:
             raise ValueError(f"Error getting marker with id={marker_id}")
         xml_data = OverpassService.overpass_related_nodes(marker.location)
         nodes = ScrapService.scrap_nodes(xml_data)
         return NodesToMarkersUpdaterManager.update_markers(nodes)
+
+    @staticmethod
+    def handle_related_batch_scenario():
+        try:
+            with transaction.atomic():
+                markers_by_squares = RelatedMarkerScrapService.get_all_squares()
+                result = []
+                for markers in markers_by_squares.values():
+                    xml_data = OverpassService.overpass_batch_related_nodes(markers)
+                    nodes = ScrapService.scrap_nodes(xml_data)
+                    result.append(NodesToMarkersUpdaterManager.update_markers(nodes))
+                RelatedMarkerScrapService.delete_all()
+            return "\n".join(result)
+        except Exception as e:
+            logger.exception(f"Error occurred while handle_related_batch_scenario: {e}")
