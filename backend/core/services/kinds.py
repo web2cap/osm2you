@@ -91,4 +91,4 @@ class KindService:
     def _get_kinds_by_class(kind_class):
         """Retrieves kinds by class."""
 
-        return Kind.objects.filter(kind_class=kind_class)
+        return Kind.objects.filter(kind_class=kind_class).select_related("tag")
