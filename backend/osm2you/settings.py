@@ -217,7 +217,12 @@ OVERPASS = {
     "related": {
         "wrap": """({subqueries});out center;""",
         "subquery": """node["{tag_name}"="{tag_value}"](around:{radius},{lat},{lon});""",
+    },
+    "related_batch": {
+        "wrap": """({subqueries});out center;""",
+        "subquery": """node(around:{radius},{lat},{lon})[{tags}];""",
         "square_size": 8,
+        "packege_size": 30,
     },
 }
 
