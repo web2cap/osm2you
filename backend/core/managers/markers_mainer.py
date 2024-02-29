@@ -52,12 +52,15 @@ class MarkerMainerScenarioManager:
     def handle_related_batch_scenario():
         try:
             with transaction.atomic():
-                markers_by_squares = RelatedMarkerScrapService.get_all_squares()
+                markers_by_squares = RelatedMarkerScrapService.get_all_squares_by_pack()
                 result = []
-                for markers in markers_by_squares.values():
-                    xml_data = OverpassService.overpass_batch_related_nodes(markers)
-                    nodes = ScrapService.scrap_nodes(xml_data)
-                    result.append(NodesToMarkersUpdaterManager.update_markers(nodes))
+                for markers_packages in markers_by_squares.values():
+                    for markers in markers_packages:
+                        xml_data = OverpassService.overpass_batch_related_nodes(markers)
+                        nodes = ScrapService.scrap_nodes(xml_data)
+                        result.append(
+                            NodesToMarkersUpdaterManager.update_markers(nodes)
+                        )
                 RelatedMarkerScrapService.delete_all()
             return "\n".join(result)
         except Exception as e:
