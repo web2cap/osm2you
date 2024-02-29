@@ -25,6 +25,21 @@ class KindService:
         return KindService._get_kinds_by_class(Kind.KIND_CLASS_RELATED)
 
     @staticmethod
+    def get_related_kinds_dict():
+        """Retrieves related kinds in the dict."""
+
+        kinds = KindService.get_related_kinds()
+        if not kinds.exists():
+            return None
+        kinds_dict = {}
+        for kind in kinds:
+            if kind.tag not in kinds_dict:
+                kinds_dict[kind.tag] = []
+            kinds_dict[kind.tag].append(kind.value)
+
+        return kinds_dict
+
+    @staticmethod
     def get_kinds_all():
         return Kind.objects.all()
 
