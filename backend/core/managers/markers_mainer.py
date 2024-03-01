@@ -59,7 +59,7 @@ class MarkerMainerScenarioManager:
                         xml_data = OverpassService.overpass_batch_related_nodes(markers)
                         nodes = ScrapService.scrap_nodes(xml_data)
                         result.append(
-                            NodesToMarkersUpdaterManager.update_markers(nodes)
+                            str(NodesToMarkersUpdaterManager.update_markers(nodes))
                         )
                 RelatedMarkerScrapService.delete_all()
             return "\n".join(result)
