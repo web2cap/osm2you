@@ -1,5 +1,6 @@
 import logging
 
+from django.core.management import call_command
 from django.db import transaction
 
 from core.managers.nodes_to_markers_updater import NodesToMarkersUpdaterManager
@@ -7,6 +8,7 @@ from core.services.markers import MarkerService
 from core.services.overpass import OverpassService
 from core.services.related_markes_scrap import RelatedMarkerScrapService
 from core.services.scrape import ScrapService
+from core.tasks import run_scrap_markers_batch_related
 
 logger = logging.getLogger(__name__)
 overpass_service = OverpassService()
@@ -38,7 +40,10 @@ class MarkerMainerScenarioManager:
     def handle_main_scenario():
         xml_data = overpass_service.overpass_main_kind_nodes()
         nodes = ScrapService.scrap_nodes(xml_data)
-        return NodesToMarkersUpdaterManager.update_markers(nodes)
+        result = NodesToMarkersUpdaterManager.update_markers(nodes)
+        call_command("clustermarkers")
+        run_scrap_markers_batch_related.delay()
+        return result
 
     @staticmethod
     def handle_related_one_marker_scenario(marker_id):
