@@ -220,7 +220,7 @@ OVERPASS = {
     },
     "related_batch": {
         "wrap": """({subqueries});out center;""",
-        "subquery": """node["{tags}"](around:{radius},{lat},{lon});""",
+        "subquery": """node[{tags}](around:{radius},{lat},{lon});""",
         "square_size": 1,
         "packege_size": 5,
     },
