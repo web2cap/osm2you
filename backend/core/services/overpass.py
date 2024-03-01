@@ -12,8 +12,9 @@ MARKERS_RELATED_IN_RADIUS = getattr(settings, "MARKERS_RELATED_IN_RADIUS", 5000)
 
 
 class OverpassService:
-    @staticmethod
-    def overpass_main_kind_nodes(south=-90, west=-180, north=90, east=180):
+    related_tags_list = None
+
+    def overpass_main_kind_nodes(self, south=-90, west=-180, north=90, east=180):
         kinds = KindService.get_main_kinds()
         if not kinds.exists():
             return None
@@ -31,10 +32,9 @@ class OverpassService:
             subqueries.append(subquery)
 
         full_query = OVERPASS["main"]["wrap"].format(subqueries="".join(subqueries))
-        return OverpassService._overpass_by_query(full_query)
+        return self._overpass_by_query(full_query)
 
-    @staticmethod
-    def overpass_related_nodes(location, radius=MARKERS_RELATED_IN_RADIUS):
+    def overpass_related_nodes(self, location, radius=MARKERS_RELATED_IN_RADIUS):
         kinds = KindService.get_related_kinds()
         if not kinds.exists():
             return None
@@ -51,12 +51,12 @@ class OverpassService:
             subqueries.append(subquery)
 
         full_query = OVERPASS["related"]["wrap"].format(subqueries="".join(subqueries))
-        logger.warning(full_query)
-        return OverpassService._overpass_by_query(full_query)
+        return self._overpass_by_query(full_query)
 
-    @staticmethod
-    def overpass_batch_related_nodes(related_markers, radius=MARKERS_RELATED_IN_RADIUS):
-        tags_list = OverpassService._get_related_tags_list()
+    def overpass_batch_related_nodes(
+        self, related_markers, radius=MARKERS_RELATED_IN_RADIUS
+    ):
+        tags_list = self._get_related_tags_list()
         subqueries = []
         for related_marker in related_markers:
             for tags in tags_list:
@@ -71,10 +71,9 @@ class OverpassService:
         full_query = OVERPASS["related_batch"]["wrap"].format(
             subqueries="".join(subqueries)
         )
-        return OverpassService._overpass_by_query(full_query)
+        return self._overpass_by_query(full_query)
 
-    @staticmethod
-    def _overpass_by_query(overpass_query):
+    def _overpass_by_query(self, overpass_query):
         try:
             response = requests.get(OVERPASS["url"], params={"data": overpass_query})
             if response.status_code == 200:
@@ -87,14 +86,18 @@ class OverpassService:
         except Exception as e:
             logger.error(f"Overpass API error: {e}")
 
-    @staticmethod
-    def _get_related_tags_list():
+    def _get_related_tags_list(self):
+        if self.related_tags_list:
+            return self.related_tags_list
+
         kinds = KindService.get_related_kinds_dict()
         tags_list = []
         for tags in kinds:
             if len(kinds[tags]) == 1:
-                value_str = f"{tags}={kinds[tags][0]}"
+                value_str = f'"{tags}"="{kinds[tags][0]}"'
             else:
-                value_str = f"{tags}~{'|'.join(kinds[tags])}"
+                value_str = f'"{tags}"~"{"|".join(kinds[tags])}"'
             tags_list.append(value_str)
+
+        self.related_tags_list = tags_list
         return tags_list
