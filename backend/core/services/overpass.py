@@ -51,27 +51,26 @@ class OverpassService:
             subqueries.append(subquery)
 
         full_query = OVERPASS["related"]["wrap"].format(subqueries="".join(subqueries))
+        logger.warning(full_query)
         return OverpassService._overpass_by_query(full_query)
 
     @staticmethod
     def overpass_batch_related_nodes(related_markers, radius=MARKERS_RELATED_IN_RADIUS):
-        kinds = KindService.get_related_kinds()
-        if not kinds.exists():
-            return None
-
+        tags_list = OverpassService._get_related_tags_list()
         subqueries = []
         for related_marker in related_markers:
-            for kind in kinds:
-                subquery = OVERPASS["related"]["subquery"].format(
-                    tag_name=kind.tag,
-                    tag_value=kind.value,
+            for tags in tags_list:
+                subquery = OVERPASS["related_batch"]["subquery"].format(
+                    tags=tags,
                     radius=radius,
                     lat=related_marker.marker.location.y,
                     lon=related_marker.marker.location.x,
                 )
                 subqueries.append(subquery)
 
-        full_query = OVERPASS["related"]["wrap"].format(subqueries="".join(subqueries))
+        full_query = OVERPASS["related_batch"]["wrap"].format(
+            subqueries="".join(subqueries)
+        )
         return OverpassService._overpass_by_query(full_query)
 
     @staticmethod
@@ -87,3 +86,15 @@ class OverpassService:
                 raise f"Fail with response status code: {response.status_code}"
         except Exception as e:
             logger.error(f"Overpass API error: {e}")
+
+    @staticmethod
+    def _get_related_tags_list():
+        kinds = KindService.get_related_kinds_dict()
+        tags_list = []
+        for tags in kinds:
+            if len(kinds[tags]) == 1:
+                value_str = f"{tags}={kinds[tags][0]}"
+            else:
+                value_str = f"{tags}~{'|'.join(kinds[tags])}"
+            tags_list.append(value_str)
+        return tags_list
