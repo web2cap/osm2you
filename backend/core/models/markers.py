@@ -58,3 +58,14 @@ class UpdatedMarkerCluster(MarkerClusterMixin):
 
     class Meta:
         verbose_name_plural = "Updated Marker Clusters"
+
+
+class RelatedMarkerScrap(models.Model):
+    """To create a task for batch scraping of related markers."""
+
+    marker = models.OneToOneField(
+        Marker,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+    )

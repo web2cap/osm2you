@@ -5,8 +5,8 @@ from django.db.utils import IntegrityError
 
 from core.services.kinds import KindService
 from core.services.markers import MarkerService
-from core.services.tags import TagService
-from core.tasks import run_scrap_markers_related
+from core.services.related_markes_scrap import RelatedMarkerScrapService
+from core.services.tags import TagStoreService, TagValueStoreService
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +16,8 @@ class NodesToMarkersUpdaterManager:
     def update_markers(nodes):
         """
         Update or create markers, tags, and tag values in the database based on the provided nodes.
+        Try to set kind for marker.
+        Calculate statistic of changes.
 
         Args:
             nodes (list): A list of dictionaries representing nodes with information about markers, tags, and tag values.
@@ -36,6 +38,9 @@ class NodesToMarkersUpdaterManager:
             dict: Report with counting of created and updated elements.
         """
 
+        if not nodes:
+            return None
+
         stat = {
             "markers_upd": 0,
             "markers_add": 0,
@@ -45,56 +50,51 @@ class NodesToMarkersUpdaterManager:
             "tags_values_add": 0,
             "kinds_add": 0,
         }
+        tag_store = TagStoreService()
+
         for node in nodes:
             try:
                 with transaction.atomic():
                     # marker
                     coordinates = {"lat": node["lat"], "lon": node["lon"]}
-                    marker_data = {
-                        "name": node["name"],
-                        "osm_id": node["id"],
-                    }
+                    node["name"] = (
+                        None
+                        if node["name"] is not None and len(node["name"]) == 0
+                        else node["name"]
+                    )
+                    node["id"] = int(node["id"]) if node["id"].isdigit() else None
                     marker = MarkerService.get_by_coordinates(coordinates)
                     if marker:
-                        if (not marker.name and "name" in marker_data) or (
-                            not marker.osm_id and "name" in marker_data
-                        ):
-                            if "name" in marker_data and marker.name:
-                                marker_data.pop("name")
-                            marker = MarkerService.update_marker(marker, marker_data)
+                        update_data = {}
+                        if not marker.name and node["name"]:
+                            update_data["name"] = node["name"]
+                        if marker.osm_id != int(node["id"]):
+                            update_data["osm_id"] = node["id"]
+                        if len(update_data):
+                            marker = MarkerService.update_marker(marker, update_data)
                             stat["markers_upd"] += 1
                     else:
                         marker, created = MarkerService.get_or_create_marker(
-                            coordinates, marker_data
+                            coordinates, {"name": node["name"], "osm_id": node["id"]}
                         )
                         if created:
                             stat["markers_add"] += 1
-                            run_scrap_markers_related.delay(marker.id)
+                            RelatedMarkerScrapService.create(marker)
 
                     # marker tags
+                    tag_value_store = TagValueStoreService(marker)
                     for tag_name, tag_value in node["tags"].items():
-                        tag, created = TagService.get_or_create_tag(tag_name)
+                        tag, created = tag_store.get_or_create_tag(tag_name)
                         if created:
                             stat["tags_add"] += 1
                         else:
                             stat["tags_use"] += 1
 
-                        (
-                            marker_tag_value,
-                            created,
-                        ) = TagService.update_or_create_tag_value(
-                            tag, tag_value, marker
-                        )
-                        if (
-                            not created
-                            and tag_value
-                            and marker_tag_value.value != tag_value
-                        ):
-                            marker_tag_value.value = tag_value
-                            marker_tag_value.save()
-                            stat["tags_values_upd"] += 1
-                        elif created:
-                            stat["tags_values_add"] += 1
+                        tag_value_store.check_tag_value(tag, tag_value)
+
+                    tags_values_add, tags_values_upd = tag_value_store.commit_values()
+                    stat["tags_values_add"] += tags_values_add
+                    stat["tags_values_upd"] += tags_values_upd
 
                     # marker kind
                     _, created = KindService.set_marker_kind(marker)

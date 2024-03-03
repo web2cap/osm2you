@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.gis.geos import Point
 from django.db.models import Prefetch, Q
 
@@ -5,6 +7,8 @@ from core.models.kinds import Kind
 from core.models.markers import Marker
 from core.models.stories import Story
 from core.models.tags import TagValue
+
+logger = logging.getLogger(__name__)
 
 
 class MarkerService:
@@ -33,10 +37,14 @@ class MarkerService:
     @staticmethod
     def get_by_coordinates(coordinates):
         try:
-            return Marker.objects.get(
-                location=MarkerService._get_location_from_coordinates(coordinates)
-            )
-        except Marker.DoesNotExist:
+            location = MarkerService._get_location_from_coordinates(coordinates)
+            markers = Marker.objects.filter(location=location)
+            for marker in markers:
+                if marker.location == location:
+                    return marker
+            return None
+        except Exception as e:
+            logger.error(f"Error getting marker by coordinates: [{coordinates}] : {e} ")
             return None
 
     @staticmethod
