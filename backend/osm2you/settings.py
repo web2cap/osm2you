@@ -22,7 +22,6 @@ if DEBUG:
     CORS_ORIGIN_WHITELIST.append("http://localhost:3000")
 CORS_ALLOW_HEADERS = list(default_headers) + ["access-control-allow-origin"]
 ALLOWED_HOSTS = os.getenv("ST_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 INTERNAL_IPS = ["127.0.0.1"]
 
 INSTALLED_APPS = [
