@@ -40,7 +40,7 @@ class MarkerMainerScenarioManager:
     def handle_main_scenario():
         xml_data = overpass_service.overpass_main_kind_nodes()
         nodes = ScrapService.scrap_nodes(xml_data)
-        result = NodesToMarkersUpdaterManager.update_markers(nodes)
+        result = NodesToMarkersUpdaterManager.update_markers(nodes, True)
         call_command("clustermarkers")
         run_scrap_markers_batch_related.delay()
         return result
