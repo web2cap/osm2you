@@ -50,6 +50,7 @@ class NodesToMarkersUpdaterManager:
             "tags_values_upd": 0,
             "tags_values_add": 0,
             "kinds_add": 0,
+            "scrap_related_add": 0,
         }
         tag_store = TagStoreService()
 
@@ -78,8 +79,9 @@ class NodesToMarkersUpdaterManager:
                         marker, created = MarkerService.get_or_create_marker(
                             coordinates, {"name": node["name"], "osm_id": node["id"]}
                         )
+                        stat["markers_add"] += 1
                         if scrap_related and created:
-                            stat["markers_add"] += 1
+                            stat["scrap_related_add"] += 1
                             RelatedMarkerScrapService.create(marker)
 
                     # marker tags
