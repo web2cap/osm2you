@@ -22,6 +22,11 @@ class RelatedMarkerScrapService:
         return RelatedMarkerScrap.objects.all()
 
     @staticmethod
+    def delete_pack(markers):
+        for marker in markers:
+            marker.delete()
+
+    @staticmethod
     def get_all_squares_by_pack():
         """Divides markers into square areas and packages within each area.
 
