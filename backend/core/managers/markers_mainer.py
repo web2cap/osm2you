@@ -57,11 +57,11 @@ class MarkerMainerScenarioManager:
     @staticmethod
     def handle_related_batch_scenario():
         try:
-            with transaction.atomic():
-                markers_by_squares = RelatedMarkerScrapService.get_all_squares_by_pack()
-                result = []
-                for markers_packages in markers_by_squares.values():
-                    for markers in markers_packages:
+            markers_by_squares = RelatedMarkerScrapService.get_all_squares_by_pack()
+            result = []
+            for markers_packages in markers_by_squares.values():
+                for markers in markers_packages:
+                    with transaction.atomic():
                         xml_data = overpass_service.overpass_batch_related_nodes(
                             markers
                         )
@@ -69,7 +69,7 @@ class MarkerMainerScenarioManager:
                         result.append(
                             str(NodesToMarkersUpdaterManager.update_markers(nodes))
                         )
-                RelatedMarkerScrapService.delete_all()
+                        RelatedMarkerScrapService.delete_pack(markers)
             return "\n".join(result)
         except Exception as e:
             logger.exception(f"Error occurred while handle_related_batch_scenario: {e}")
