@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class NodesToMarkersUpdaterManager:
     @staticmethod
-    def update_markers(nodes):
+    def update_markers(nodes, scrap_related=False):
         """
         Update or create markers, tags, and tag values in the database based on the provided nodes.
         Try to set kind for marker.
@@ -33,6 +33,7 @@ class NodesToMarkersUpdaterManager:
                     },
                     # ... (other nodes)
                 ]
+            scrap_related (bool): Flag for add task to scrape related markers
 
         Returns:
             dict: Report with counting of created and updated elements.
@@ -77,7 +78,7 @@ class NodesToMarkersUpdaterManager:
                         marker, created = MarkerService.get_or_create_marker(
                             coordinates, {"name": node["name"], "osm_id": node["id"]}
                         )
-                        if created:
+                        if scrap_related and created:
                             stat["markers_add"] += 1
                             RelatedMarkerScrapService.create(marker)
 
