@@ -23,6 +23,10 @@ class RelatedMarkerScrapService:
         return RelatedMarkerScrap.objects.all()
 
     @staticmethod
+    def get_by_pack_index(pack_index):
+        return RelatedMarkerScrap.objects.filter(pack_index=pack_index)
+
+    @staticmethod
     def delete_pack(markers):
         for marker in markers:
             marker.delete()
