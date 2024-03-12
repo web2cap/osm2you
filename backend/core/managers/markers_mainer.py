@@ -62,27 +62,25 @@ class MarkerMainerScenarioManager:
     def handle_related_batch_scenario():
         try:
             markers_by_squares = RelatedMarkerScrapService.get_all_squares_by_pack()
-            # results = []
             pack_index = RelatedMarkerScrapService.get_next_free_pack_index()
             for marker_square in markers_by_squares:
                 for markers in markers_by_squares[marker_square]:
                     RelatedMarkerScrapService.set_pack_index(markers, pack_index)
                     run_scrap_markers_pack.delay(pack_index)
                     pack_index += 1
-                    # with transaction.atomic():
-                    #     logger.warning(f"Starting overpass batch {marker_square}")
-                    #     xml_data = overpass_service.overpass_batch_related_nodes(
-                    #         markers
-                    #     )
-                    #     nodes = ScrapService.scrap_nodes(xml_data)
-                    #     result = str(NodesToMarkersUpdaterManager.update_markers(nodes))
-                    #     RelatedMarkerScrapService.delete_pack(markers)
-                    #     logger.warning(f"Addad related batch {marker_square}: {result}")
-                    #     results.append(marker_square)
-            # return "\n".join(results)
         except Exception as e:
             logger.exception(f"Error occurred while handle_related_batch_scenario: {e}")
 
     @staticmethod
     def handle_related_pack_scenario(pack_index):
-        pass
+        try:
+            markers = RelatedMarkerScrapService.get_by_pack_index(pack_index)
+            with transaction.atomic():
+                xml_data = overpass_service.overpass_batch_related_nodes(markers)
+                nodes = ScrapService.scrap_nodes(xml_data)
+                result = str(NodesToMarkersUpdaterManager.update_markers(nodes))
+                RelatedMarkerScrapService.delete_pack(markers)
+                logger.warning(f"Addad related pack {pack_index}: {result}")
+            return result
+        except Exception as e:
+            logger.exception(f"Error occurred while handle_related_pack_scenario: {e}")
