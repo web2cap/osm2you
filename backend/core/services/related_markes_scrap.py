@@ -73,7 +73,9 @@ class RelatedMarkerScrapService:
         max_pack_index = RelatedMarkerScrap.objects.aggregate(Max("pack_index"))[
             "pack_index__max"
         ]
-        return max_pack_index + 1 or 0
+        if max_pack_index:
+            return max_pack_index + 1
+        return 0
 
     @staticmethod
     def set_pack_index(markers, pack_index):

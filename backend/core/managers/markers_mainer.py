@@ -62,12 +62,15 @@ class MarkerMainerScenarioManager:
     def handle_related_batch_scenario():
         try:
             markers_by_squares = RelatedMarkerScrapService.get_all_squares_by_pack()
-            pack_index = RelatedMarkerScrapService.get_next_free_pack_index()
+            pack_index = free_pack_index = (
+                RelatedMarkerScrapService.get_next_free_pack_index()
+            )
             for marker_square in markers_by_squares:
                 for markers in markers_by_squares[marker_square]:
                     RelatedMarkerScrapService.set_pack_index(markers, pack_index)
                     run_scrap_markers_pack.delay(pack_index)
                     pack_index += 1
+            return f"Addad tasks for {pack_index - free_pack_index} packs"
         except Exception as e:
             logger.exception(f"Error occurred while handle_related_batch_scenario: {e}")
 

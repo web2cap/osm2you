@@ -26,6 +26,10 @@ class Command(BaseCommand):
             result = MarkerMainerCommandManager.handle_command(
                 scenario, marker_id, pack_index
             )
-            self.stderr.write(self.style.SUCCESS(f"Markers updated, result: {result}"))
+            self.stderr.write(
+                self.style.SUCCESS(
+                    f"Scrapemrkers {scenario} id:{marker_id} pack:{pack_index} result: {result}"
+                )
+            )
         except Exception as e:
             self.stderr.write(self.style.ERROR(f"Error: {e}"))
