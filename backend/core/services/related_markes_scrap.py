@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.gis.db.models.functions import SnapToGrid
+from django.db.models import Max
 
 from core.models.markers import RelatedMarkerScrap
 
@@ -62,3 +63,17 @@ class RelatedMarkerScrapService:
             grid_element_index += 1
 
         return markers_by_squares
+
+    @staticmethod
+    def get_next_free_pack_index():
+        max_pack_index = RelatedMarkerScrap.objects.aggregate(Max("pack_index"))[
+            "pack_index__max"
+        ]
+        return max_pack_index + 1 or 0
+
+    @staticmethod
+    def set_pack_index(markers, pack_index):
+        marker_ids = [marker.id for marker in markers]
+        RelatedMarkerScrap.objects.filter(id__in=marker_ids).update(
+            pack_index=pack_index
+        )
