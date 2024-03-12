@@ -11,13 +11,21 @@ class Command(BaseCommand):
         parser.add_argument(
             "--id", type=int, help="Specify the marker id for 'related' scenario."
         )
+        parser.add_argument(
+            "--pack",
+            type=int,
+            help="Specify the pack index for 'related batch' scenario.",
+        )
 
     def handle(self, *args, **options):
         scenario = options["scenario"]
         marker_id = options.get("id")
+        pack_index = options.get("pack")
 
         try:
-            result = MarkerMainerCommandManager.handle_command(scenario, marker_id)
+            result = MarkerMainerCommandManager.handle_command(
+                scenario, marker_id, pack_index
+            )
             self.stderr.write(self.style.SUCCESS(f"Markers updated, result: {result}"))
         except Exception as e:
             self.stderr.write(self.style.ERROR(f"Error: {e}"))
