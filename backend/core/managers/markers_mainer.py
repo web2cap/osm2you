@@ -8,7 +8,7 @@ from core.services.markers import MarkerService
 from core.services.overpass import OverpassService
 from core.services.related_markes_scrap import RelatedMarkerScrapService
 from core.services.scrape import ScrapService
-from core.tasks import run_scrap_markers_batch_related
+from core.tasks import run_scrap_markers_batch_related, run_scrap_markers_pack
 
 logger = logging.getLogger(__name__)
 overpass_service = OverpassService()
@@ -67,6 +67,7 @@ class MarkerMainerScenarioManager:
             for marker_square in markers_by_squares:
                 for markers in markers_by_squares[marker_square]:
                     RelatedMarkerScrapService.set_pack_index(markers, pack_index)
+                    run_scrap_markers_pack.delay(pack_index)
                     pack_index += 1
                     # with transaction.atomic():
                     #     logger.warning(f"Starting overpass batch {marker_square}")
