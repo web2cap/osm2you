@@ -24,3 +24,8 @@ def run_scrap_markers_related(marker_id):
 @shared_task
 def run_scrap_markers_batch_related():
     call_command("scrapemarkers", "related")
+
+
+@shared_task
+def run_scrap_markers_pack(pack_index):
+    call_command("scrapemarkers", "related", pack=pack_index)

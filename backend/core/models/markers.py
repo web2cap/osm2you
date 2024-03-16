@@ -69,3 +69,5 @@ class RelatedMarkerScrap(models.Model):
         blank=False,
         null=False,
     )
+
+    pack_index = models.PositiveIntegerField(blank=True, null=True, default=None)
