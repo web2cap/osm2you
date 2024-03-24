@@ -18,12 +18,12 @@ class RelatedMarkers:
         return (
             Marker.objects.filter(location__distance_lte=(marker.location, radius))
             .exclude(id=marker.id)
-            .select_related("kind__kind")
+            .select_related("kind")
             .prefetch_related(
                 Prefetch(
-                    "kind__kind__tag",
+                    "kind__tag",
                     queryset=Tag.objects.only("name"),
-                    to_attr="kind__kind",
+                    to_attr="kind",
                 )
             )
         )

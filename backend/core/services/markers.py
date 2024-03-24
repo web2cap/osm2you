@@ -53,7 +53,7 @@ class MarkerService:
 
     @staticmethod
     def get_markers_main_kind():
-        return Marker.objects.filter(kind__kind__kind_class=Kind.KIND_CLASS_MAIN)
+        return Marker.objects.filter(kind__kind_class=Kind.KIND_CLASS_MAIN)
 
     @staticmethod
     def get_markers_with_stories_tags():

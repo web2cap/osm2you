@@ -1,6 +1,7 @@
 from django.db import transaction
 
-from core.models.tags import Tag, TagValue
+from core.models.tag_values import TagValue
+from core.models.tags import Tag
 
 
 class TagService:
