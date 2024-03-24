@@ -1,6 +1,5 @@
 from api.serializers.markers import MarkerRelatedSerializer
 from django.conf import settings
-from django.contrib.gis.measure import D
 from django.db.models import Prefetch
 
 from core.models.markers import Marker

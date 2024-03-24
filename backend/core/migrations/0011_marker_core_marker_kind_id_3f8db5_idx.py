@@ -4,14 +4,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('core', '0010_marker_core_marker_locatio_8b2fb2_idx'),
+        ("core", "0010_marker_core_marker_locatio_8b2fb2_idx"),
     ]
 
     operations = [
         migrations.AddIndex(
-            model_name='marker',
-            index=models.Index(fields=['kind_id'], name='core_marker_kind_id_3f8db5_idx'),
+            model_name="marker",
+            index=models.Index(
+                fields=["kind_id"], name="core_marker_kind_id_3f8db5_idx"
+            ),
         ),
     ]
