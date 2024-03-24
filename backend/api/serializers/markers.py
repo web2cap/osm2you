@@ -1,4 +1,4 @@
-from core.models.kinds import MarkerKind
+from core.models.marker_kind import MarkerKind
 from core.models.markers import Marker, MarkerCluster
 from rest_framework import serializers
 from rest_framework.serializers import ReadOnlyField

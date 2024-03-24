@@ -1,5 +1,6 @@
 from .create import CreatedModel
-from .kinds import Kind, KindGroup, MarkerKind
+from .kinds import Kind, KindGroup
+from .marker_kind import MarkerKind
 from .markers import (
     Marker,
     MarkerCluster,
@@ -8,7 +9,8 @@ from .markers import (
     UpdatedMarkerCluster,
 )
 from .stories import Story
-from .tags import Tag, TagValue
+from .tag_values import TagValue
+from .tags import Tag
 from .users import User
 
 __all__ = [

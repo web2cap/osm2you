@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.gis import admin
 
-from core.models.kinds import Kind, MarkerKind
+# from core.models.kinds import Kind, MarkerKind
 from core.models.markers import Marker
 
 
@@ -10,12 +10,12 @@ class MarkerForm(forms.ModelForm):
         model = Marker
         fields = "__all__"
 
-    kind = forms.ModelChoiceField(
-        queryset=Kind.objects.all(),
-        required=False,
-        empty_label="---------",
-        label="Marker Kind Value",
-    )
+    # kind = forms.ModelChoiceField(
+    #     queryset=Kind.objects.all(),
+    #     required=False,
+    #     empty_label="---------",
+    #     label="Marker Kind Value",
+    # )
 
 
 @admin.register(Marker)
@@ -23,7 +23,12 @@ class MarkerAdmin(admin.GISModelAdmin):
     """Marker admin."""
 
     form = MarkerForm
-    list_display = ("name", "location", "author", "add_date", "get_kind_display")
+    list_display = (
+        "name",
+        "location",
+        "author",
+        "add_date",
+    )  # "get_kind_display")
     search_fields = (
         "name",
         "author__username",
@@ -38,12 +43,14 @@ class MarkerAdmin(admin.GISModelAdmin):
             form.base_fields["author"].initial = request.user.id
         return form
 
-    def get_kind_display(self, obj):
-        """Display the kind value in the admin list."""
-        marker_kind = MarkerKind.objects.filter(marker=obj)
-        if marker_kind.exists():
-            return marker_kind.first().kind
-        return " - "
+    # def get_kind_display(self, obj):
+    #     """Display the kind value in the admin list."""
+    #     marker_kind = MarkerKind.objects.filter(marker=obj)
+    #     if marker_kind.exists():
+    #         return marker_kind.first().kind
+    #     return " - "
 
-    get_kind_display.short_description = "Kind"
-    get_kind_display.admin_order_field = "kind"
+
+#
+# get_kind_display.short_description = "Kind"
+# get_kind_display.admin_order_field = "kind"

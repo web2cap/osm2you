@@ -1,5 +1,6 @@
 from django.contrib.gis.db import models
 
+from core.models.kinds import Kind
 from core.models.users import User
 
 
@@ -15,6 +16,16 @@ class Marker(models.Model):
         verbose_name="Author",
         null=True,
         default=None,
+    )
+    kind = models.ForeignKey(
+        Kind,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=True,
+        default=None,
+        related_name="marker",
+        verbose_name="Marker Kind Value",
+        help_text="Choice kind value for marker",
     )
     add_date = models.DateTimeField(
         auto_now_add=True,
