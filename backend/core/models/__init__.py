@@ -1,6 +1,5 @@
 from .create import CreatedModel
 from .kinds import Kind, KindGroup
-from .marker_kind import MarkerKind
 from .markers import (
     Marker,
     MarkerCluster,
@@ -23,7 +22,6 @@ __all__ = [
     Story,
     Kind,
     KindGroup,
-    MarkerKind,
     Tag,
     TagValue,
     User,

@@ -1,4 +1,3 @@
-from core.models.marker_kind import MarkerKind
 from core.models.markers import Marker, MarkerCluster
 from rest_framework import serializers
 from rest_framework.serializers import ReadOnlyField
@@ -28,14 +27,14 @@ class MarkerSerializer(GeoFeatureModelSerializer):
 class MarkerRelatedSerializer(MarkerSerializer):
     """Marker GeoJSON serializer with kind field."""
 
-    kind = serializers.SerializerMethodField()
-
-    def get_kind(self, obj):
-        try:
-            marker_kind = obj.kind
-            return f"{marker_kind.kind.tag.name}={marker_kind.kind.value}"
-        except MarkerKind.DoesNotExist:
-            return None
+    # kind = serializers.SerializerMethodField()
+    #
+    # def get_kind(self, obj):
+    #     try:
+    #         marker_kind = obj.kind
+    #         return f"{marker_kind.kind.tag.name}={marker_kind.kind.value}"
+    #     except MarkerKind.DoesNotExist:
+    #         return None
 
     class Meta:
         fields = ("id", "name", "is_yours", "kind")
@@ -49,19 +48,19 @@ class MarkerInstanceSerializer(MarkerSerializer):
 
     stories = StorySerializerDisplay(many=True, read_only=True)
     tags = serializers.SerializerMethodField()
-    kind = serializers.SerializerMethodField()
+    # kind = serializers.SerializerMethodField()
     related = serializers.SerializerMethodField()
 
     def get_tags(self, obj):
         tags = obj.tag_value.all()
         return {tag.tag.name: tag.value for tag in tags}
 
-    def get_kind(self, obj):
-        try:
-            marker_kind = obj.kind
-            return f"{marker_kind.kind.tag.name}={marker_kind.kind.value}"
-        except MarkerKind.DoesNotExist:
-            return None
+    # def get_kind(self, obj):
+    #     try:
+    #         marker_kind = obj.kind
+    #         return f"{marker_kind.kind.tag.name}={marker_kind.kind.value}"
+    #     except MarkerKind.DoesNotExist:
+    #         return None
 
     def get_related(self, obj):
         related_markers_data = self.context.get("related_markers")

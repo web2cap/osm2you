@@ -1,7 +1,6 @@
 from django.db.models import F, OuterRef, Subquery
 
 from core.models.kinds import Kind
-from core.models.marker_kind import MarkerKind
 from core.models.tag_values import TagValue
 
 
@@ -72,21 +71,21 @@ class KindService:
             marker (Marker)
 
         Returns:
-            tuple: MarkerKind instance and a boolean indicating whether a kind assigned to the marker.
+            tuple: Marker instance and a boolean indicating whether a kind assigned to the marker.
         """
-        marker_kinds = MarkerKind.objects.filter(marker=marker)
-        if marker_kinds.exists():
-            return marker_kinds.first(), False
-        new_kind = KindService._get_suitable_kind_for_marker(marker)
-        if new_kind:
-            return MarkerKind.objects.create(marker=marker, kind=new_kind), True
+
+        if not marker.kind:
+            new_kind = KindService._get_suitable_kind_for_marker(marker)
+            if new_kind:
+                marker.kind = new_kind
+                marker.save()
+                return marker, True
+        return marker, False
 
     @staticmethod
     def set_marker_main_kind(marker):
-        MarkerKind.objects.update_or_create(
-            marker=marker,
-            defaults={"kind": KindService.get_main_priority_kind()},
-        )
+        marker.kind = KindService.get_main_priority_kind()
+        marker.save()
 
     @staticmethod
     def _get_kinds_by_class(kind_class):
