@@ -33,7 +33,10 @@ class Marker(models.Model):
     )
 
     class Meta:
-        indexes = [models.Index(fields=["location"])]
+        indexes = [
+            models.Index(fields=["location"]),
+            models.Index(fields=["kind_id"]),
+        ]
 
     def __str__(self):
         if not self.name:
