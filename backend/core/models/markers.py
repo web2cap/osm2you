@@ -32,6 +32,9 @@ class Marker(models.Model):
         verbose_name="Add date",
     )
 
+    class Meta:
+        indexes = [models.Index(fields=["location"])]
+
     def __str__(self):
         if not self.name:
             return str(self.id)
