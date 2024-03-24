@@ -23,7 +23,6 @@ class RelatedMarkers:
                 Prefetch(
                     "kind__tag",
                     queryset=Tag.objects.only("name"),
-                    to_attr="kind",
                 )
             )
         )
