@@ -1,5 +1,6 @@
 from django.contrib.gis.db import models
 
+from core.models.kinds import Kind
 from core.models.users import User
 
 
@@ -16,10 +17,26 @@ class Marker(models.Model):
         null=True,
         default=None,
     )
+    kind = models.ForeignKey(
+        Kind,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=True,
+        default=None,
+        related_name="marker",
+        verbose_name="Marker Kind Value",
+        help_text="Choice kind value for marker",
+    )
     add_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name="Add date",
     )
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["location"]),
+            models.Index(fields=["kind_id"]),
+        ]
 
     def __str__(self):
         if not self.name:

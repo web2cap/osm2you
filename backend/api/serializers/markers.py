@@ -1,4 +1,3 @@
-from core.models.kinds import MarkerKind
 from core.models.markers import Marker, MarkerCluster
 from rest_framework import serializers
 from rest_framework.serializers import ReadOnlyField
@@ -31,11 +30,9 @@ class MarkerRelatedSerializer(MarkerSerializer):
     kind = serializers.SerializerMethodField()
 
     def get_kind(self, obj):
-        try:
-            marker_kind = obj.kind
-            return f"{marker_kind.kind.tag.name}={marker_kind.kind.value}"
-        except MarkerKind.DoesNotExist:
-            return None
+        if obj.kind:
+            return f"{obj.kind.tag.name}={obj.kind.value}"
+        return None
 
     class Meta:
         fields = ("id", "name", "is_yours", "kind")
@@ -57,11 +54,9 @@ class MarkerInstanceSerializer(MarkerSerializer):
         return {tag.tag.name: tag.value for tag in tags}
 
     def get_kind(self, obj):
-        try:
-            marker_kind = obj.kind
-            return f"{marker_kind.kind.tag.name}={marker_kind.kind.value}"
-        except MarkerKind.DoesNotExist:
-            return None
+        if obj.kind:
+            return f"{obj.kind.tag.name}={obj.kind.value}"
+        return None
 
     def get_related(self, obj):
         related_markers_data = self.context.get("related_markers")

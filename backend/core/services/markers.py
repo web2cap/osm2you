@@ -6,7 +6,7 @@ from django.db.models import Prefetch, Q
 from core.models.kinds import Kind
 from core.models.markers import Marker
 from core.models.stories import Story
-from core.models.tags import TagValue
+from core.models.tag_values import TagValue
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ class MarkerService:
 
     @staticmethod
     def get_markers_main_kind():
-        return Marker.objects.filter(kind__kind__kind_class=Kind.KIND_CLASS_MAIN)
+        return Marker.objects.filter(kind__kind_class=Kind.KIND_CLASS_MAIN)
 
     @staticmethod
     def get_markers_with_stories_tags():
