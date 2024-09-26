@@ -1,8 +1,8 @@
 """Add trip model
 
-Revision ID: 434281b90393
+Revision ID: 9a65570b2012
 Revises: 
-Create Date: 2024-09-26 10:20:31.875250
+Create Date: 2024-09-26 13:37:19.536236
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '434281b90393'
+revision: str = '9a65570b2012'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

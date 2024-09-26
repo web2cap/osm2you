@@ -1,10 +1,13 @@
 from logging.config import fileConfig
-
 from alembic import context
-from database import DATABASE_URL, Base
-from external.models import Marker, User
+
 from sqlalchemy import engine_from_config, pool
-from trip.models import Trip
+
+from app.database import DATABASE_URL, Base
+from app.domain.models.user import User
+from app.domain.models.marker import Marker
+from app.domain.models.trip import Trip
+
 
 config = context.config
 
@@ -27,7 +30,8 @@ EXISTING_TABLES_NAMESPACE = (
 
 
 def include_object(object, name, type_, reflected, compare_to):
-    # Ignore all Django's tables
+    """Ignore all Django's tables."""
+
     if type_ == "table" and name.startswith(EXISTING_TABLES_NAMESPACE):
         return False
     return True
@@ -35,11 +39,11 @@ def include_object(object, name, type_, reflected, compare_to):
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode."""
+    
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
         target_metadata=target_metadata,
-        # include_schemas=True,
         include_object=include_object,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -51,6 +55,7 @@ def run_migrations_offline():
 
 def run_migrations_online():
     """Run migrations in 'online' mode."""
+
     connectable = engine_from_config(
         config.get_section(config.config_ini_section),
         prefix="sqlalchemy.",
@@ -61,7 +66,6 @@ def run_migrations_online():
         context.configure(
             connection=connection,
             target_metadata=target_metadata,
-            # include_schemas=True,
             include_object=include_object,
         )
 
