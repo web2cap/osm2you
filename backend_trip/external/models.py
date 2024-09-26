@@ -1,7 +1,8 @@
-from database import Base
 from geoalchemy2 import Geometry
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
+
+from database import Base
 
 metadata = Base.metadata
 

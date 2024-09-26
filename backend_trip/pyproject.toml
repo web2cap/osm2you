@@ -28,4 +28,4 @@ build-backend = "poetry.core.masonry.api"
 line-length = 100
 target-version = "py39"
 exclude = ["migrations", "__pycache__"]
-select = ["E", "F", "I", "B", "A"]
+lint.select = ["E", "F", "I", "B", "A"]
