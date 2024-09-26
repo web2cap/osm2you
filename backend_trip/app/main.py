@@ -2,8 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_versioning import VersionedFastAPI
 
+from app.api.v1.trip import router as trip_router
+
 app = FastAPI()
 
+app.include_router(trip_router)
 
 origins = [
     "http://localhost",
