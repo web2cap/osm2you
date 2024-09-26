@@ -2,6 +2,8 @@ from sqlalchemy import Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
+from app.models.marker import Marker  # noqa: F401
+from app.models.user import User  # noqa: F401
 
 
 class Trip(Base):
