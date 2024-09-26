@@ -22,3 +22,10 @@ geoalchemy2 = "^0.15.2"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+exclude = ["migrations", "__pycache__"]
+select = ["E", "F", "I", "B", "A"]
