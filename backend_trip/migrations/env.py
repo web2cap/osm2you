@@ -1,13 +1,12 @@
 from logging.config import fileConfig
-from alembic import context
 
+from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from app.database import DATABASE_URL, Base
-from app.domain.models.user import User
-from app.domain.models.marker import Marker
-from app.domain.models.trip import Trip
-
+from app.core.database import DATABASE_URL, Base
+from app.models.marker import Marker
+from app.models.trip import Trip
+from app.models.user import User
 
 config = context.config
 
@@ -39,7 +38,7 @@ def include_object(object, name, type_, reflected, compare_to):
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode."""
-    
+
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
