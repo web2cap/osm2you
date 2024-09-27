@@ -9,6 +9,19 @@ class AppDefaultHTTPExeption(HTTPException):
         super().__init__(status_code=self.status_code, detail=self.detail)
 
 
+# USER
+
+
+class InvalidTokenException(AppDefaultHTTPExeption):
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = "Invalid token"
+
+
+class TokenVerificationFailedException(AppDefaultHTTPExeption):
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = "Token verification failed"
+
+
 # TRIP
 
 
