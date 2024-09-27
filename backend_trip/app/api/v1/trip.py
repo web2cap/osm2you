@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.repository.trip import TripRepository
 from app.schema.trip import STripDetailed
 from app.services.trip import TripService
 
 router = APIRouter(prefix="/trip", tags=["Trips"])
 
-trip_service_singleton = TripService(TripRepository())  # Singleton instance
+trip_service_singleton = TripService()
 
 
 def get_trip_service() -> TripService:
