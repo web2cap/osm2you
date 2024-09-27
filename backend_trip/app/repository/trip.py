@@ -1,18 +1,15 @@
-from typing import Optional, TypeVar
-
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
 from app.models.trip import Trip
 from app.repository.base import BaseRepository
 
-T = TypeVar("T")
 
-
-class TripRepository(BaseRepository[Trip]):
+class TripRepository(BaseRepository):
     model = Trip
 
-    async def find_by_id(self, model_id: int) -> Optional[T]:
+    @classmethod
+    async def find_by_id(self, model_id: int):
         async with self.session as session:
             query = (
                 select(self.model)
