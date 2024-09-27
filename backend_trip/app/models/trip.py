@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, ForeignKey, Integer, String
+from sqlalchemy import Column, Date, ForeignKey, Integer, String, func
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
@@ -16,7 +16,7 @@ class Trip(Base):
     )
     user_id = Column(Integer, ForeignKey("public.core_user.id", ondelete="CASCADE"), nullable=False)
 
-    create_date = Column(Date, nullable=False)
+    create_date = Column(Date, nullable=False, default=func.now())
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=False)
     description = Column(String, nullable=False)
