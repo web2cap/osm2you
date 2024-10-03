@@ -28,3 +28,12 @@ async def add_trip(
     trip_service: TripService = Depends(get_trip_service),
 ):
     return await trip_service.add_trip(trip_data, current_user)
+
+
+@router.delete("/{trip_id}", response_model=STripDetailed)
+async def delete_trip(
+    trip_id: int,
+    current_user=Depends(get_current_user),
+    trip_service: TripService = Depends(get_trip_service),
+):
+    return await trip_service.delete_trip(trip_id, current_user)
