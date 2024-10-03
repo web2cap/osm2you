@@ -1,6 +1,8 @@
 from app.core.exceptions import (
     MarkerNotFoundException,
     TripConflictException,
+    TripDeleteException,
+    TripNotAuthorException,
     TripNotFoundException,
 )
 from app.models.user import User
@@ -51,3 +53,14 @@ class TripService:
         trip = await TripRepository.insert_data(**dict(trip_data))
 
         return await self.get_trip_with_details(trip.id)
+
+    async def delete_trip(self, trip_id: int, current_user: User) -> STripDetailed:
+        trip = await self.get_trip_with_details(trip_id)
+
+        if trip.user.id != current_user.id:
+            raise TripNotAuthorException()
+
+        if not await TripRepository.delete_by_id(trip_id):
+            raise TripDeleteException()
+
+        return trip

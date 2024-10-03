@@ -50,6 +50,16 @@ class InvalidStartDateException(AppDefaultHTTPExeption):
     detail = "Start date cannot be after end date"
 
 
+class TripNotAuthorException(AppDefaultHTTPExeption):
+    status_code = status.HTTP_409_CONFLICT
+    detail = "You are not author of this trip"
+
+
+class TripDeleteException(AppDefaultHTTPExeption):
+    status_code = status.HTTP_409_CONFLICT
+    detail = "Error deleting trip"
+
+
 # MARKER
 class MarkerNotFoundException(AppDefaultHTTPExeption):
     status_code = status.HTTP_404_NOT_FOUND
