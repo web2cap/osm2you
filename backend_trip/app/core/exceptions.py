@@ -40,11 +40,17 @@ class UserNotFoundException(AppDefaultHTTPExeption):
     detail = "User does not exist"
 
 
+class InvalidEndDateException(AppDefaultHTTPExeption):
+    status_code = status.HTTP_409_CONFLICT
+    detail = "The end date is before today"
+
+
+class InvalidStartDateException(AppDefaultHTTPExeption):
+    status_code = status.HTTP_409_CONFLICT
+    detail = "Start date cannot be after end date"
+
+
+# MARKER
 class MarkerNotFoundException(AppDefaultHTTPExeption):
     status_code = status.HTTP_404_NOT_FOUND
     detail = "Marker does not exist"
-
-
-class InvalidDateException(AppDefaultHTTPExeption):
-    status_code = status.HTTP_409_CONFLICT
-    detail = "The end date is before today"
