@@ -1,17 +1,21 @@
+from app.core.exceptions import (
+    MarkerNotFoundException,
+    TripConflictException,
+    TripNotFoundException,
+)
+from app.models.user import User
+from app.repository.marker import MarkerRepository
 from app.repository.trip import TripRepository
 from app.schema.marker import SMarker
-from app.schema.trip import STripDetailed
+from app.schema.trip import STripCreate, STripDetailed
 from app.schema.user import SUser
 
 
 class TripService:
-    def __init__(self, trip_repo: TripRepository):
-        self.trip_repo = trip_repo
-
     async def get_trip_with_details(self, trip_id: int) -> STripDetailed:
-        trip = await self.trip_repo.find_by_id(trip_id)
+        trip = await TripRepository.find_by_id(trip_id)
         if not trip:
-            raise ValueError("Trip not found")
+            raise TripNotFoundException
         return STripDetailed(
             id=trip.id,
             create_date=trip.create_date,
@@ -26,3 +30,24 @@ class TripService:
                 last_name=trip.user.last_name,
             ),
         )
+
+    async def add_trip(self, trip_data: STripCreate, current_user: User) -> STripDetailed:
+        """Add trip service.
+        Validation:
+         - check if marker exists
+         - check if user is already on another trip
+        """
+
+        if not MarkerRepository.find_by_id(trip_data.marker_id):
+            raise MarkerNotFoundException()
+
+        active_trip = await TripRepository.find_active_trip_by_user(
+            current_user.id, trip_data.start_date, trip_data.end_date
+        )
+        if active_trip:
+            raise TripConflictException()
+
+        trip_data.user_id = current_user.id
+        trip = await TripRepository.insert_data(**dict(trip_data))
+
+        return await self.get_trip_with_details(trip.id)
