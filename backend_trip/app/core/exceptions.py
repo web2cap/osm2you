@@ -17,6 +17,11 @@ class InvalidTokenException(AppDefaultHTTPExeption):
     detail = "Invalid token"
 
 
+class IncativeUserException(AppDefaultHTTPExeption):
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = "User is not active"
+
+
 class TokenVerificationFailedException(AppDefaultHTTPExeption):
     status_code = status.HTTP_401_UNAUTHORIZED
     detail = "Token verification failed"
