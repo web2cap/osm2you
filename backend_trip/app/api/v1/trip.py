@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.core.dependencies import get_current_user
-from app.schema.trip import STripCreate, STripDetailed
+from app.schema.trip import STripCreate, STripDetailed, STripValidateDates
 from app.services.trip import TripService
 
 router = APIRouter(prefix="/trip", tags=["Trips"])
@@ -28,6 +28,16 @@ async def add_trip(
     trip_service: TripService = Depends(get_trip_service),
 ):
     return await trip_service.add_trip(trip_data, current_user)
+
+
+@router.put("/{trip_id}", response_model=STripDetailed)
+async def update_trip_dates(
+    trip_id: int,
+    trip_data: STripValidateDates,
+    current_user=Depends(get_current_user),
+    trip_service: TripService = Depends(get_trip_service),
+):
+    return await trip_service.update_trip_dates(trip_id, trip_data, current_user)
 
 
 @router.delete("/{trip_id}", response_model=STripDetailed)
