@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "backend-trip"
+name = "trip_backend"
 version = "0.1.0"
 description = ""
 authors = ["web2cap <web2cap@gmail.com>"]
