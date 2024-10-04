@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest 
     name: Test changed-files
     outputs:
-      backend_changed: ${{ steps.set_output_verb.outputs.backend_changed }}
-      tests_changed: ${{ steps.set_output_verb.outputs.tests_changed }}
+      mainbackend_changed: ${{ steps.set_output_verb.outputs.mainbackend_changed }}
+      maintests_changed: ${{ steps.set_output_verb.outputs.maintests_changed }}
       frontend_changed: ${{ steps.set_output_verb.outputs.frontend_changed }}
     steps:
       - uses: actions/checkout@v4
@@ -22,9 +22,9 @@ jobs:
         uses: tj-actions/changed-files@v40
         with:
           files_yaml: |
-            tests:
-              - tests/**
-            backend:
+            maintests:
+              - tests/main_backend/**
+            mainbackend:
               - backend/**
             frontend:
               - frontend/**
@@ -32,14 +32,14 @@ jobs:
       - name: Set output
         id: set_output_verb
         run: |
-          echo "backend_changed=${{ steps.changed-files-yaml.outputs.backend_any_changed }}" >> "$GITHUB_OUTPUT"
-          echo "tests_changed=${{ steps.changed-files-yaml.outputs.tests_any_changed }}" >> "$GITHUB_OUTPUT"
+          echo "mainbackend_changed=${{ steps.changed-files-yaml.outputs.mainbackend_any_changed }}" >> "$GITHUB_OUTPUT"
+          echo "maintests_changed=${{ steps.changed-files-yaml.outputs.maintests_any_changed }}" >> "$GITHUB_OUTPUT"
           echo "frontend_changed=${{ steps.changed-files-yaml.outputs.frontend_any_changed }}" >> "$GITHUB_OUTPUT"
   # BACKEND JOBS         
   tests:
     runs-on: ubuntu-latest
     needs: changed_files
-    if: ${{ needs.changed_files.outputs.backend_changed == 'true' || needs.changed_files.outputs.tests_changed == 'true' }}
+    if: ${{ needs.changed_files.outputs.mainbackend_changed == 'true' || needs.changed_files.outputs.maintests_changed == 'true' }}
     services:
       postgres:
         image: postgis/postgis:16-3.4
@@ -87,13 +87,13 @@ jobs:
           REDIS_PORT: 6379
           GDAL_LIBRARY_PATH: /usr/lib/libgdal.so
         run: |
-          pytest --reuse-db
+          pytest tests/main_backend/ --reuse-db
 
   build_push_backend:
     name: Build and push to GitHub Container Registry
     runs-on: ubuntu-latest
     needs: tests
-    if: ${{ needs.changed_files.outputs.backend_changed == 'true' }}
+    if: ${{ needs.changed_files.outputs.mainbackend_changed == 'true' }}
     permissions:
       contents: read
       packages: write
