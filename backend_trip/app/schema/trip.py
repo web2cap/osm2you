@@ -20,6 +20,26 @@ class STripDetailed(BaseModel):
         from_attributes = True
 
 
+class STripValidateDates(BaseModel):
+    start_date: date
+    end_date: date
+
+    @field_validator("end_date")
+    @classmethod
+    def validate_end_date(cls, v, info):
+        if v < date.today():
+            raise InvalidEndDateException()
+        return v
+
+    @field_validator("start_date")
+    @classmethod
+    def validate_start_date(cls, v, info):
+        end_date = info.data.get("end_date")
+        if end_date and v > end_date:
+            raise InvalidStartDateException()
+        return v
+
+
 class STripCreate(BaseModel):
     marker_id: int
     start_date: date
@@ -41,3 +61,8 @@ class STripCreate(BaseModel):
         if end_date and v > end_date:
             raise InvalidStartDateException()
         return v
+
+
+class STripUpdateDates(STripValidateDates):
+    start_date: date
+    end_date: date
