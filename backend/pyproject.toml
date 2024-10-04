@@ -31,6 +31,7 @@ bs4 = "^0.0.1"
 lxml = "^4.9.4"
 celery = {extras = ["redis"], version = "^5.3.6"}
 django-celery-beat = "^2.5.0"
+setuptools = "^75.1.0"
 
 
 

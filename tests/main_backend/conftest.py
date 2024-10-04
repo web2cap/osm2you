@@ -8,7 +8,7 @@ from django.utils.version import get_version
 root_dir = dirname(dirname(abspath(__file__)))
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 root_dir_content = os.listdir(BASE_DIR)
 PROJECT_DIR_NAME = "backend"
 
@@ -44,10 +44,10 @@ assert (
 
 
 pytest_plugins = [
-    "tests.fixtures.fixture_user",
-    "tests.fixtures.fixture_marker",
-    "tests.fixtures.fixture_story",
-    "tests.fixtures.fixture_tag",
-    "tests.fixtures.fixture_marker_cluster",
-    "tests.fixtures.fixture_kind",
+    "fixtures.fixture_user",
+    "fixtures.fixture_marker",
+    "fixtures.fixture_story",
+    "fixtures.fixture_tag",
+    "fixtures.fixture_marker_cluster",
+    "fixtures.fixture_kind",
 ]
