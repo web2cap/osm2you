@@ -9,7 +9,7 @@ from app.models.user import User
 from app.repository.marker import MarkerRepository
 from app.repository.trip import TripRepository
 from app.schema.marker import SMarker
-from app.schema.trip import STripCreate, STripDetailed
+from app.schema.trip import STripCreate, STripDetailed, STripValidateDates
 from app.schema.user import SUser
 
 
@@ -17,7 +17,7 @@ class TripService:
     async def get_trip_with_details(self, trip_id: int) -> STripDetailed:
         trip = await TripRepository.find_by_id(trip_id)
         if not trip:
-            raise TripNotFoundException
+            raise TripNotFoundException()
         return STripDetailed(
             id=trip.id,
             create_date=trip.create_date,
@@ -51,6 +51,26 @@ class TripService:
 
         trip_data.user_id = current_user.id
         trip = await TripRepository.insert_data(**dict(trip_data))
+
+        return await self.get_trip_with_details(trip.id)
+
+    async def update_trip_dates(
+        self, trip_id: int, trip_data: STripValidateDates, current_user: User
+    ) -> STripDetailed:
+        trip = await TripRepository.find_by_id(trip_id)
+        if not trip:
+            raise TripNotFoundException()
+
+        active_trip = await TripRepository.find_active_trip_by_user(
+            current_user.id, trip_data.start_date, trip_data.end_date
+        )
+        if active_trip:
+            raise TripConflictException()
+
+        if trip.user.id != current_user.id:
+            raise TripNotAuthorException()
+
+        trip = await TripRepository.update_data(trip_id, **dict(trip_data))
 
         return await self.get_trip_with_details(trip.id)
 
