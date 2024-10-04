@@ -40,7 +40,7 @@ class TripService:
          - check if user is already on another trip
         """
 
-        if not MarkerRepository.find_by_id(trip_data.marker_id):
+        if not await MarkerRepository.find_by_id(trip_data.marker_id):
             raise MarkerNotFoundException()
 
         active_trip = await TripRepository.find_active_trip_by_user(
