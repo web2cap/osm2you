@@ -1,3 +1,5 @@
+from datetime import date
+
 from app.core.exceptions import (
     MarkerNotFoundException,
     TripConflictException,
@@ -5,6 +7,7 @@ from app.core.exceptions import (
     TripNotAuthorException,
     TripNotFoundException,
 )
+from app.models.trip import Trip
 from app.models.user import User
 from app.repository.marker import MarkerRepository
 from app.repository.trip import TripRepository
@@ -15,9 +18,7 @@ from app.schema.user import SUser
 
 class TripService:
     async def get_trip_with_details(self, trip_id: int) -> STripDetailed:
-        trip = await TripRepository.find_by_id(trip_id)
-        if not trip:
-            raise TripNotFoundException()
+        trip = await self._get_trip_instance(trip_id)
         return STripDetailed(
             id=trip.id,
             create_date=trip.create_date,
@@ -42,12 +43,9 @@ class TripService:
 
         if not await MarkerRepository.find_by_id(trip_data.marker_id):
             raise MarkerNotFoundException()
-
-        active_trip = await TripRepository.find_active_trip_by_user(
-            current_user.id, trip_data.start_date, trip_data.end_date
+        self._except_if_active_user_trip_exists(
+            current_user, trip_data.start_date, trip_data.end_date
         )
-        if active_trip:
-            raise TripConflictException()
 
         trip_data.user_id = current_user.id
         trip = await TripRepository.insert_data(**dict(trip_data))
@@ -57,18 +55,12 @@ class TripService:
     async def update_trip_dates(
         self, trip_id: int, trip_data: STripValidateDates, current_user: User
     ) -> STripDetailed:
-        trip = await TripRepository.find_by_id(trip_id)
-        if not trip:
-            raise TripNotFoundException()
+        trip = await self._get_trip_instance(trip_id)
 
-        active_trip = await TripRepository.find_active_trip_by_user(
-            current_user.id, trip_data.start_date, trip_data.end_date
+        self._except_if_active_user_trip_exists(
+            current_user, trip_data.start_date, trip_data.end_date
         )
-        if active_trip:
-            raise TripConflictException()
-
-        if trip.user.id != current_user.id:
-            raise TripNotAuthorException()
+        self._except_if_user_not_author(trip, current_user)
 
         trip = await TripRepository.update_data(trip_id, **dict(trip_data))
 
@@ -77,10 +69,29 @@ class TripService:
     async def delete_trip(self, trip_id: int, current_user: User) -> STripDetailed:
         trip = await self.get_trip_with_details(trip_id)
 
-        if trip.user.id != current_user.id:
-            raise TripNotAuthorException()
-
+        self._except_if_user_not_author(trip, current_user)
         if not await TripRepository.delete_by_id(trip_id):
             raise TripDeleteException()
 
         return trip
+
+    async def _get_trip_instance(self, trip_id: int) -> Trip:
+        trip = await TripRepository.find_by_id(trip_id)
+        if not trip:
+            raise TripNotFoundException()
+        return trip
+
+    async def _except_if_active_user_trip_exists(
+        self, current_user: User, start_date: date, end_date: date
+    ) -> None:
+        active_trip = await TripRepository.find_active_trip_by_user(
+            current_user.id, start_date, end_date
+        )
+        if active_trip:
+            raise TripConflictException()
+
+    async def _except_if_user_not_author(
+        self, trip: STripDetailed | Trip, current_user: User
+    ) -> None:
+        if trip.user.id != current_user.id:
+            raise TripNotAuthorException()
