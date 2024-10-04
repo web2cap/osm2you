@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
@@ -16,5 +16,6 @@ class User(Base):
     username = Column(String)
     first_name = Column(String)
     last_name = Column(String)
+    is_active = Column(Boolean)
 
     trips = relationship("Trip", back_populates="user")
