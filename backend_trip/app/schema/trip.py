@@ -29,15 +29,15 @@ class STripCreate(BaseModel):
 
     @field_validator("end_date")
     @classmethod
-    def validate_end_date(cls, v, values):
+    def validate_end_date(cls, v, info):
         if v < date.today():
             raise InvalidEndDateException()
         return v
 
     @field_validator("start_date")
     @classmethod
-    def validate_start_date(cls, v, values):
-        end_date = values.get("end_date")
+    def validate_start_date(cls, v, info):
+        end_date = info.data.get("end_date")
         if end_date and v > end_date:
             raise InvalidStartDateException()
         return v
