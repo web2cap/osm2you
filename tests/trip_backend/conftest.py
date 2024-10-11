@@ -20,3 +20,17 @@ if PROJECT_DIR_NAME not in root_dir_content or not os.path.isdir(
 
 MANAGE_PATH = os.path.join(BASE_DIR, PROJECT_DIR_NAME)
 sys.path.append(MANAGE_PATH)
+
+
+pytest_plugins = [
+    "fixtures.fixture_database",
+]
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--reuse-db",
+        action="store_true",
+        default=False,
+        help="Reuse the existing database without recreating.",
+    )
