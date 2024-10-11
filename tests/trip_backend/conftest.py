@@ -24,6 +24,7 @@ sys.path.append(MANAGE_PATH)
 
 pytest_plugins = [
     "fixtures.fixture_database",
+    "fixtures.fixture_client",
 ]
 
 
