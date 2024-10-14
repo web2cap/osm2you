@@ -45,4 +45,4 @@ class STripCreate(STripValidateDates):
     start_date: date
     end_date: date
     description: str | None = None
-    user_id: date | None = None
+    user_id: int | None = None
