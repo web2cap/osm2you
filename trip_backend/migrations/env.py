@@ -28,7 +28,7 @@ EXISTING_TABLES_NAMESPACE = (
 )
 
 
-def include_object(object, name, type_, reflected, compare_to):
+def include_object(obj, name, type_, reflected, compare_to):
     """Ignore all Django's tables."""
 
     if type_ == "table" and name.startswith(EXISTING_TABLES_NAMESPACE):
