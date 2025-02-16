@@ -1,5 +1,6 @@
 import pytest
 from app.models.trip import Trip
+from app.schema.trip import STripCreate
 from httpx import AsyncClient
 
 
@@ -8,6 +9,7 @@ class TestTrip:
 
     @pytest.mark.asyncio
     async def test_get_trip_by_id(self, ac: AsyncClient, create_simple_trip: Trip):
+        """Test getting a trip successfully."""
         trip = create_simple_trip
         response = await ac.get(f"{self.URL_TRIP}{trip.id}")
 
@@ -30,3 +32,20 @@ class TestTrip:
         assert "location" in data["marker"] and isinstance(
             data["marker"]["location"], list
         )
+
+    @pytest.mark.asyncio
+    async def test_create_trip_success(self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate):
+        """Test creating a trip successfully."""
+        response = await authenticated_ac.post(
+            self.URL_TRIP,
+            json= {
+                "marker_id": trip_data_marker1_user2.marker_id,
+                "start_date": str(trip_data_marker1_user2.start_date),
+                "end_date": str(trip_data_marker1_user2.end_date),
+                "description": trip_data_marker1_user2.description
+            }
+        )
+        assert response.status_code == 201
+        data = response.json()
+        assert data["id"]
+        assert data["description"] == "Test trip"
