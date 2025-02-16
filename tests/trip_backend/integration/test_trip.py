@@ -104,9 +104,22 @@ class TestTrip:
                 "description": trip_data_marker1_user2.description
             }
         )
-        assert response.status_code == 401  # Unauthorized
+        assert response.status_code == 401
 
-
+    @pytest.mark.asyncio
+    async def test_create_trip_non_existing_marker(self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate):
+        """Test creating a trip with a non-existing marker ID."""
+        response = await authenticated_ac.post(
+            self.URL_TRIP,
+            json={
+                "marker_id": 99999,
+                "start_date": str(trip_data_marker1_user2.start_date),
+                "end_date": str(trip_data_marker1_user2.end_date),
+                "description": trip_data_marker1_user2.description
+            }
+        )
+        assert response.status_code == 404
+        
     ## UPDATE
     @pytest.mark.asyncio
     async def test_update_trip_success(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
