@@ -6,6 +6,7 @@ from jose import jwt
 
 TRANSPORT = ASGITransport(app=fastapi_app)
 AUTHENTICATED_USER_ID = 2
+NOT_OWNER_USER_ID =1
 
 
 @pytest.fixture(scope="function")
@@ -18,6 +19,17 @@ async def ac():
 async def authenticated_ac():
     async with AsyncClient(transport=TRANSPORT, base_url="https://test") as ac:
         token = create_jwt_for_user(AUTHENTICATED_USER_ID)
+        ac.headers = {
+            **ac.headers,
+            "Authorization": f"Bearer {token}",
+        }
+
+        yield ac
+
+@pytest.fixture(scope="session")
+async def authenticated_not_owner_ac():
+    async with AsyncClient(transport=TRANSPORT, base_url="https://test") as ac:
+        token = create_jwt_for_user(NOT_OWNER_USER_ID)
         ac.headers = {
             **ac.headers,
             "Authorization": f"Bearer {token}",
