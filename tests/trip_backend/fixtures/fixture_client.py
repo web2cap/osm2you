@@ -1,12 +1,13 @@
 import pytest
-from app.core.config import settings
-from app.main import app as fastapi_app
 from httpx import ASGITransport, AsyncClient
 from jose import jwt
 
+from app.core.config import settings
+from app.main import app as fastapi_app
+
 TRANSPORT = ASGITransport(app=fastapi_app)
 AUTHENTICATED_USER_ID = 2
-NOT_OWNER_USER_ID =1
+NOT_OWNER_USER_ID = 1
 
 
 @pytest.fixture(scope="function")
@@ -25,6 +26,7 @@ async def authenticated_ac():
         }
 
         yield ac
+
 
 @pytest.fixture(scope="session")
 async def authenticated_not_owner_ac():

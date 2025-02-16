@@ -32,7 +32,7 @@ try:
     result = subprocess.run(
         ["ruff", "check", MANAGE_PATH, TESTS_PATH, "--exclude", ".venv"],
         capture_output=True,
-        text=True
+        text=True,
     )
     if result.returncode != 0:
         print(result.stdout)
@@ -42,7 +42,6 @@ except FileNotFoundError as exc:
     raise AssertionError("Ruff is not installed.") from exc
 
 
-
 def pytest_addoption(parser):
     parser.addoption(
         "--reuse-db",
@@ -50,5 +49,3 @@ def pytest_addoption(parser):
         default=False,
         help="Reuse the existing database without recreating.",
     )
-
-

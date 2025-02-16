@@ -1,13 +1,15 @@
 from datetime import date, timedelta
+
 import pytest
+from httpx import AsyncClient
+
 from app.models.trip import Trip
 from app.schema.trip import STripCreate
-from httpx import AsyncClient
 
 
 class TestTrip:
     URL_TRIP = "/v1/trip/"
-    
+
     ### GET
     @pytest.mark.asyncio
     async def test_get_trip_by_id(self, ac: AsyncClient, create_simple_trip: Trip):
@@ -31,11 +33,12 @@ class TestTrip:
 
         assert data["marker"]["id"] == trip.marker_id
         assert "name" in data["marker"]
-        assert "location" in data["marker"] and isinstance(
-            data["marker"]["location"], list
-        )
+        assert "location" in data["marker"] and isinstance(data["marker"]["location"], list)
+
     @pytest.mark.asyncio
-    async def test_get_trip_by_auth_user(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
+    async def test_get_trip_by_auth_user(
+        self, authenticated_ac: AsyncClient, create_simple_trip: Trip
+    ):
         """Test retrieving a trip by an authenticated user."""
         response = await authenticated_ac.get(f"{self.URL_TRIP}{create_simple_trip.id}")
         assert response.status_code == 200
@@ -48,16 +51,18 @@ class TestTrip:
 
     ### POST
     @pytest.mark.asyncio
-    async def test_create_trip_success(self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate):
+    async def test_create_trip_success(
+        self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate
+    ):
         """Test creating a trip successfully."""
         response = await authenticated_ac.post(
             self.URL_TRIP,
-            json= {
+            json={
                 "marker_id": trip_data_marker1_user2.marker_id,
                 "start_date": str(trip_data_marker1_user2.start_date),
                 "end_date": str(trip_data_marker1_user2.end_date),
-                "description": trip_data_marker1_user2.description
-            }
+                "description": trip_data_marker1_user2.description,
+            },
         )
         assert response.status_code == 201
         data = response.json()
@@ -65,35 +70,41 @@ class TestTrip:
         assert data["description"] == "Test trip"
 
     @pytest.mark.asyncio
-    async def test_create_trip_end_date_in_past(self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate):
+    async def test_create_trip_end_date_in_past(
+        self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate
+    ):
         """Test creating a trip with invalid dates (end_date in past)."""
         response = await authenticated_ac.post(
             self.URL_TRIP,
-            json= {
+            json={
                 "marker_id": trip_data_marker1_user2.marker_id,
                 "start_date": str(date.today() - timedelta(days=2)),
                 "end_date": str(date.today() - timedelta(days=1)),
-                "description": trip_data_marker1_user2.description
-            }
+                "description": trip_data_marker1_user2.description,
+            },
         )
         assert response.status_code == 409
 
     @pytest.mark.asyncio
-    async def test_create_trip_end_date_less_start_date(self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate):
+    async def test_create_trip_end_date_less_start_date(
+        self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate
+    ):
         """Test creating a trip with invalid dates (end_date before start_date)."""
         response = await authenticated_ac.post(
             self.URL_TRIP,
-            json= {
+            json={
                 "marker_id": trip_data_marker1_user2.marker_id,
                 "start_date": str(date.today() + timedelta(days=2)),
                 "end_date": str(date.today() + timedelta(days=1)),
-                "description": trip_data_marker1_user2.description
-            }
+                "description": trip_data_marker1_user2.description,
+            },
         )
         assert response.status_code == 409
-    
+
     @pytest.mark.asyncio
-    async def test_create_trip_unauthorized(self, ac: AsyncClient, trip_data_marker1_user2: STripCreate):
+    async def test_create_trip_unauthorized(
+        self, ac: AsyncClient, trip_data_marker1_user2: STripCreate
+    ):
         """Test creating a trip without authentication."""
         response = await ac.post(
             self.URL_TRIP,
@@ -101,13 +112,15 @@ class TestTrip:
                 "marker_id": trip_data_marker1_user2.marker_id,
                 "start_date": str(trip_data_marker1_user2.start_date),
                 "end_date": str(trip_data_marker1_user2.end_date),
-                "description": trip_data_marker1_user2.description
-            }
+                "description": trip_data_marker1_user2.description,
+            },
         )
         assert response.status_code == 401
 
     @pytest.mark.asyncio
-    async def test_create_trip_non_existing_marker(self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate):
+    async def test_create_trip_non_existing_marker(
+        self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate
+    ):
         """Test creating a trip with a non-existing marker ID."""
         response = await authenticated_ac.post(
             self.URL_TRIP,
@@ -115,70 +128,74 @@ class TestTrip:
                 "marker_id": 99999,
                 "start_date": str(trip_data_marker1_user2.start_date),
                 "end_date": str(trip_data_marker1_user2.end_date),
-                "description": trip_data_marker1_user2.description
-            }
+                "description": trip_data_marker1_user2.description,
+            },
         )
         assert response.status_code == 404
 
     ## UPDATE
     @pytest.mark.asyncio
-    async def test_update_trip_success(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
+    async def test_update_trip_success(
+        self, authenticated_ac: AsyncClient, create_simple_trip: Trip
+    ):
         """Test updating trip dates successfully."""
 
-        new_dates={
-                "start_date": str(create_simple_trip.start_date + timedelta(days=1)),
-                "end_date": str(create_simple_trip.end_date + timedelta(days=10)),
+        new_dates = {
+            "start_date": str(create_simple_trip.start_date + timedelta(days=1)),
+            "end_date": str(create_simple_trip.end_date + timedelta(days=10)),
         }
 
         response = await authenticated_ac.put(
-            f"{self.URL_TRIP}{create_simple_trip.id}",
-            json=new_dates
+            f"{self.URL_TRIP}{create_simple_trip.id}", json=new_dates
         )
         assert response.status_code == 200
         data = response.json()
         assert data["start_date"] == new_dates["start_date"]
         assert data["end_date"] == new_dates["end_date"]
-    
+
     @pytest.mark.asyncio
-    async def test_update_trip_end_date_less_start_date(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
+    async def test_update_trip_end_date_less_start_date(
+        self, authenticated_ac: AsyncClient, create_simple_trip: Trip
+    ):
         """Test updating trip with invalid dates (end_date before start_date)."""
 
-        invalid_dates={
-                "start_date": str(create_simple_trip.start_date + timedelta(days=10)),
-                "end_date": str(create_simple_trip.start_date + timedelta(days=1)),
+        invalid_dates = {
+            "start_date": str(create_simple_trip.start_date + timedelta(days=10)),
+            "end_date": str(create_simple_trip.start_date + timedelta(days=1)),
         }
 
         response = await authenticated_ac.put(
-            f"{self.URL_TRIP}{create_simple_trip.id}",
-            json=invalid_dates
+            f"{self.URL_TRIP}{create_simple_trip.id}", json=invalid_dates
         )
         assert response.status_code == 409
-    
+
     @pytest.mark.asyncio
-    async def test_update_trip_end_date_in_past(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
+    async def test_update_trip_end_date_in_past(
+        self, authenticated_ac: AsyncClient, create_simple_trip: Trip
+    ):
         """Test updating trip with invalid dates (end_date in past)"""
 
-        invalid_dates={
+        invalid_dates = {
             "start_date": str(date.today() - timedelta(days=2)),
             "end_date": str(date.today() - timedelta(days=1)),
         }
 
         response = await authenticated_ac.put(
-            f"{self.URL_TRIP}{create_simple_trip.id}",
-            json=invalid_dates
+            f"{self.URL_TRIP}{create_simple_trip.id}", json=invalid_dates
         )
         assert response.status_code == 409
-       
+
     @pytest.mark.asyncio
-    async def test_update_trip_not_owner(self, authenticated_not_owner_ac: AsyncClient, create_simple_trip: Trip):
+    async def test_update_trip_not_owner(
+        self, authenticated_not_owner_ac: AsyncClient, create_simple_trip: Trip
+    ):
         """Test updating a trip by a non-owner user."""
         new_dates = {
             "start_date": str(create_simple_trip.start_date + timedelta(days=2)),
             "end_date": str(create_simple_trip.end_date + timedelta(days=10)),
         }
         response = await authenticated_not_owner_ac.put(
-            f"{self.URL_TRIP}{create_simple_trip.id}",
-            json=new_dates
+            f"{self.URL_TRIP}{create_simple_trip.id}", json=new_dates
         )
         assert response.status_code == 403
 
@@ -189,31 +206,36 @@ class TestTrip:
             "start_date": str(create_simple_trip.start_date + timedelta(days=2)),
             "end_date": str(create_simple_trip.end_date + timedelta(days=10)),
         }
-        response = await ac.put(
-            f"{self.URL_TRIP}{create_simple_trip.id}",
-            json=new_dates
-        )
+        response = await ac.put(f"{self.URL_TRIP}{create_simple_trip.id}", json=new_dates)
         assert response.status_code == 401
 
     ### DELETE
     @pytest.mark.asyncio
-    async def test_delete_trip_success(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
+    async def test_delete_trip_success(
+        self, authenticated_ac: AsyncClient, create_simple_trip: Trip
+    ):
         """Test deleting trip successfully."""
 
         response = await authenticated_ac.delete(f"{self.URL_TRIP}{create_simple_trip.id}")
         assert response.status_code == 204
 
     @pytest.mark.asyncio
-    async def test_delete_trip_not_found(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
+    async def test_delete_trip_not_found(
+        self, authenticated_ac: AsyncClient, create_simple_trip: Trip
+    ):
         """Test deleting a non-existent trip."""
-        
+
         response = await authenticated_ac.delete(f"{self.URL_TRIP}9999")
         assert response.status_code == 404
 
     @pytest.mark.asyncio
-    async def test_delete_trip_not_owner(self, authenticated_not_owner_ac: AsyncClient, create_simple_trip: Trip):
+    async def test_delete_trip_not_owner(
+        self, authenticated_not_owner_ac: AsyncClient, create_simple_trip: Trip
+    ):
         """Test deleting a trip by a non-owner user."""
-        response = await authenticated_not_owner_ac.delete(f"{self.URL_TRIP}{create_simple_trip.id}")
+        response = await authenticated_not_owner_ac.delete(
+            f"{self.URL_TRIP}{create_simple_trip.id}"
+        )
         assert response.status_code == 403
 
     @pytest.mark.asyncio

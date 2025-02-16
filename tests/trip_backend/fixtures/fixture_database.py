@@ -3,10 +3,9 @@ import subprocess
 
 import pytest
 import sqlalchemy as sa
+
 from app.core.config import settings
 from app.core.database import async_session_maker
-from dotenv import load_dotenv
-
 
 SQL_DUMP_PATH = "../tests/trip_backend/fixtures/fixture_data_test_db.sql"
 DB_USER = os.getenv("DB_USER")
@@ -21,18 +20,22 @@ async def prepare_database(request):
     reuse_db = request.config.getoption("--reuse-db", False)
     if not reuse_db:
         print("Deleting and recreating the database.")
-        async with async_session_maker() as session:
-            # delete all existings tables
-            drop_all_tables_sql = """
+        # Delete all tables in the current schema, excluding 'spatial_' prefixed tables
+        drop_all_tables_sql = """
             DO $$ DECLARE
                 r RECORD;
             BEGIN
-                -- Loop through all table names in the current schema, excluding 'spatial_' prefixed tables
-                FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename NOT LIKE 'spatial_%') LOOP
+                FOR r IN (
+                    SELECT tablename 
+                    FROM pg_tables 
+                    WHERE schemaname = 'public' AND tablename NOT LIKE 'spatial_%'
+                ) LOOP
                     EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
                 END LOOP;
             END $$;
             """
+        async with async_session_maker() as session:
+            # delete all existings tables
             await session.execute(sa.text(drop_all_tables_sql))
 
             # load django dump
@@ -57,6 +60,7 @@ async def reset_migrations():
     subprocess.run(["alembic", "-c", "alembic.ini", "downgrade", "base"], check=True)
     subprocess.run(["alembic", "-c", "alembic.ini", "upgrade", "head"], check=True)
     yield
+
 
 @pytest.fixture(scope="function")
 async def session():

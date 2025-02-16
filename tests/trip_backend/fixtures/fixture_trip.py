@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 
 import pytest
+
 from app.repository.trip import TripRepository
 from app.schema.trip import STripCreate
 
