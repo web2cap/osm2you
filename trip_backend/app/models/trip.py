@@ -9,7 +9,7 @@ from app.models.user import User  # noqa: F401
 
 
 class Trip(Base):
-    __tablename__ = "trips"
+    __tablename__ = "trip_trips"
 
     id = Column(Integer, primary_key=True, index=True)
 
