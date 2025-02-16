@@ -91,6 +91,21 @@ class TestTrip:
             }
         )
         assert response.status_code == 409
+    
+    @pytest.mark.asyncio
+    async def test_create_trip_unauthorized(self, ac: AsyncClient, trip_data_marker1_user2: STripCreate):
+        """Test creating a trip without authentication."""
+        response = await ac.post(
+            self.URL_TRIP,
+            json={
+                "marker_id": trip_data_marker1_user2.marker_id,
+                "start_date": str(trip_data_marker1_user2.start_date),
+                "end_date": str(trip_data_marker1_user2.end_date),
+                "description": trip_data_marker1_user2.description
+            }
+        )
+        assert response.status_code == 401  # Unauthorized
+
 
     ## UPDATE
     @pytest.mark.asyncio
