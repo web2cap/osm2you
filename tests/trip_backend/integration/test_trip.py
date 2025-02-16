@@ -182,6 +182,19 @@ class TestTrip:
         )
         assert response.status_code == 403
 
+    @pytest.mark.asyncio
+    async def test_update_trip_unauthorized(self, ac: AsyncClient, create_simple_trip: Trip):
+        """Test updating a trip without authentication."""
+        new_dates = {
+            "start_date": str(create_simple_trip.start_date + timedelta(days=2)),
+            "end_date": str(create_simple_trip.end_date + timedelta(days=10)),
+        }
+        response = await ac.put(
+            f"{self.URL_TRIP}{create_simple_trip.id}",
+            json=new_dates
+        )
+        assert response.status_code == 401
+
     ### DELETE
     @pytest.mark.asyncio
     async def test_delete_trip_success(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
@@ -196,3 +209,9 @@ class TestTrip:
         
         response = await authenticated_ac.delete(f"{self.URL_TRIP}9999")
         assert response.status_code == 404
+
+    @pytest.mark.asyncio
+    async def test_delete_trip_not_owner(self, authenticated_not_owner_ac: AsyncClient, create_simple_trip: Trip):
+        """Test deleting a trip by a non-owner user."""
+        response = await authenticated_not_owner_ac.delete(f"{self.URL_TRIP}{create_simple_trip.id}")
+        assert response.status_code == 403
