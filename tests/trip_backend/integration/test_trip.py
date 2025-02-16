@@ -105,3 +105,19 @@ class TestTrip:
         data = response.json()
         assert data["start_date"] == new_dates["start_date"]
         assert data["end_date"] == new_dates["end_date"]
+    
+    @pytest.mark.asyncio
+    async def test_update_trip_end_date_less_start_date(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
+        """Test updating trip dates successfully."""
+
+        invalid_dates={
+                "start_date": str(create_simple_trip.start_date + timedelta(days=10)),
+                "end_date": str(create_simple_trip.start_date + timedelta(days=1)),
+        }
+
+        response = await authenticated_ac.put(
+            f"{self.URL_TRIP}{create_simple_trip.id}",
+            json=invalid_dates
+        )
+        assert response.status_code == 409
+       
