@@ -34,6 +34,12 @@ class TestTrip:
         )
 
     @pytest.mark.asyncio
+    async def test_get_trip_not_found(self, ac: AsyncClient, create_simple_trip: Trip):
+        """Test retrieving a non-existent trip."""
+        response = await ac.get(f"{self.URL_TRIP}9999")
+        assert response.status_code == 404
+
+    @pytest.mark.asyncio
     async def test_create_trip_success(self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate):
         """Test creating a trip successfully."""
         response = await authenticated_ac.post(
