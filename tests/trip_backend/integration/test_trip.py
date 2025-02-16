@@ -144,4 +144,9 @@ class TestTrip:
         response = await authenticated_ac.delete(f"{self.URL_TRIP}{create_simple_trip.id}")
         assert response.status_code == 204
 
-    
+    @pytest.mark.asyncio
+    async def test_delete_trip_not_found(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
+        """Test deleting a non-existent trip."""
+        
+        response = await authenticated_ac.delete(f"{self.URL_TRIP}9999")
+        assert response.status_code == 404
