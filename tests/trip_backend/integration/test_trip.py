@@ -215,3 +215,9 @@ class TestTrip:
         """Test deleting a trip by a non-owner user."""
         response = await authenticated_not_owner_ac.delete(f"{self.URL_TRIP}{create_simple_trip.id}")
         assert response.status_code == 403
+
+    @pytest.mark.asyncio
+    async def test_delete_trip_unauthorized(self, ac: AsyncClient, create_simple_trip: Trip):
+        """Test deleting a trip without authentication."""
+        response = await ac.delete(f"{self.URL_TRIP}{create_simple_trip.id}")
+        assert response.status_code == 401
