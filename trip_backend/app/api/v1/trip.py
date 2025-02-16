@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.core.dependencies import get_current_user
 from app.schema.trip import STripCreate, STripDetailed, STripValidateDates
@@ -21,7 +21,7 @@ async def get_trip(trip_id: int, trip_service: TripService = Depends(get_trip_se
         raise HTTPException(status_code=404, detail=str(e)) from None
 
 
-@router.post("/", response_model=STripDetailed)
+@router.post("/", response_model=STripDetailed, status_code=status.HTTP_201_CREATED)
 async def add_trip(
     trip_data: STripCreate,
     current_user=Depends(get_current_user),
