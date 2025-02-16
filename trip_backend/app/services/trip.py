@@ -43,7 +43,7 @@ class TripService:
 
         if not await MarkerRepository.find_by_id(trip_data.marker_id):
             raise MarkerNotFoundException()
-        self._except_if_active_user_trip_exists(
+        await self._except_if_active_user_trip_exists(
             current_user, trip_data.start_date, trip_data.end_date
         )
 
@@ -57,7 +57,7 @@ class TripService:
     ) -> STripDetailed:
         trip = await self._get_trip_instance(trip_id)
 
-        self._except_if_active_user_trip_exists(
+        await self._except_if_active_user_trip_exists(
             current_user, trip_data.start_date, trip_data.end_date
         )
         self._except_if_user_not_author(trip, current_user)
@@ -90,7 +90,7 @@ class TripService:
         if active_trip:
             raise TripConflictException()
 
-    async def _except_if_user_not_author(
+    def _except_if_user_not_author(
         self, trip: STripDetailed | Trip, current_user: User
     ) -> None:
         if trip.user.id != current_user.id:
