@@ -49,3 +49,17 @@ class TestTrip:
         data = response.json()
         assert data["id"]
         assert data["description"] == "Test trip"
+
+    @pytest.mark.asyncio
+    async def test_create_trip_invalid_dates(self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate):
+        """Test creating a trip with invalid dates (end_date before start_date)."""
+        response = await authenticated_ac.post(
+            self.URL_TRIP,
+            json= {
+                "marker_id": trip_data_marker1_user2.marker_id,
+                "start_date": str(trip_data_marker1_user2.end_date),
+                "end_date": str(trip_data_marker1_user2.start_date),
+                "description": trip_data_marker1_user2.description
+            }
+        )
+        assert response.status_code == 409
