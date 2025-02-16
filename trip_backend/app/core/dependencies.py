@@ -1,7 +1,6 @@
 from fastapi import Security
 from fastapi.security import OAuth2PasswordBearer
 
-
 from app.core.exceptions import IncativeUserException, UserNotFoundException
 from app.repository.user import UserRepository
 from app.utils.id_from_token import get_user_id_from_token
