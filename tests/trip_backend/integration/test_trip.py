@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 import pytest
 from app.models.trip import Trip
 from app.schema.trip import STripCreate
@@ -60,14 +60,28 @@ class TestTrip:
         assert data["description"] == "Test trip"
 
     @pytest.mark.asyncio
-    async def test_create_trip_invalid_dates(self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate):
+    async def test_create_trip_end_date_in_past(self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate):
+        """Test creating a trip with invalid dates (end_date in past)."""
+        response = await authenticated_ac.post(
+            self.URL_TRIP,
+            json= {
+                "marker_id": trip_data_marker1_user2.marker_id,
+                "start_date": str(date.today() - timedelta(days=2)),
+                "end_date": str(date.today() - timedelta(days=1)),
+                "description": trip_data_marker1_user2.description
+            }
+        )
+        assert response.status_code == 409
+
+    @pytest.mark.asyncio
+    async def test_create_trip_end_date_less_start_date(self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate):
         """Test creating a trip with invalid dates (end_date before start_date)."""
         response = await authenticated_ac.post(
             self.URL_TRIP,
             json= {
                 "marker_id": trip_data_marker1_user2.marker_id,
-                "start_date": str(trip_data_marker1_user2.end_date),
-                "end_date": str(trip_data_marker1_user2.start_date),
+                "start_date": str(date.today() + timedelta(days=2)),
+                "end_date": str(date.today() + timedelta(days=1)),
                 "description": trip_data_marker1_user2.description
             }
         )
