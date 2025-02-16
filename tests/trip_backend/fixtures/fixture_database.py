@@ -1,15 +1,21 @@
+import os
 import subprocess
 
 import pytest
 import sqlalchemy as sa
 from app.core.config import settings
 from app.core.database import async_session_maker
+from dotenv import load_dotenv
+
 
 SQL_DUMP_PATH = "../tests/trip_backend/fixtures/fixture_data_test_db.sql"
+DB_USER = os.getenv("DB_USER")
 
 
 @pytest.fixture(scope="session", autouse=True)
 async def prepare_database(request):
+    """Runs once per test session to reset the database."""
+
     assert settings.MODE == "TEST"
 
     reuse_db = request.config.getoption("--reuse-db", False)
@@ -31,7 +37,7 @@ async def prepare_database(request):
 
             # load django dump
             with open(SQL_DUMP_PATH, "r") as file:
-                sql_statements = file.read().split(";")
+                sql_statements = file.read().replace("DB_USER", DB_USER).split(";")
                 for statement in sql_statements:
                     clean_statement = statement.strip()
                     if clean_statement:
