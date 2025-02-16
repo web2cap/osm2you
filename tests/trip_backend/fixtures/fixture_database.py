@@ -47,11 +47,16 @@ async def prepare_database(request):
                             print(f"Error executing statement: {clean_statement}")
                             raise e
             await session.commit()
-
-        # make fast-api migrations
-        subprocess.run(["alembic", "upgrade", "head"], check=False)
     yield
 
+
+@pytest.fixture(scope="function", autouse=True)
+async def reset_migrations():
+    """Runs before each test to reset and apply FastAPI migrations."""
+
+    subprocess.run(["alembic", "-c", "alembic.ini", "downgrade", "base"], check=True)
+    subprocess.run(["alembic", "-c", "alembic.ini", "upgrade", "head"], check=True)
+    yield
 
 @pytest.fixture(scope="function")
 async def session():
