@@ -108,7 +108,7 @@ class TestTrip:
     
     @pytest.mark.asyncio
     async def test_update_trip_end_date_less_start_date(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
-        """Test updating trip dates successfully."""
+        """Test updating trip with invalid dates (end_date before start_date)."""
 
         invalid_dates={
                 "start_date": str(create_simple_trip.start_date + timedelta(days=10)),
@@ -120,4 +120,28 @@ class TestTrip:
             json=invalid_dates
         )
         assert response.status_code == 409
+    
+    @pytest.mark.asyncio
+    async def test_update_trip_end_date_in_past(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
+        """Test updating trip with invalid dates (end_date in past)"""
+
+        invalid_dates={
+            "start_date": str(date.today() - timedelta(days=2)),
+            "end_date": str(date.today() - timedelta(days=1)),
+        }
+
+        response = await authenticated_ac.put(
+            f"{self.URL_TRIP}{create_simple_trip.id}",
+            json=invalid_dates
+        )
+        assert response.status_code == 409
        
+    ### DELETE
+    @pytest.mark.asyncio
+    async def test_delete_trip_success(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
+        """Test deleting trip successfully."""
+
+        response = await authenticated_ac.delete(f"{self.URL_TRIP}{create_simple_trip.id}")
+        assert response.status_code == 204
+
+    
