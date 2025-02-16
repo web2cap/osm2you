@@ -34,6 +34,11 @@ class TestTrip:
         assert "location" in data["marker"] and isinstance(
             data["marker"]["location"], list
         )
+    @pytest.mark.asyncio
+    async def test_get_trip_by_auth_user(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
+        """Test retrieving a trip by an authenticated user."""
+        response = await authenticated_ac.get(f"{self.URL_TRIP}{create_simple_trip.id}")
+        assert response.status_code == 200
 
     @pytest.mark.asyncio
     async def test_get_trip_not_found(self, ac: AsyncClient, create_simple_trip: Trip):
