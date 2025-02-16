@@ -1,3 +1,4 @@
+from datetime import timedelta
 import pytest
 from app.models.trip import Trip
 from app.schema.trip import STripCreate
@@ -6,7 +7,8 @@ from httpx import AsyncClient
 
 class TestTrip:
     URL_TRIP = "/v1/trip/"
-
+    
+    ### GET
     @pytest.mark.asyncio
     async def test_get_trip_by_id(self, ac: AsyncClient, create_simple_trip: Trip):
         """Test getting a trip successfully."""
@@ -39,6 +41,7 @@ class TestTrip:
         response = await ac.get(f"{self.URL_TRIP}9999")
         assert response.status_code == 404
 
+    ### POST
     @pytest.mark.asyncio
     async def test_create_trip_success(self, authenticated_ac: AsyncClient, trip_data_marker1_user2: STripCreate):
         """Test creating a trip successfully."""
@@ -69,3 +72,22 @@ class TestTrip:
             }
         )
         assert response.status_code == 409
+
+    ## UPDATE
+    @pytest.mark.asyncio
+    async def test_update_trip_success(self, authenticated_ac: AsyncClient, create_simple_trip: Trip):
+        """Test updating trip dates successfully."""
+
+        new_dates={
+                "start_date": str(create_simple_trip.start_date + timedelta(days=1)),
+                "end_date": str(create_simple_trip.end_date + timedelta(days=10)),
+        }
+
+        response = await authenticated_ac.put(
+            f"{self.URL_TRIP}{create_simple_trip.id}",
+            json=new_dates
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["start_date"] == new_dates["start_date"]
+        assert data["end_date"] == new_dates["end_date"]
