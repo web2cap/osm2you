@@ -4,6 +4,7 @@ import pytest
 
 from app.repository.trip import TripRepository
 from app.schema.trip import STripCreate
+from app.services.trip import TripService
 
 
 @pytest.fixture
@@ -20,3 +21,8 @@ async def trip_data_marker1_user2():
 @pytest.fixture
 async def create_simple_trip(trip_data_marker1_user2):
     return await TripRepository.insert_data(**dict(trip_data_marker1_user2))
+
+
+@pytest.fixture
+def trip_service():
+    return TripService()
