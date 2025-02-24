@@ -58,7 +58,7 @@ class TripService:
         trip = await self._get_trip_instance(trip_id)
 
         await self._except_if_active_user_trip_exists(
-            current_user, trip_data.start_date, trip_data.end_date
+            current_user, trip_data.start_date, trip_data.end_date, trip_id
         )
         self._except_if_user_not_author(trip, current_user)
 
@@ -82,16 +82,18 @@ class TripService:
         return trip
 
     async def _except_if_active_user_trip_exists(
-        self, current_user: User, start_date: date, end_date: date
+        self,
+        current_user: User,
+        start_date: date,
+        end_date: date,
+        current_trip_id: int | None = None,
     ) -> None:
         active_trip = await TripRepository.find_active_trip_by_user(
             current_user.id, start_date, end_date
         )
-        if active_trip:
+        if active_trip and active_trip.id != current_trip_id:
             raise TripConflictException()
 
-    def _except_if_user_not_author(
-        self, trip: STripDetailed | Trip, current_user: User
-    ) -> None:
+    def _except_if_user_not_author(self, trip: STripDetailed | Trip, current_user: User) -> None:
         if trip.user.id != current_user.id:
             raise TripNotAuthorException()
