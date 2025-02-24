@@ -56,9 +56,20 @@ async def prepare_database(request):
 @pytest.fixture(scope="function", autouse=True)
 async def reset_migrations():
     """Runs before each test to reset and apply FastAPI migrations."""
+    with open(os.devnull, "w") as devnull:
+        subprocess.run(
+            ["alembic", "-c", "alembic.ini", "downgrade", "base"],
+            stdout=devnull,
+            stderr=devnull,
+            check=True,
+        )
+        subprocess.run(
+            ["alembic", "-c", "alembic.ini", "upgrade", "head"],
+            stdout=devnull,
+            stderr=devnull,
+            check=True,
+        )
 
-    subprocess.run(["alembic", "-c", "alembic.ini", "downgrade", "base"], check=True)
-    subprocess.run(["alembic", "-c", "alembic.ini", "upgrade", "head"], check=True)
     yield
 
 
