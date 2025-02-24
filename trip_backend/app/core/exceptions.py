@@ -56,7 +56,7 @@ class InvalidStartDateException(AppDefaultHTTPExeption):
 
 
 class TripNotAuthorException(AppDefaultHTTPExeption):
-    status_code = status.HTTP_409_CONFLICT
+    status_code = status.HTTP_403_FORBIDDEN
     detail = "You are not author of this trip"
 
 
