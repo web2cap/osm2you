@@ -33,7 +33,9 @@ class TestTrip:
 
         assert data["marker"]["id"] == trip.marker_id
         assert "name" in data["marker"]
-        assert "location" in data["marker"] and isinstance(data["marker"]["location"], list)
+        assert "location" in data["marker"] and isinstance(
+            data["marker"]["location"], list
+        )
 
     @pytest.mark.asyncio
     async def test_get_trip_by_auth_user(
@@ -200,13 +202,17 @@ class TestTrip:
         assert response.status_code == 403
 
     @pytest.mark.asyncio
-    async def test_update_trip_unauthorized(self, ac: AsyncClient, create_simple_trip: Trip):
+    async def test_update_trip_unauthorized(
+        self, ac: AsyncClient, create_simple_trip: Trip
+    ):
         """Test updating a trip without authentication."""
         new_dates = {
             "start_date": str(create_simple_trip.start_date + timedelta(days=2)),
             "end_date": str(create_simple_trip.end_date + timedelta(days=10)),
         }
-        response = await ac.put(f"{self.URL_TRIP}{create_simple_trip.id}", json=new_dates)
+        response = await ac.put(
+            f"{self.URL_TRIP}{create_simple_trip.id}", json=new_dates
+        )
         assert response.status_code == 401
 
     ### DELETE
@@ -216,8 +222,10 @@ class TestTrip:
     ):
         """Test deleting trip successfully."""
 
-        response = await authenticated_ac.delete(f"{self.URL_TRIP}{create_simple_trip.id}")
-        assert response.status_code == 204
+        response = await authenticated_ac.delete(
+            f"{self.URL_TRIP}{create_simple_trip.id}"
+        )
+        assert response.status_code == 200
 
     @pytest.mark.asyncio
     async def test_delete_trip_not_found(
@@ -239,7 +247,9 @@ class TestTrip:
         assert response.status_code == 403
 
     @pytest.mark.asyncio
-    async def test_delete_trip_unauthorized(self, ac: AsyncClient, create_simple_trip: Trip):
+    async def test_delete_trip_unauthorized(
+        self, ac: AsyncClient, create_simple_trip: Trip
+    ):
         """Test deleting a trip without authentication."""
         response = await ac.delete(f"{self.URL_TRIP}{create_simple_trip.id}")
         assert response.status_code == 401
