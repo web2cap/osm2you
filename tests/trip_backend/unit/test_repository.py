@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
 import pytest
 
@@ -63,3 +63,22 @@ async def test_find_active_trip_by_user_no_overlap(create_simple_trip):
     )
 
     assert trip is None
+
+
+@pytest.mark.asyncio
+async def test_insert_data():
+    """Test inserting a new trip."""
+    trip_data = {
+        "start_date": date.today() + timedelta(days=5),
+        "end_date": date.today() + timedelta(days=10),
+        "description": "Repository test trip",
+        "marker_id": 1,
+        "user_id": 2,
+    }
+
+    trip = await TripRepository.insert_data(**trip_data)
+
+    assert trip is not None
+    assert trip.description == "Repository test trip"
+    assert trip.marker_id == 1
+    assert trip.user_id == 2
