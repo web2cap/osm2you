@@ -101,3 +101,17 @@ async def test_update_data(create_simple_trip):
     assert trip.description == "Updated description"
     assert trip.start_date == update_data["start_date"]
     assert trip.end_date == update_data["end_date"]
+
+
+@pytest.mark.asyncio
+async def test_delete_by_id(create_simple_trip):
+    """Test deleting a trip."""
+    trip_id = create_simple_trip.id
+
+    deleted_trip = await TripRepository.delete_by_id(trip_id)
+
+    assert deleted_trip is not None
+    assert deleted_trip.id == trip_id
+
+    trip = await TripRepository.find_by_id(trip_id)
+    assert trip is None
