@@ -82,3 +82,22 @@ async def test_insert_data():
     assert trip.description == "Repository test trip"
     assert trip.marker_id == 1
     assert trip.user_id == 2
+
+
+@pytest.mark.asyncio
+async def test_update_data(create_simple_trip):
+    """Test updating a trip."""
+    trip_id = create_simple_trip.id
+    update_data = {
+        "description": "Updated description",
+        "start_date": date.today() + timedelta(days=15),
+        "end_date": date.today() + timedelta(days=20),
+    }
+
+    trip = await TripRepository.update_data(trip_id, **update_data)
+
+    assert trip is not None
+    assert trip.id == trip_id
+    assert trip.description == "Updated description"
+    assert trip.start_date == update_data["start_date"]
+    assert trip.end_date == update_data["end_date"]
