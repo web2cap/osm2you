@@ -5,9 +5,10 @@ import pytest
 from app.core.exceptions import (
     MarkerNotFoundException,
     TripConflictException,
+    TripNotAuthorException,
     TripNotFoundException,
 )
-from app.schema.trip import STripCreate
+from app.schema.trip import STripCreate, STripValidateDates
 
 
 @pytest.mark.asyncio
@@ -74,3 +75,44 @@ async def test_add_trip_conflict(trip_service, current_user, create_simple_trip)
 
     with pytest.raises(TripConflictException):
         await trip_service.add_trip(trip_data, current_user)
+
+
+@pytest.mark.asyncio
+async def test_update_trip_dates(trip_service, current_user, create_simple_trip):
+    """Test updating trip dates."""
+    trip_id = create_simple_trip.id
+    new_dates = STripValidateDates(
+        start_date=date.today() + timedelta(days=15),
+        end_date=date.today() + timedelta(days=20),
+    )
+
+    result = await trip_service.update_trip_dates(trip_id, new_dates, current_user)
+
+    assert result.id == trip_id
+    assert result.start_date == new_dates.start_date
+    assert result.end_date == new_dates.end_date
+
+
+@pytest.mark.asyncio
+async def test_update_trip_not_found(trip_service, current_user):
+    """Test updating a non-existent trip."""
+    new_dates = STripValidateDates(
+        start_date=date.today() + timedelta(days=15),
+        end_date=date.today() + timedelta(days=20),
+    )
+
+    with pytest.raises(TripNotFoundException):
+        await trip_service.update_trip_dates(9999, new_dates, current_user)
+
+
+@pytest.mark.asyncio
+async def test_update_trip_not_owner(trip_service, non_owner_user, create_simple_trip):
+    """Test updating a trip by a non-owner."""
+    trip_id = create_simple_trip.id
+    new_dates = STripValidateDates(
+        start_date=date.today() + timedelta(days=15),
+        end_date=date.today() + timedelta(days=20),
+    )
+
+    with pytest.raises(TripNotAuthorException):
+        await trip_service.update_trip_dates(trip_id, new_dates, non_owner_user)
