@@ -116,3 +116,25 @@ async def test_update_trip_not_owner(trip_service, non_owner_user, create_simple
 
     with pytest.raises(TripNotAuthorException):
         await trip_service.update_trip_dates(trip_id, new_dates, non_owner_user)
+
+
+@pytest.mark.asyncio
+async def test_delete_trip(trip_service, current_user, create_simple_trip):
+    """Test deleting a trip."""
+    trip_id = create_simple_trip.id
+
+    result = await trip_service.delete_trip(trip_id, current_user)
+
+    assert result.id == trip_id
+
+    with pytest.raises(TripNotFoundException):
+        await trip_service.get_trip_with_details(trip_id)
+
+
+@pytest.mark.asyncio
+async def test_delete_trip_not_owner(trip_service, non_owner_user, create_simple_trip):
+    """Test deleting a trip by a non-owner."""
+    trip_id = create_simple_trip.id
+
+    with pytest.raises(TripNotAuthorException):
+        await trip_service.delete_trip(trip_id, non_owner_user)
