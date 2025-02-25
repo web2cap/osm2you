@@ -16,6 +16,7 @@ pytest_plugins = [
     "fixtures.fixture_database",
     "fixtures.fixture_client",
     "fixtures.fixture_trip",
+    "fixtures.fixture_user",
 ]
 
 if PROJECT_DIR_NAME not in os.listdir(BASE_DIR) or not os.path.isdir(
@@ -37,7 +38,9 @@ try:
     if result.returncode != 0:
         print(result.stdout)
         print(result.stderr)
-        raise AssertionError("Ruff formatting check failed. Fix the issues and try again.")
+        raise AssertionError(
+            "Ruff formatting check failed. Fix the issues and try again."
+        )
 except FileNotFoundError as exc:
     raise AssertionError("Ruff is not installed.") from exc
 
