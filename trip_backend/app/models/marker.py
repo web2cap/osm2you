@@ -11,7 +11,6 @@ class Marker(Base):
     """Mapping to the existing Django marker table."""
 
     __tablename__ = "core_marker"
-    __table_args__ = {"schema": "public"}
 
     id = Column(Integer, primary_key=True)
     name = Column(String)

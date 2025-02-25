@@ -10,7 +10,6 @@ class User(Base):
     """Mapping to the existing Django user table."""
 
     __tablename__ = "core_user"
-    __table_args__ = {"schema": "public"}
 
     id = Column(Integer, primary_key=True)
     username = Column(String)

@@ -1,17 +1,18 @@
-"""trip  migration
+"""Trip initial
 
-Revision ID: fa70159717cb
+Revision ID: d1476f2b4481
 Revises: 
-Create Date: 2025-02-16 15:08:57.216118
+Create Date: 2025-02-25 22:00:19.679616
 
 """
 from typing import Sequence, Union
 
-import sqlalchemy as sa
 from alembic import op
+import sqlalchemy as sa
+
 
 # revision identifiers, used by Alembic.
-revision: str = 'fa70159717cb'
+revision: str = 'd1476f2b4481'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -27,8 +28,8 @@ def upgrade() -> None:
     sa.Column('start_date', sa.Date(), nullable=False),
     sa.Column('end_date', sa.Date(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
-    sa.ForeignKeyConstraint(['marker_id'], ['public.core_marker.id'], ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['user_id'], ['public.core_user.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['marker_id'], ['core_marker.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['user_id'], ['core_user.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_trip_trips_id'), 'trip_trips', ['id'], unique=False)
