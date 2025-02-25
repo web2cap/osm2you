@@ -44,6 +44,7 @@ tests/
     ├── conftest.py
     ├── fixtures/ (Test fixtures)
     ├── integration (Integration tests)
+    ├── unit (Unit tests)
 ```
 
 ---
