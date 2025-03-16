@@ -40,12 +40,12 @@ class TestPermissions:
         """Test that user and anonim user hasn't permission if DenyAll."""
 
         deny_all_permission = DenyAll()
-        assert not deny_all_permission.has_permission(
-            anonim_request, simple_view
-        ), "Anonim has permission when DenyAll class"
-        assert not deny_all_permission.has_permission(
-            user_request, simple_view
-        ), "User has permission when DenyAll class"
+        assert not deny_all_permission.has_permission(anonim_request, simple_view), (
+            "Anonim has permission when DenyAll class"
+        )
+        assert not deny_all_permission.has_permission(user_request, simple_view), (
+            "User has permission when DenyAll class"
+        )
 
     # CurrentUserGetPut
     @pytest.mark.parametrize(
@@ -243,7 +243,9 @@ class TestPermissions:
                 obj_instance=simple_marker,
             )
             == expected_result
-        ), f"Regular user has wrong permission to {request_method} in AuthorAdminOrReadOnly."
+        ), (
+            f"Regular user has wrong permission to {request_method} in AuthorAdminOrReadOnly."
+        )
 
     @pytest.mark.parametrize(
         "request_method, expected_result",
@@ -318,7 +320,9 @@ class TestPermissions:
                 obj_instance=simple_marker,
             )
             == expected_result
-        ), f"Admin has wrong permission to {request_method} {view_action} in AuthorAdminOrReadOnly."
+        ), (
+            f"Admin has wrong permission to {request_method} {view_action} in AuthorAdminOrReadOnly."
+        )
 
     @pytest.mark.parametrize(
         "request_method, view_action, expected_result",
@@ -356,7 +360,9 @@ class TestPermissions:
                 obj_instance=simple_marker,
             )
             == expected_result
-        ), f"Owner has wrong permission to {request_method} {view_action} in AuthorAdminOrReadOnly."
+        ), (
+            f"Owner has wrong permission to {request_method} {view_action} in AuthorAdminOrReadOnly."
+        )
 
     @pytest.mark.parametrize(
         "request_method, view_action, expected_result",
@@ -394,7 +400,9 @@ class TestPermissions:
                 obj_instance=simple_marker,
             )
             == expected_result
-        ), f"User has wrong permission to {request_method} {view_action} in AuthorAdminOrReadOnly."
+        ), (
+            f"User has wrong permission to {request_method} {view_action} in AuthorAdminOrReadOnly."
+        )
 
     @pytest.mark.parametrize(
         "request_method, view_action, expected_result",
@@ -432,4 +440,6 @@ class TestPermissions:
                 obj_instance=simple_marker,
             )
             == expected_result
-        ), f"Anonim has wrong permission to {request_method} {view_action} in AuthorAdminOrReadOnly."
+        ), (
+            f"Anonim has wrong permission to {request_method} {view_action} in AuthorAdminOrReadOnly."
+        )

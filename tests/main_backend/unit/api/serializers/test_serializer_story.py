@@ -41,9 +41,9 @@ class TestStorySerializer(AbstractTestSerializer):
 
         simple_story_json["text"] = simple_story_json["text"][:8]
         serializer = self.serializer_class(data=simple_story_json)
-        assert (
-            not serializer.is_valid()
-        ), "Serializer must rise the error if text len is less 10"
+        assert not serializer.is_valid(), (
+            "Serializer must rise the error if text len is less 10"
+        )
 
 
 class TestStorySerializerText(AbstractTestSerializer):
@@ -68,9 +68,9 @@ class TestStorySerializerText(AbstractTestSerializer):
 
         simple_story_json["text"] = simple_story_json["text"][:8]
         serializer = self.serializer_class(data=simple_story_json)
-        assert (
-            not serializer.is_valid()
-        ), "Serializer must rise the error if text len is less 10"
+        assert not serializer.is_valid(), (
+            "Serializer must rise the error if text len is less 10"
+        )
 
 
 class TestStorySerializerDisplay(AbstractTestSerializer):
@@ -103,19 +103,19 @@ class TestStorySerializerDisplay(AbstractTestSerializer):
 
         author_fields_must_present = ["id", "first_name", "username"]
         for must_present in author_fields_must_present:
-            assert (
-                must_present in serializer.data["author"]
-            ), f"Field {must_present} should be present in valid author data."
+            assert must_present in serializer.data["author"], (
+                f"Field {must_present} should be present in valid author data."
+            )
 
     @pytest.mark.django_db
     def test_serializer_data_equal(self, simple_instance, user_owner_instance):
         serializer = self.serializer_class(instance=simple_instance)
-        assert (
-            serializer.data["author"]["id"] == user_owner_instance.id
-        ), "Author id in serialized data does not match the expected value."
+        assert serializer.data["author"]["id"] == user_owner_instance.id, (
+            "Author id in serialized data does not match the expected value."
+        )
         assert (
             serializer.data["author"]["first_name"] == user_owner_instance.first_name
         ), "Author first_name in serialized data does not match the expected value."
-        assert (
-            serializer.data["author"]["username"] == user_owner_instance.username
-        ), "Author username in serialized data does not match the expected value."
+        assert serializer.data["author"]["username"] == user_owner_instance.username, (
+            "Author username in serialized data does not match the expected value."
+        )

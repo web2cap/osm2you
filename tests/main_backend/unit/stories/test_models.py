@@ -9,15 +9,15 @@ class TestStoriesModels:
         """Test for creating story."""
 
         story = Story.objects.create(**story_with_marker_data)
-        assert (
-            story.text == story_with_marker_data["text"]
-        ), "Created story has wrong text"
-        assert (
-            story.author == story_with_marker_data["author"]
-        ), "Created story has wrong author"
-        assert (
-            story.marker == story_with_marker_data["marker"]
-        ), "Created story has wrong marker"
+        assert story.text == story_with_marker_data["text"], (
+            "Created story has wrong text"
+        )
+        assert story.author == story_with_marker_data["author"], (
+            "Created story has wrong author"
+        )
+        assert story.marker == story_with_marker_data["marker"], (
+            "Created story has wrong marker"
+        )
 
     @pytest.mark.django_db
     def test_create_marker_no_text(self, story_with_marker_data):

@@ -33,9 +33,9 @@ class TestMarker:
             "type" in response_simple_marker
             and response_simple_marker["type"] == "Feature"
         ), "Wrong type in marker list response"
-        assert (
-            "geometry" in response_simple_marker
-        ), "No geometry in marker list response"
+        assert "geometry" in response_simple_marker, (
+            "No geometry in marker list response"
+        )
         assert (
             "type" in response_simple_marker["geometry"]
             and response_simple_marker["geometry"]["type"] == "Point"
@@ -46,9 +46,9 @@ class TestMarker:
             marker.location.x,
             marker.location.y,
         ], "Wrong geometry coordinates in marker list response"
-        assert (
-            "properties" in response_simple_marker
-        ), "No properties in marker list response"
+        assert "properties" in response_simple_marker, (
+            "No properties in marker list response"
+        )
         assert (
             "name" in response_simple_marker["properties"]
             and response_simple_marker["properties"]["name"] == marker.name
@@ -128,15 +128,15 @@ class TestMarker:
         ), "Wrong name in marker response"
         assert "add_date" in response.data["properties"] and response.data[
             "properties"
-        ]["add_date"] == marker.add_date.strftime(
-            "%Y-%m-%dT%H:%M:%S.%f"
-        ), "Wrong add_date in marker response"
+        ]["add_date"] == marker.add_date.strftime("%Y-%m-%dT%H:%M:%S.%f"), (
+            "Wrong add_date in marker response"
+        )
 
         # Storise in marker
         assert "stories" in response.data["properties"], "No stories in marker response"
-        assert (
-            len(response.data["properties"]["stories"]) == 2
-        ), "Stories in marker response must include 2 story"
+        assert len(response.data["properties"]["stories"]) == 2, (
+            "Stories in marker response must include 2 story"
+        )
         response_owner_story = next(
             (
                 story
@@ -148,12 +148,12 @@ class TestMarker:
             None,
         )
         assert response_owner_story, "No expected story in response."
-        assert (
-            "id" in response_owner_story and response_owner_story["id"]
-        ), "Wrong story id field"
-        assert (
-            "text" in response_owner_story and simple_story_data["text"]
-        ), "Wrong story text field"
+        assert "id" in response_owner_story and response_owner_story["id"], (
+            "Wrong story id field"
+        )
+        assert "text" in response_owner_story and simple_story_data["text"], (
+            "Wrong story text field"
+        )
         assert (
             "first_name" in response_owner_story["author"]
             and response_owner_story["author"]["first_name"]
@@ -231,9 +231,9 @@ class TestMarker:
             ),
             None,
         )
-        assert (
-            response_other_user_story
-        ), "No orher user story in marker instance response"
+        assert response_other_user_story, (
+            "No orher user story in marker instance response"
+        )
         assert (
             "is_yours" in response_owner_story
             and response_other_user_story["is_yours"] is False
@@ -252,19 +252,19 @@ class TestMarker:
         check_response(response_marker, 200, required_fields)
         response_json = response_marker.json()
 
-        assert (
-            "tags" in response_json["properties"]
-        ), "Field tags should be present in valid response."
+        assert "tags" in response_json["properties"], (
+            "Field tags should be present in valid response."
+        )
 
-        assert len(
-            response_json["properties"]["tags"]
-        ), "Field tags  should content elemet."
+        assert len(response_json["properties"]["tags"]), (
+            "Field tags  should content elemet."
+        )
 
         isinstance_tag_value = marker_with_tag.tag_value.first()
 
-        assert (
-            isinstance_tag_value.tag.name in response_json["properties"]["tags"]
-        ), "Field with tag name should be present in valid response."
+        assert isinstance_tag_value.tag.name in response_json["properties"]["tags"], (
+            "Field with tag name should be present in valid response."
+        )
 
         assert (
             response_json["properties"]["tags"][isinstance_tag_value.tag.name]
@@ -356,9 +356,9 @@ class TestMarker:
             and response.data["geometry"]["coordinates"]
             == simple_marker_json["location"]["coordinates"]
         ), "Geometry location in response doest't match jsons coordinates"
-        assert (
-            "stories" not in response.data
-        ), "Response shusn't include stories for new marker"
+        assert "stories" not in response.data, (
+            "Response shusn't include stories for new marker"
+        )
 
     # PATCH
     @pytest.mark.django_db()
@@ -518,9 +518,9 @@ class TestMarker:
         required_fields = ["type", "features"]
         check_response(response, 200, required_fields)
 
-        assert (
-            len(response.data["features"]) == markers_count
-        ), f"Response must has {markers_count} markers"
+        assert len(response.data["features"]) == markers_count, (
+            f"Response must has {markers_count} markers"
+        )
 
         response_simple_marker = next(
             (
@@ -536,9 +536,9 @@ class TestMarker:
             "type" in response_simple_marker
             and response_simple_marker["type"] == "Feature"
         ), "Wrong type in marker list response"
-        assert (
-            "geometry" in response_simple_marker
-        ), "No geometry in marker list response"
+        assert "geometry" in response_simple_marker, (
+            "No geometry in marker list response"
+        )
         assert (
             "type" in response_simple_marker["geometry"]
             and response_simple_marker["geometry"]["type"] == "Point"
@@ -549,9 +549,9 @@ class TestMarker:
             marker.location.x,
             marker.location.y,
         ], "Wrong geometry coordinates in marker list response"
-        assert (
-            "properties" in response_simple_marker
-        ), "No properties in marker list response"
+        assert "properties" in response_simple_marker, (
+            "No properties in marker list response"
+        )
         assert (
             "name" in response_simple_marker["properties"]
             and response_simple_marker["properties"]["name"] == marker.name
@@ -572,15 +572,15 @@ class TestMarker:
             marker_with_author_story.author.username,
             markers_count=1,
         )
-        assert (
-            "stories" in response_simple_marker["properties"]
-        ), "No stories field in response"
-        assert len(
-            response_simple_marker["properties"]["stories"]
-        ), "No  one story in response"
-        assert (
-            "text" in response_simple_marker["properties"]["stories"][0]
-        ), "No text field of story in response"
+        assert "stories" in response_simple_marker["properties"], (
+            "No stories field in response"
+        )
+        assert len(response_simple_marker["properties"]["stories"]), (
+            "No  one story in response"
+        )
+        assert "text" in response_simple_marker["properties"]["stories"][0], (
+            "No text field of story in response"
+        )
         assert (
             response_simple_marker["properties"]["stories"][0]["text"]
             == marker_with_author_story.stories.first().text
@@ -599,15 +599,15 @@ class TestMarker:
             marker_with_author_story.author.username,
             markers_count=1,
         )
-        assert (
-            "stories" in response_simple_marker["properties"]
-        ), "No stories field in response"
-        assert len(
-            response_simple_marker["properties"]["stories"]
-        ), "No  one story in response"
-        assert (
-            "text" in response_simple_marker["properties"]["stories"][0]
-        ), "No text field of story in response"
+        assert "stories" in response_simple_marker["properties"], (
+            "No stories field in response"
+        )
+        assert len(response_simple_marker["properties"]["stories"]), (
+            "No  one story in response"
+        )
+        assert "text" in response_simple_marker["properties"]["stories"][0], (
+            "No text field of story in response"
+        )
         assert (
             response_simple_marker["properties"]["stories"][0]["text"]
             == marker_with_author_story.stories.first().text
@@ -639,12 +639,12 @@ class TestMarker:
             markers_count=2,
         )
 
-        assert (
-            "stories" in response_different_author["properties"]
-        ), "No stories field in response"
-        assert (
-            len(response_different_author["properties"]["stories"]) == 1
-        ), "Expected 1 story in this marker response"
+        assert "stories" in response_different_author["properties"], (
+            "No stories field in response"
+        )
+        assert len(response_different_author["properties"]["stories"]) == 1, (
+            "Expected 1 story in this marker response"
+        )
         assert (
             "text" in response_different_author["properties"]["stories"][0]
             and response_different_author["properties"]["stories"][0]["text"]

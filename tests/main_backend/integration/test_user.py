@@ -96,9 +96,9 @@ class TestUser:
         ]
         check_response(response, 200, required_fields)
         for field in response.data.keys():
-            assert (
-                response.data[field] == getattr(user_instance, field)
-            ), f"The response data[{field}] doesn't match the client user data `{field}`."
+            assert response.data[field] == getattr(user_instance, field), (
+                f"The response data[{field}] doesn't match the client user data `{field}`."
+            )
 
     # ME PUT
     @pytest.mark.django_db()
@@ -144,9 +144,9 @@ class TestUser:
         ]
         check_response(response, 200, required_fields)
         for field in response.data.keys():
-            assert (
-                response.data[field] == full_update_user_data[field]
-            ), f"The response data[{field}] doesn't match the client user data `{field}`."
+            assert response.data[field] == full_update_user_data[field], (
+                f"The response data[{field}] doesn't match the client user data `{field}`."
+            )
 
     # Disabled methods
     @pytest.mark.django_db()

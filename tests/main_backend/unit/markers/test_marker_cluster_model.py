@@ -9,9 +9,9 @@ class TestMarkerClusterModels:
         """Test for creating marker cluster."""
 
         marker_cluster = MarkerCluster.objects.create(**simple_marker_cluster_data)
-        assert (
-            marker_cluster.location == simple_marker_cluster_data["location"]
-        ), "Created cluster has wrong location"
+        assert marker_cluster.location == simple_marker_cluster_data["location"], (
+            "Created cluster has wrong location"
+        )
         assert (
             marker_cluster.square_size == simple_marker_cluster_data["square_size"]
         ), "Created cluster has wrong zoom"

@@ -54,7 +54,7 @@ class OverpassService:
         return self._overpass_by_query(full_query)
 
     def overpass_batch_related_nodes(
-        self, related_markers, radius=MARKERS_RELATED_IN_RADIUS
+        self, related_markers, pack_index, radius=MARKERS_RELATED_IN_RADIUS
     ):
         tags_list = self._get_related_tags_list()
         subqueries = []
@@ -71,20 +71,23 @@ class OverpassService:
         full_query = OVERPASS["related_batch"]["wrap"].format(
             subqueries="".join(subqueries)
         )
-        return self._overpass_by_query(full_query)
+        server_number = pack_index % len(OVERPASS["urls"])
+        return self._overpass_by_query(full_query, server_number)
 
-    def _overpass_by_query(self, overpass_query):
+    def _overpass_by_query(self, overpass_query, server_number=0):
         try:
-            response = requests.get(OVERPASS["url"], params={"data": overpass_query})
+            response = requests.get(
+                OVERPASS["urls"][server_number], params={"data": overpass_query}
+            )
             if response.status_code == 200:
                 return response.text
             else:
                 logger.error(
-                    f"Overpass API response status code: {response.status_code} with query:\n{overpass_query}"
+                    f"Overpass API {response.url} response status code: {response.status_code} with query:\n{overpass_query}"
                 )
                 raise f"Fail with response status code: {response.status_code}"
-        except Exception as e:
-            logger.error(f"Overpass API error: {e}")
+        except Exception:
+            pass
 
     def _get_related_tags_list(self):
         if self.related_tags_list:

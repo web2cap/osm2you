@@ -23,12 +23,12 @@ class TestStory:
 
         check_response(response, 200, required_fields)
 
-        assert (
-            response.data["id"] == story.id
-        ), "Wrong story id in story instance respone"
-        assert (
-            response.data["text"] == story.text
-        ), "Wrong story text in story instance respone"
+        assert response.data["id"] == story.id, (
+            "Wrong story id in story instance respone"
+        )
+        assert response.data["text"] == story.text, (
+            "Wrong story text in story instance respone"
+        )
 
         assert (
             "first_name" in response.data["author"]
@@ -52,9 +52,9 @@ class TestStory:
 
         response_story = self.check_story_instance(client, simple_story)
 
-        assert (
-            "is_yours" in response_story and response_story["is_yours"] is False
-        ), "is_yours can't be true in unauthorized story instance response"
+        assert "is_yours" in response_story and response_story["is_yours"] is False, (
+            "is_yours can't be true in unauthorized story instance response"
+        )
 
     @pytest.mark.django_db()
     def test_story_instance_authorized_owner(
@@ -67,9 +67,9 @@ class TestStory:
 
         response_story = self.check_story_instance(user_owner_client, simple_story)
 
-        assert (
-            "is_yours" in response_story and response_story["is_yours"] is True
-        ), "is_yours must be true in owner story instance response"
+        assert "is_yours" in response_story and response_story["is_yours"] is True, (
+            "is_yours must be true in owner story instance response"
+        )
 
     @pytest.mark.django_db()
     def test_story_instance_authorized_other_user(
@@ -82,9 +82,9 @@ class TestStory:
 
         response_story = self.check_story_instance(user_client, simple_story)
 
-        assert (
-            "is_yours" in response_story and response_story["is_yours"] is False
-        ), "is_yours must be false in other user story instance response"
+        assert "is_yours" in response_story and response_story["is_yours"] is False, (
+            "is_yours must be false in other user story instance response"
+        )
 
     # CREATE
     @pytest.mark.django_db()
@@ -114,13 +114,13 @@ class TestStory:
 
         required_fields = ["id", "text", "author", "marker"]
         check_response(response, 201, required_fields)
-        assert (
-            response.data["text"] == simple_story_json["text"]
-        ), "Text in response data doesn't match json text"
+        assert response.data["text"] == simple_story_json["text"], (
+            "Text in response data doesn't match json text"
+        )
 
-        assert (
-            response.data["author"] == user_owner_instance.id
-        ), "Wrong author id in story instance response"
+        assert response.data["author"] == user_owner_instance.id, (
+            "Wrong author id in story instance response"
+        )
 
     @pytest.mark.django_db()
     def test_story_create_short_text(

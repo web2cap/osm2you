@@ -53,10 +53,9 @@ class MarkerClusterService:
         Calculate averege position of markers for every sqare like a marker cluster position.
         """
         sql_query = f"""
-            SELECT ST_Centroid(ST_Collect(location)) as squared_location, COUNT(m.id) as marker_count
-            FROM core_marker as m
-            LEFT JOIN core_markerkind tm ON tm.marker_id = m.id 
-            LEFT JOIN core_kind tk on tk.id = tm.kind_id  
+        SELECT ST_Centroid(ST_Collect(location)) as squared_location, COUNT(m.id) as marker_count
+            FROM core_marker as m 
+            LEFT JOIN core_kind tk on tk.id = m.kind_id 
             WHERE tk.kind_class  = '{Kind.KIND_CLASS_MAIN}'
             GROUP BY ST_SnapToGrid(location, {square_size});
         """

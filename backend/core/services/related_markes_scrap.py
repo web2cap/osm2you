@@ -75,7 +75,7 @@ class RelatedMarkerScrapService:
         ]
         if max_pack_index:
             return max_pack_index + 1
-        return 0
+        return 1
 
     @staticmethod
     def set_pack_index(markers, pack_index):

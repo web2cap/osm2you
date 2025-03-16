@@ -11,9 +11,9 @@ class TestStoryViewset:
         """Test are story, marker, author in story queryset."""
         queryset = story_viewset.get_queryset()
         assert simple_story in queryset, "No story in story queryset"
-        assert (
-            queryset.first().author == user_owner_instance
-        ), "No story author in story queryset"
-        assert (
-            queryset.first().marker == simple_marker
-        ), "No story marker in story queryset"
+        assert queryset.first().author == user_owner_instance, (
+            "No story author in story queryset"
+        )
+        assert queryset.first().marker == simple_marker, (
+            "No story marker in story queryset"
+        )

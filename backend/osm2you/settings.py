@@ -208,7 +208,13 @@ LOGGING = {
 MARKERS_RELATED_IN_RADIUS = 5000
 
 OVERPASS = {
-    "url": "https://overpass-api.de/api/interpreter",
+    "urls": (
+        "https://overpass.kumi.systems/api/interpreter",
+        "https://overpass.private.coffee/api/interpreter",
+        "https://overpass-api.de/api/interpreter",
+        "https://overpass.kumi.systems/api/interpreter",
+        "https://overpass.private.coffee/api/interpreter",
+    ),
     "main": {
         "wrap": """({subqueries});out;""",
         "subquery": """node["{tag_name}"="{tag_value}"]({south},{west},{north},{east});""",

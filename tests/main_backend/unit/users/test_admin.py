@@ -8,18 +8,18 @@ User = get_user_model()
 
 class TestCustomUserAdmin:
     def test_user_registration_in_admin(self):
-        assert (
-            User in admin.site._registry
-        ), "User model should be registered in admin site"
+        assert User in admin.site._registry, (
+            "User model should be registered in admin site"
+        )
         admin_class = admin.site._registry[User]
-        assert isinstance(
-            admin_class, CustomUserAdmin
-        ), "User model should be registered with CustomUserAdmin"
+        assert isinstance(admin_class, CustomUserAdmin), (
+            "User model should be registered with CustomUserAdmin"
+        )
 
     def test_custom_user_admin_inherits_from_user_admin(self):
-        assert issubclass(
-            CustomUserAdmin, UserAdmin
-        ), "CustomUserAdmin should inherit from UserAdmin"
+        assert issubclass(CustomUserAdmin, UserAdmin), (
+            "CustomUserAdmin should inherit from UserAdmin"
+        )
 
     def test_custom_user_admin_attributes(self):
         custom_admin = CustomUserAdmin(User, admin.site)

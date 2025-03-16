@@ -38,9 +38,9 @@ if FILENAME not in project_dir_content:
 assert get_version() > "4.2.0", "Please use the Django version older then 4.2.0"
 
 lintformat = subprocess.run(["pre-commit", "run", "--all-files"], check=False)
-assert (
-    lintformat.returncode == 0
-), f"Linting and formating checks failed with exit code {lintformat.returncode}"
+assert lintformat.returncode == 0, (
+    f"Linting and formating checks failed with exit code {lintformat.returncode}"
+)
 
 
 pytest_plugins = [

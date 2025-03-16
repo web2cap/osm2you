@@ -30,12 +30,12 @@ class TestMarkerSerializer(AbstractTestMarkerSerializer):
 
         serializer = self.serializer_class(instance=simple_instance)
 
-        assert (
-            "is_yours" in serializer.data["properties"]
-        ), "Field properties.is_yours should be present in valid data."
-        assert (
-            serializer.data["properties"]["is_yours"] is False
-        ), "Field properties.is_yours should be equal False."
+        assert "is_yours" in serializer.data["properties"], (
+            "Field properties.is_yours should be present in valid data."
+        )
+        assert serializer.data["properties"]["is_yours"] is False, (
+            "Field properties.is_yours should be equal False."
+        )
 
 
 class TestMarkerInstanceSerializer(TestMarkerSerializer):
@@ -51,37 +51,37 @@ class TestMarkerInstanceSerializer(TestMarkerSerializer):
 
         serializer = self.serializer_class(instance=simple_instance)
 
-        assert (
-            "stories" in serializer.data["properties"]
-        ), "Field properties.stories should be present in valid data."
+        assert "stories" in serializer.data["properties"], (
+            "Field properties.stories should be present in valid data."
+        )
 
-        assert len(
-            serializer.data["properties"]["stories"]
-        ), "properties.stories.id should content elemet."
+        assert len(serializer.data["properties"]["stories"]), (
+            "properties.stories.id should content elemet."
+        )
 
         serializer_story = serializer.data["properties"]["stories"][0]
         isinstance_story = simple_instance.stories.first()
 
-        assert (
-            "id" in serializer_story
-        ), "Field properties.stories.id should be present in valid data."
-        assert (
-            serializer_story["id"] == isinstance_story.id
-        ), "Field properties.stories.id should be equal instance stories.id."
+        assert "id" in serializer_story, (
+            "Field properties.stories.id should be present in valid data."
+        )
+        assert serializer_story["id"] == isinstance_story.id, (
+            "Field properties.stories.id should be equal instance stories.id."
+        )
 
-        assert (
-            "text" in serializer_story
-        ), "Field properties.stories.text should be present in valid data."
-        assert (
-            serializer_story["text"] == isinstance_story.text
-        ), "Field properties.stories.text should be equal instance stories.text."
+        assert "text" in serializer_story, (
+            "Field properties.stories.text should be present in valid data."
+        )
+        assert serializer_story["text"] == isinstance_story.text, (
+            "Field properties.stories.text should be equal instance stories.text."
+        )
 
-        assert (
-            "is_yours" in serializer_story
-        ), "Field properties.stories.is_yours should be present in valid data."
-        assert (
-            serializer_story["is_yours"] is False
-        ), "Field properties.stories.is_yours should be equal False."
+        assert "is_yours" in serializer_story, (
+            "Field properties.stories.is_yours should be present in valid data."
+        )
+        assert serializer_story["is_yours"] is False, (
+            "Field properties.stories.is_yours should be equal False."
+        )
 
     @pytest.mark.django_db
     def test_serializer_data_properties_stories_author(self, simple_instance):
@@ -89,33 +89,37 @@ class TestMarkerInstanceSerializer(TestMarkerSerializer):
 
         serializer = self.serializer_class(instance=simple_instance)
 
-        assert (
-            "author" in serializer.data["properties"]["stories"][0]
-        ), "Field properties.stories.author should be present in valid data."
+        assert "author" in serializer.data["properties"]["stories"][0], (
+            "Field properties.stories.author should be present in valid data."
+        )
 
         serializer_story_author = serializer.data["properties"]["stories"][0]["author"]
         isinstance_story_author = simple_instance.stories.first().author
 
-        assert (
-            "id" in serializer_story_author
-        ), "Field properties.stories.author.id should be present in valid data."
-        assert (
-            serializer_story_author["id"] == isinstance_story_author.id
-        ), "Field properties.stories.author.id should be equal instance stories.author.id."
+        assert "id" in serializer_story_author, (
+            "Field properties.stories.author.id should be present in valid data."
+        )
+        assert serializer_story_author["id"] == isinstance_story_author.id, (
+            "Field properties.stories.author.id should be equal instance stories.author.id."
+        )
 
-        assert (
-            "first_name" in serializer_story_author
-        ), "Field properties.stories.author.first_name should be present in valid data."
+        assert "first_name" in serializer_story_author, (
+            "Field properties.stories.author.first_name should be present in valid data."
+        )
         assert (
             serializer_story_author["first_name"] == isinstance_story_author.first_name
-        ), "Field properties.stories.author.first_name should be equal instance stories.author.first_name."
+        ), (
+            "Field properties.stories.author.first_name should be equal instance stories.author.first_name."
+        )
 
-        assert (
-            "username" in serializer_story_author
-        ), "Field properties.stories.author.username should be present in valid data."
+        assert "username" in serializer_story_author, (
+            "Field properties.stories.author.username should be present in valid data."
+        )
         assert (
             serializer_story_author["username"] == isinstance_story_author.username
-        ), "Field properties.stories.author.username should be equal instance stories.author.username."
+        ), (
+            "Field properties.stories.author.username should be equal instance stories.author.username."
+        )
 
     @pytest.mark.django_db
     def test_serializer_data_properties_tags(self, marker_with_tag):
@@ -123,19 +127,19 @@ class TestMarkerInstanceSerializer(TestMarkerSerializer):
 
         serializer = self.serializer_class(instance=marker_with_tag)
 
-        assert (
-            "tags" in serializer.data["properties"]
-        ), "Field properties.tags should be present in valid data."
+        assert "tags" in serializer.data["properties"], (
+            "Field properties.tags should be present in valid data."
+        )
 
-        assert len(
-            serializer.data["properties"]["tags"]
-        ), "properties.tags should content elemet."
+        assert len(serializer.data["properties"]["tags"]), (
+            "properties.tags should content elemet."
+        )
 
         isinstance_tag_value = marker_with_tag.tag_value.first()
 
-        assert (
-            isinstance_tag_value.tag.name in serializer.data["properties"]["tags"]
-        ), "Key properties.tags should be present in valid data."
+        assert isinstance_tag_value.tag.name in serializer.data["properties"]["tags"], (
+            "Key properties.tags should be present in valid data."
+        )
         assert (
             serializer.data["properties"]["tags"][isinstance_tag_value.tag.name]
             == isinstance_tag_value.value
@@ -147,14 +151,14 @@ class TestMarkerInstanceSerializer(TestMarkerSerializer):
 
         serializer = self.serializer_class(instance=simple_instance)
 
-        assert (
-            "add_date" in serializer.data["properties"]
-        ), "Field properties.add_date should be present in valid data."
+        assert "add_date" in serializer.data["properties"], (
+            "Field properties.add_date should be present in valid data."
+        )
         assert serializer.data["properties"][
             "add_date"
-        ] == simple_instance.add_date.strftime(
-            "%Y-%m-%dT%H:%M:%S.%f"
-        ), "Wrong add_date in marker serialized data"
+        ] == simple_instance.add_date.strftime("%Y-%m-%dT%H:%M:%S.%f"), (
+            "Wrong add_date in marker serialized data"
+        )
 
 
 class TestMarkerUserSerializer(AbstractTestMarkerSerializer):
@@ -170,17 +174,17 @@ class TestMarkerUserSerializer(AbstractTestMarkerSerializer):
 
         serializer = self.serializer_class(instance=simple_instance)
 
-        assert (
-            "stories" in serializer.data["properties"]
-        ), "Field properties.stories should be present in valid data."
+        assert "stories" in serializer.data["properties"], (
+            "Field properties.stories should be present in valid data."
+        )
 
-        assert len(
-            serializer.data["properties"]["stories"]
-        ), "properties.stories.id should content elemet."
+        assert len(serializer.data["properties"]["stories"]), (
+            "properties.stories.id should content elemet."
+        )
 
-        assert (
-            "text" in serializer.data["properties"]["stories"][0]
-        ), "Field properties.stories.text should be present in valid data."
+        assert "text" in serializer.data["properties"]["stories"][0], (
+            "Field properties.stories.text should be present in valid data."
+        )
         assert (
             serializer.data["properties"]["stories"][0]["text"]
             == simple_instance.stories.first().text
