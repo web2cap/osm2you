@@ -1,4 +1,6 @@
 import logging
+import time
+import random
 
 from celery import shared_task
 from django.core.management import call_command
@@ -26,6 +28,11 @@ def run_scrap_markers_batch_related():
     call_command("scrapemarkers", "related")
 
 
-@shared_task
-def run_scrap_markers_pack(pack_index):
-    call_command("scrapemarkers", "related", pack=pack_index)
+@shared_task(rate_limit="10/m", bind=True, max_retries=3)
+def run_scrap_markers_pack(self, pack_index):
+    try:
+        time.sleep(random.uniform(2, 5))
+        call_command("scrapemarkers", "related", pack=pack_index)
+    except Exception as e:
+        logger.warning(e)
+        self.retry(exc=e, countdown=3)
