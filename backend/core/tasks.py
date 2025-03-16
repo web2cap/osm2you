@@ -28,10 +28,9 @@ def run_scrap_markers_batch_related():
     call_command("scrapemarkers", "related")
 
 
-@shared_task(rate_limit="10/m", bind=True, max_retries=3)
+@shared_task(rate_limit="60/m", bind=True, max_retries=3)
 def run_scrap_markers_pack(self, pack_index):
     try:
-        time.sleep(random.uniform(2, 5))
         call_command("scrapemarkers", "related", pack=pack_index)
     except Exception as e:
         logger.warning(e)
