@@ -50,9 +50,9 @@ class AbstractTestSerializer(ABC):
         if self.read_only_serializer:
             return
         serializer = self.serializer_class(data=simple_json)
-        assert (
-            serializer.is_valid()
-        ), f"Error serializing with valid data: {serializer.errors}"
+        assert serializer.is_valid(), (
+            f"Error serializing with valid data: {serializer.errors}"
+        )
 
     @pytest.mark.django_db
     def test_serializer_data_present(self, simple_instance):
@@ -61,9 +61,9 @@ class AbstractTestSerializer(ABC):
         serializer = self.serializer_class(instance=simple_instance)
 
         for must_present in self.fields_must_present:
-            assert (
-                must_present in serializer.data
-            ), f"Field {must_present} should be present in valid data."
+            assert must_present in serializer.data, (
+                f"Field {must_present} should be present in valid data."
+            )
 
     @pytest.mark.django_db
     def test_serializer_data_equal(self, simple_instance):
@@ -71,9 +71,9 @@ class AbstractTestSerializer(ABC):
         expected_data = self.expected_data(simple_instance)
 
         for field, expected_value in expected_data.items():
-            assert (
-                serializer.data[field] == expected_value
-            ), f"{field} in serialized data does not match the expected value."
+            assert serializer.data[field] == expected_value, (
+                f"{field} in serialized data does not match the expected value."
+            )
 
     @pytest.mark.django_db
     def test_serializer_excluded_data(self, simple_instance):

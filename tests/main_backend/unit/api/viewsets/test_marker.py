@@ -53,18 +53,18 @@ class TestMarkerViewset:
         """Test are marker, marker author, stories, stories author present in queryset.
         If action is retrieve."""
         queryset = marker_viewset_instance_retrieve.get_queryset()
-        assert (
-            marker_with_author_story in queryset
-        ), "No marker in marker retrieve queryset"
-        assert (
-            queryset.first().author == user_owner_instance
-        ), "No marker author in marker retrieve queryset"
-        assert (
-            queryset.first().stories.first().text == simple_story_data["text"]
-        ), "No story in marker retrieve queryset"
-        assert (
-            queryset.first().stories.first().author == user_owner_instance
-        ), "No stories author marker in retrieve queryset"
+        assert marker_with_author_story in queryset, (
+            "No marker in marker retrieve queryset"
+        )
+        assert queryset.first().author == user_owner_instance, (
+            "No marker author in marker retrieve queryset"
+        )
+        assert queryset.first().stories.first().text == simple_story_data["text"], (
+            "No story in marker retrieve queryset"
+        )
+        assert queryset.first().stories.first().author == user_owner_instance, (
+            "No stories author marker in retrieve queryset"
+        )
         marker_with_author_story.tag_value.create(**simple_tagǜalue_withoutmarker_data)
         assert (
             queryset.first().tag_value.first().tag

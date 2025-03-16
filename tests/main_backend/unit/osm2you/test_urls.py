@@ -15,6 +15,6 @@ class TestOsm2youUrls:
 
         url_pattern = resolve(url)
         assert url_pattern, f"URL pattern for '{url}' not found"
-        assert (
-            url_pattern.view_name == view_name
-        ), f"View '{view_name}' in pattern for '{url}' not found"
+        assert url_pattern.view_name == view_name, (
+            f"View '{view_name}' in pattern for '{url}' not found"
+        )

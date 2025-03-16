@@ -9,15 +9,15 @@ class TestTagValueModels:
         """Test for creating Tag value."""
 
         tag = TagValue.objects.create(**simple_tag_value_data)
-        assert (
-            tag.value == simple_tag_value_data["value"]
-        ), "Created tag has wrong value"
-        assert (
-            tag.marker == simple_tag_value_data["marker"]
-        ), "Created tag has wrong marker"
-        assert (
-            tag.tag == simple_tag_value_data["tag"]
-        ), "Created tag has wrong tag relation"
+        assert tag.value == simple_tag_value_data["value"], (
+            "Created tag has wrong value"
+        )
+        assert tag.marker == simple_tag_value_data["marker"], (
+            "Created tag has wrong marker"
+        )
+        assert tag.tag == simple_tag_value_data["tag"], (
+            "Created tag has wrong tag relation"
+        )
         assert tag.created, "Created tag has no created value"
 
     @pytest.mark.django_db()

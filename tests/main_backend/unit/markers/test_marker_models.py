@@ -9,15 +9,15 @@ class TestMarkersModels:
         """Test for creating marker."""
 
         marker = Marker.objects.create(**marker_with_author_data)
-        assert (
-            marker.name == marker_with_author_data["name"]
-        ), "Created marker has wrong name"
-        assert (
-            marker.location == marker_with_author_data["location"]
-        ), "Created marker has wrong location"
-        assert (
-            marker.author == marker_with_author_data["author"]
-        ), "Created marker has wrong author"
+        assert marker.name == marker_with_author_data["name"], (
+            "Created marker has wrong name"
+        )
+        assert marker.location == marker_with_author_data["location"], (
+            "Created marker has wrong location"
+        )
+        assert marker.author == marker_with_author_data["author"], (
+            "Created marker has wrong author"
+        )
         assert marker.add_date, "Created marker hasn't add_date"
         assert marker.add_date, "Created marker hasn't add_date"
 

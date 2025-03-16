@@ -20,9 +20,9 @@ class TestAPISettings:
     def test_installedapps_settings(self, app):
         """Check that apps for api sered in INSTALLED_APPS"""
 
-        assert (
-            app in settings.INSTALLED_APPS
-        ), f"Check that {app} includet to INSTALLED_APPS"
+        assert app in settings.INSTALLED_APPS, (
+            f"Check that {app} includet to INSTALLED_APPS"
+        )
 
     def test_auth_user_model_settings(self):
         """Check that AUTH_USER_MODEL seted."""
@@ -32,9 +32,9 @@ class TestAPISettings:
     def test_rest_framework_settings(self):
         """Check REST_FRAMEWORK settings."""
 
-        assert hasattr(
-            settings, "REST_FRAMEWORK"
-        ), "Check that REST_FRAMEWORK present in settings"
+        assert hasattr(settings, "REST_FRAMEWORK"), (
+            "Check that REST_FRAMEWORK present in settings"
+        )
 
         assert (
             "rest_framework.permissions.AllowAny"
@@ -97,14 +97,16 @@ class TestAPISettings:
     def test_simple_jwt_settings(self):
         """Check SIMPLE_JWT settings"""
 
-        assert hasattr(
-            settings, "SIMPLE_JWT"
-        ), "Check that SIMPLE_JWT present in settings"
+        assert hasattr(settings, "SIMPLE_JWT"), (
+            "Check that SIMPLE_JWT present in settings"
+        )
         assert (
             "ACCESS_TOKEN_LIFETIME" in settings.SIMPLE_JWT
-            and type(settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"]) == timedelta
+            and type(settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"]) is timedelta
             and settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds() > 0
-        ), "Check that ACCESS_TOKEN_LIFETIME present in settings.SIMPLE_JWT and setted correct."
+        ), (
+            "Check that ACCESS_TOKEN_LIFETIME present in settings.SIMPLE_JWT and setted correct."
+        )
         assert (
             "AUTH_HEADER_TYPES" in settings.SIMPLE_JWT
             and "Bearer" in settings.SIMPLE_JWT["AUTH_HEADER_TYPES"]

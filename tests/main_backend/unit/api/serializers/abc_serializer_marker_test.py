@@ -19,9 +19,9 @@ class AbstractTestMarkerSerializer(AbstractTestSerializer):
         """Check that type field data is correct."""
 
         serializer = self.serializer_class(instance=simple_instance)
-        assert (
-            serializer.data["type"] == "Feature"
-        ), "Field type should be equal Feature."
+        assert serializer.data["type"] == "Feature", (
+            "Field type should be equal Feature."
+        )
 
     @pytest.mark.django_db
     def test_serializer_data_geometry(self, simple_instance):
@@ -29,16 +29,16 @@ class AbstractTestMarkerSerializer(AbstractTestSerializer):
 
         serializer = self.serializer_class(instance=simple_instance)
 
-        assert (
-            "type" in serializer.data["geometry"]
-        ), "Field geometry.type should be present in valid data."
-        assert (
-            serializer.data["geometry"]["type"] == "Point"
-        ), "Field type should be equal Point."
+        assert "type" in serializer.data["geometry"], (
+            "Field geometry.type should be present in valid data."
+        )
+        assert serializer.data["geometry"]["type"] == "Point", (
+            "Field type should be equal Point."
+        )
 
-        assert (
-            "coordinates" in serializer.data["geometry"]
-        ), "Field geometry.type should be present in valid data."
+        assert "coordinates" in serializer.data["geometry"], (
+            "Field geometry.type should be present in valid data."
+        )
         assert serializer.data["geometry"]["coordinates"] == [
             simple_instance.location.x,
             simple_instance.location.y,
@@ -50,9 +50,9 @@ class AbstractTestMarkerSerializer(AbstractTestSerializer):
 
         serializer = self.serializer_class(instance=simple_instance)
 
-        assert (
-            "name" in serializer.data["properties"]
-        ), "Field properties.name should be present in valid data."
-        assert (
-            serializer.data["properties"]["name"] == simple_instance.name
-        ), "Field properties.name should be equal instance name."
+        assert "name" in serializer.data["properties"], (
+            "Field properties.name should be present in valid data."
+        )
+        assert serializer.data["properties"]["name"] == simple_instance.name, (
+            "Field properties.name should be equal instance name."
+        )

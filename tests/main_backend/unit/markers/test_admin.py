@@ -6,14 +6,14 @@ from django.contrib.gis import admin
 
 class TestMarkerAdmin:
     def test_marker_registration_in_admin(self):
-        assert (
-            Marker in admin.site._registry
-        ), "Marker model should be registered in admin site"
+        assert Marker in admin.site._registry, (
+            "Marker model should be registered in admin site"
+        )
 
     def test_marker_admin_inherits_from_user_admin(self):
-        assert issubclass(
-            MarkerAdmin, admin.GISModelAdmin
-        ), "MarkerAdmin should inherit from GISModelAdmin"
+        assert issubclass(MarkerAdmin, admin.GISModelAdmin), (
+            "MarkerAdmin should inherit from GISModelAdmin"
+        )
 
     @pytest.mark.django_db
     def test_marker_admin_get_form(self, user_request):
