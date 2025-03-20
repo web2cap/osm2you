@@ -175,3 +175,4 @@ log/
 # dev local
 re.sh
 overpass.xml
+*.dump
