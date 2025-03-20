@@ -6,6 +6,8 @@ import dotenv
 from celery.schedules import crontab
 from corsheaders.defaults import default_headers
 
+from core.services.storage import StaticStorage, MediaStorage  # noqa: F401
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv.load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
@@ -113,7 +115,7 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# DYNAMIC STORAGE CONFIGURATION (S3 OR LOCAL)**
+# DYNAMIC STORAGE CONFIGURATION (S3 OR LOCAL)
 USE_S3 = bool(os.getenv("AWS_STORAGE_BUCKET_NAME"))
 
 if USE_S3:
@@ -129,8 +131,8 @@ if USE_S3:
     AWS_DEFAULT_ACL = None
     AWS_QUERYSTRING_AUTH = False
 
-    STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    STATICFILES_STORAGE = "core.services.storage.StaticStorage"
+    DEFAULT_FILE_STORAGE = "core.services.storage.MediaStorage"
 
     STATIC_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/static/"
     MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/media/"
@@ -141,7 +143,6 @@ else:
     STATIC_ROOT = os.path.join(BASE_DIR, "static")
     MEDIA_URL = "/media/"
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
 
 # DRF
 REST_FRAMEWORK = {
