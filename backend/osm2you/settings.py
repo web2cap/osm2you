@@ -17,13 +17,15 @@ DEBUG_SQL = os.getenv("ST_DEBUG_SQL", "False") == "True"
 
 SECRET_KEY = os.getenv("ST_SECRET_KEY")
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost", "https://osm.w2c.net.eu.org"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost", "https://w2c.net.eu.org"]
 CORS_ORIGIN_WHITELIST = ["http://localhost"]
 if DEBUG:
     CSRF_TRUSTED_ORIGINS.append("http://localhost:3000")
     CORS_ORIGIN_WHITELIST.append("http://localhost:3000")
 CORS_ALLOW_HEADERS = list(default_headers) + ["access-control-allow-origin"]
-ALLOWED_HOSTS = os.getenv("ST_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = os.getenv(
+    "ST_ALLOWED_HOSTS", "localhost,127.0.0.1,w2c.net.eu.org"
+).split(",")
 INTERNAL_IPS = ["127.0.0.1"]
 
 INSTALLED_APPS = [
